@@ -1,5 +1,5 @@
-defmodule AobaEngine.Post do
-  alias AobaEngine.{Post, Body}
+defmodule Aoba.Post do
+  alias Aoba.{Post, Body}
 
   @enforce_keys [:id, :username, :date, :body, :media]
   defstruct [:id, :username, :date, :body, :media]

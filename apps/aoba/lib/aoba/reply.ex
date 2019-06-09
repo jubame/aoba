@@ -1,4 +1,4 @@
-defmodule AobaEngine.Reply do
+defmodule Aoba.Reply do
   alias __MODULE__
 
   @enforce_keys [:post_ids, :text]

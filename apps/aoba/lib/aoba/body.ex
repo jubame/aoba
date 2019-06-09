@@ -1,4 +1,4 @@
-defmodule AobaEngine.Body do
+defmodule Aoba.Body do
   alias __MODULE__
 
   defstruct auto_id: 1, entries: %{}

@@ -1,6 +1,6 @@
-defmodule AobaEngine.Thread do
+defmodule Aoba.Thread do
 
-  alias AobaEngine.{Thread, Post}
+  alias Aoba.{Thread, Post}
   defstruct auto_id: 1, posts: %{}
 
   def new(), do: %Thread{}
@@ -30,11 +30,11 @@ defmodule AobaEngine.Thread do
   thread = Thread.add_post(thread)
   thread = Thread.add_post(thread)
 
-  alias AobaEngine.Body
+  alias Aoba.Body
   Body.new()
   body = Body.add_entry(body, "asdfasdf")
   body = Body.add_entry(body, "asdfasdf")
-  alias AobaEngine.Reply
+  alias Aoba.Reply
 
 
   """
