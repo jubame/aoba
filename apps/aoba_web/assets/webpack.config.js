@@ -5,6 +5,10 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
+// https://vue-loader.vuejs.org/guide/#vue-cli
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
+
+
 module.exports = (env, options) => ({
   optimization: {
     minimizer: [
@@ -29,13 +33,36 @@ module.exports = (env, options) => ({
         }
       },
       {
+        test: /\.vue$/,
+        loader: 'vue-loader'
+      },
+      // this will apply to both plain `.css` files
+      // AND `<style>` blocks in `.vue` files
+      {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader']
+        use: [
+          'vue-style-loader',
+          MiniCssExtractPlugin.loader,
+          'css-loader'
+        ]
       }
     ]
   },
   plugins: [
     new MiniCssExtractPlugin({ filename: '../css/app.css' }),
-    new CopyWebpackPlugin([{ from: 'static/', to: '../' }])
-  ]
+    new CopyWebpackPlugin([{ from: 'static/', to: '../' }]),
+    new VueLoaderPlugin()
+
+  ],
+  /*
+  [Vue warn]: You are using the runtime-only build of Vue where the template
+  option is not available. Either pre-compile the templates into render
+  functions, or use the compiler-included build.
+  https://github.com/vuejs-templates/webpack/issues/215#issuecomment-238095102
+  */
+  resolve: {
+    alias: {
+      vue: 'vue/dist/vue.js'
+    }
+  }
 });
