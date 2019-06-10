@@ -16,16 +16,4 @@ import "phoenix_html"
 // Local files can be imported directly using relative paths, for example:
 // import socket from "./socket"
 
-// https://codesandbox.io/s/o29j95wx9
-import Vue from 'vue'
-
-
-/* eslint-disable no-new */
-new Vue({
-  el: '#vue-app',
-  data() {
-    return {
-        message: 'hello, world!'
-    }
-}
-})
+import "../main.js"

@@ -9,6 +9,10 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
+
 module.exports = (env, options) => ({
   optimization: {
     minimizer: [
@@ -45,6 +49,18 @@ module.exports = (env, options) => ({
           MiniCssExtractPlugin.loader,
           'css-loader'
         ]
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+        loader: 'url-loader'
+      },
+      {
+        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+        loader: 'url-loader'
+      },
+      {
+        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+        loader: 'url-loader'
       }
     ]
   },
@@ -61,8 +77,10 @@ module.exports = (env, options) => ({
   https://github.com/vuejs-templates/webpack/issues/215#issuecomment-238095102
   */
   resolve: {
+    extensions: ['.js', '.vue', '.json'],
     alias: {
-      vue: 'vue/dist/vue.js'
+      'vue$': 'vue/dist/vue.esm.js',
+      '@': resolve('assets'),
     }
   }
 });

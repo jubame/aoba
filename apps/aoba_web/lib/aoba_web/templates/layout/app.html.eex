@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Aoba · Phoenix Framework</title>
+    <title>青葉ちゃん♪</title>
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
   </head>
   <body>
@@ -20,7 +20,7 @@
         </a>
       </section>
     </header>
-    <div id="vue-app">{{message}}</div>
+    <div id="app"></div>
     <div>patata</div>
     <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </body>
