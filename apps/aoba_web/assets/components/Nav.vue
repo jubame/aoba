@@ -1,9 +1,56 @@
 <template>
-    <nav>test</nav>
+    <nav>
+
+    <ul>
+        <li v-for="destination in destinations" :key="destination.name"
+        v-on:click="change(destination)">
+            
+            {{destination.name | capitalize}}
+        </li>
+    </ul>
+
+    <p>Has elegido {{selected.name}}</p>
+
+
+
+    </nav>
 </template>
 
 <script>
+    import router from '../router'
 
+    import {Destinations, OrderedDestinations} from '../config.js'
+
+    export default {
+
+        data() {
+        
+            return {
+                destinations: OrderedDestinations,
+                selected: Destinations.HOME
+            }
+
+        },
+
+        methods: {
+            change(destination) {
+                this.selected = destination
+                router.push({path: destination.path})
+            }
+        },
+
+        filters: {
+            capitalize: function (value) {
+                if (!value) return ''
+                value = value.toString()
+                return value.charAt(0).toUpperCase() + value.slice(1)
+            },
+            uppercase: function(value){
+                return value.toUpperCase();
+            }
+        }
+
+    }
 
 
 
@@ -14,76 +61,45 @@
 
 
     nav {
-        flex: 0 0 15%;
         color: white;
-        width: 60px;
+        width: 160px;
         background-color: #1A1A1A;
         height: 100%;
         position: relative;
 
-        &.menu-expandido {
 
-
-
-
-
-             //background-color: green;
-             width: 300px; /* ¿Se podrá poner como variable para que se comparta con Vue.js? */
-            .texto {
-                display: initial;
-            }
-
-            .material-design-icon {
-                margin: initial;
-            }
-
-            .toggle-menu{
-                position: absolute;
-                right: 0;
-                width: auto;
-                height: 100%;
-
-            }
-
-            h1 {
-                display: block;
-            }
-
-            h1:first-of-type {
-                padding-top: 50px;
-                margin-top: 0;
-            }
-
-            h1:nth-of-type(n+2) {
-                margin-top: 40px;
-                padding-top: 10px;
-                border-top: 1px solid grey;
-
-            }
-
-
-
-
-         }
-
-        h1 {
-            display: none;
-            text-transform: uppercase;
-            font-size: 12px;
-        }
-
-        .texto {
-            display: none;
-            margin-left: 10px;
-        }
 
         ul {
             list-style-type: none;
             margin: 0;
             padding: 0;
 
+
+            li {
+                // https://stackoverflow.com/a/5166693
+                display: flex;
+                align-items: center;
+                padding-left: 10px;
+                cursor: pointer;
+                
+                // Para que no se mueva el texto al poner borde en li:hover
+                // https://stackoverflow.com/a/9612782
+                border-left: 4px solid transparent;
+
+
+                
+                height: 50px;
+
+                &.seleccionado {
+                    border-left: 4px solid teal;
+                }
+            }
+
+
             li:hover{
                 border-left: 4px solid teal;
+                color: yellow;
+                background-color: rgb(70, 57, 70);
 
                 .material-design-icon__svg{
                     fill: yellow;
@@ -91,66 +107,9 @@
 
             }
 
-            }
-
-        li {
-
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            height: 50px;
-
-            &.seleccionado {
-                border-left: 4px solid teal;
-                .material-design-icon__svg{
-                    fill: lightyellow;
-                }
-
-            }
         }
 
-        button {
-            display: block;
-            width: 100%;
-            border: none;
-        }
-
-        .toggle-menu {
-
-            height: 47px;
-
-            background-color: #3a4f3b;
-
-            .material-design-icon__svg{
-                fill: white;
-            }
-
-
-            &:active {
-                background-color: #1a4f3b;
-            }
-
-        }
-
-
-
-
-        .material-design-icon {
-            margin: 0 auto;
-        }
-
-
-
-
-        .material-design-icon__svg{
-
-            fill: #ccc;
-            width: 2em;
-
-
-
-
-        }
+        
 
 
 
