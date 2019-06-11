@@ -1,23 +1,39 @@
 <template>
   <div id="app">
-    <img src="./static/images/aoba_suzukaze.png">
-    <router-view/>
+
+    <nav-aoba></nav-aoba>
+
+    <div id="content">
+      <img src="./static/images/aoba_suzukaze.png">
+      <router-view/>
+    </div>
+
+
+
+
   </div>
 </template>
 
 <script>
+
+
+import Nav from './components/Nav'
+
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    'nav-aoba': Nav
+  }
 }
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  display: flex;
+  height: 100%;
+}
+#content {
+  flex: 1;
 }
 </style>
