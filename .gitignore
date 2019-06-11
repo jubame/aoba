@@ -20,4 +20,5 @@ erl_crash.dump
 # Also ignore archive artifacts (built via "mix archive.build").
 *.ez
 
-apps/aoba_web/assets/static/fonts/
+apps/aoba_web/assets/static/fonts
+apps/aoba_web/assets/static/images/

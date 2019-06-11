@@ -1,7 +1,7 @@
 <template>
-  <div class="hello" id="hello">
-    <h1>{{ msg }}</h1>
- 
+  <div id="content">
+    <img src="../static/images/aoba_salute.jpg">
+    <router-view/>
   </div>
 </template>
 

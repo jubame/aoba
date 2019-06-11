@@ -1,14 +1,8 @@
 <template>
   <div id="app">
-
     <nav-aoba></nav-aoba>
-
-    <div id="content">
-      <img src="./static/images/aoba_suzukaze.png">
-      <router-view/>
-    </div>
-
-
+    <hello-world v-if="isThis('/')"></hello-world>
+    <board v-if="isThis('/board')"></board>
 
 
   </div>
@@ -18,12 +12,22 @@
 
 
 import Nav from './components/Nav'
+import HelloWorld from './components/HelloWorld'
+import Board from './components/Board'
 
 
 export default {
   name: 'App',
   components: {
-    'nav-aoba': Nav
+    'nav-aoba': Nav,
+    'hello-world': HelloWorld,
+    'board': Board
+  },
+
+  methods: {
+    isThis(url){
+      return this.$route.path === url
+    }
   }
 }
 </script>
