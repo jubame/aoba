@@ -1,7 +1,7 @@
 <template>
   <div id="content">
     <img src="../static/images/aoba_suzukaze.png">
-    <router-view/>
+    {{msg}}
   </div>
 </template>
 
@@ -10,7 +10,7 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: '今日も一日頑張るぞい！'
     }
   }
 }
@@ -19,22 +19,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-#hello {
-  flex: 1;
-}
-
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+#content {
+  background-color: #ffe;
 }
 </style>
