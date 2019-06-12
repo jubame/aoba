@@ -1,18 +1,28 @@
 <template>
   <div id="content">
     <img src="../static/images/aoba_salute.jpg">
-    <router-view/>
+    <new-thread></new-thread>
   </div>
 </template>
 
 <script>
+
+import NewThreadAccordion from './NewThreadAccordion'
+
 export default {
-  name: 'Board',
-  data () {
-    return {
-      msg: '今日も一日頑張るぞい！'
-    }
-  }
+    name: 'Board',
+    
+    data () {
+        return {
+            msg: '今日も一日頑張るぞい！'
+        }
+    },
+
+    components: {
+        'new-thread': NewThreadAccordion
+    },
+
+
 }
 </script>
 
