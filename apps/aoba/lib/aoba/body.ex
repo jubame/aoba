@@ -3,7 +3,7 @@ defmodule Aoba.Body do
 
   defstruct auto_id: 1, entries: %{}
 
-  def new(), do: %Body{}
+  def new(content), do: Body.add_entry(%Body{}, content)
 
 
   def add_entry(body, text_or_reply) do

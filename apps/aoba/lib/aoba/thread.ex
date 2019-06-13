@@ -3,11 +3,16 @@ defmodule Aoba.Thread do
   alias Aoba.{Thread, Post}
   defstruct thread_id: nil, post_id: 1, posts: %{}
 
-  def new(thread_id), do: %Thread{thread_id: thread_id}
+  def new(thread_id, content) do
+    add_post(
+      %Thread{thread_id: thread_id},
+      content
+    )
+  end
 
-  def add_post(thread) do
+  def add_post(thread, content) do
 
-    {:ok, new_post} = Post.new(thread.post_id, "anon")
+    {:ok, new_post} = Post.new(thread.post_id, "anon", content)
     posts = Map.put(thread.posts, thread.post_id, new_post)
 
     %Thread{thread |
