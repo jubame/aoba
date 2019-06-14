@@ -14,6 +14,9 @@
 import Nav from './components/Nav'
 import HelloWorld from './components/HelloWorld'
 import Board from './components/Board'
+import store from './store'
+
+
 
 
 export default {
@@ -28,6 +31,10 @@ export default {
     isThis(url){
       return this.$route.path === url
     }
+  },
+
+  mounted() {
+
   }
 }
 </script>

@@ -7,6 +7,7 @@
 // Pass the token on params as below. Or remove it
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
+import {store} from '../store'
 
 let socket = new Socket("/socket", {params: {token: window.userToken}})
 
@@ -55,9 +56,28 @@ let socket = new Socket("/socket", {params: {token: window.userToken}})
 socket.connect()
 
 // Now that you are connected, you can join channels with a topic:
-let channel = socket.channel("topic:subtopic", {})
+let channel = socket.channel("threadserver:lobby", {})
 channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
 
 export default socket
+
+
+
+function new_thread(){
+  console.log(channel)
+  console.log(store)
+  
+  channel.push("new_thread")
+  .receive("ok", response => {
+    store.commit('save_thread', "ok", response)
+    console.log("Hello", response.message)
+  })
+  .receive("error", response => {
+    console.log("Unable to say hello to the channel.", response.message)
+  })
+}
+console.log(store)
+window.new_thread = new_thread
+window.store = store

@@ -3,6 +3,7 @@ defmodule AobaWeb.UserSocket do
 
   ## Channels
   # channel "room:*", AobaWeb.RoomChannel
+  channel "threadserver:*", AobaWeb.ThreadServerChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After

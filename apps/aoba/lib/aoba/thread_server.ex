@@ -2,8 +2,7 @@ defmodule Aoba.ThreadServer do
   use GenServer
   alias Aoba.{Thread, Post, Body, Reply}
 
-  def start_link(content) do
-    id = {DateTime.utc_now(), Node.self()}
+  def start_link(id, content) do
     GenServer.start_link(__MODULE__, content, name: via_tuple(id))
   end
 
