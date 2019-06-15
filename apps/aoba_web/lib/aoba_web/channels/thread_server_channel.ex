@@ -8,9 +8,9 @@ defmodule AobaWeb.ThreadServerChannel do
   end
 
 
-  def handle_in("new_thread", _payload, socket) do
+  def handle_in("new_thread", %{"content" => content}, socket) do
 
-    case ThreadServerSupervisor.start_thread() do
+    case ThreadServerSupervisor.start_thread(content) do
       {:ok, _pid} ->
         {:reply, :ok, socket}
       {:error, reason} ->

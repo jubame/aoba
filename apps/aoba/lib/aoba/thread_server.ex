@@ -1,12 +1,15 @@
 defmodule Aoba.ThreadServer do
-  use GenServer
+  use GenServer, restart: :transient
   alias Aoba.{Thread, Post, Body, Reply}
 
-  def start_link(id, content) do
+  def start_link([id: id, content: content]) do
+    IO.puts(inspect(id))
+    Apex.ap content
+    IO.puts('HOLA')
     GenServer.start_link(__MODULE__, content, name: via_tuple(id))
   end
 
-  def via_tuple(name), do: {:via, Registry, {Registry.Game, name}}
+  def via_tuple(name), do: {:via, Registry, {Registry.ThreadServer, name}}
 
 
   def init(content) do

@@ -7,7 +7,7 @@ defmodule Aoba.Application do
 
   def start(_type, _args) do
     children = [
-      {Registry, keys: :unique, name: Registry.Game},
+      {Registry, keys: :unique, name: Registry.ThreadServer},
       Aoba.ThreadServerSupervisor,
       Aoba.Repo
     ]

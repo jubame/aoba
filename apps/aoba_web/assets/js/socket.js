@@ -65,9 +65,9 @@ export default socket
 
 
 
-function newThread(){
+function newThread(content){
   
-  channel.push("new_thread")
+  channel.push("new_thread", {content: content})
   .receive("ok", response => {
     saveThreadResponse("ok", response.reason)
   })
