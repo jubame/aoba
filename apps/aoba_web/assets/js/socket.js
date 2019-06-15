@@ -7,7 +7,7 @@
 // Pass the token on params as below. Or remove it
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
-import {store} from '../store'
+import {saveThreadResponse} from '../store'
 
 let socket = new Socket("/socket", {params: {token: window.userToken}})
 
@@ -65,19 +65,14 @@ export default socket
 
 
 
-function new_thread(){
-  console.log(channel)
-  console.log(store)
+function newThread(){
   
   channel.push("new_thread")
   .receive("ok", response => {
-    store.commit('save_thread', "ok", response)
-    console.log("Hello", response.message)
+    saveThreadResponse("ok", response.reason)
   })
   .receive("error", response => {
-    console.log("Unable to say hello to the channel.", response.message)
+    saveThreadResponse("error", response.reason)
   })
 }
-console.log(store)
-window.new_thread = new_thread
-window.store = store
+window.newThread = newThread
