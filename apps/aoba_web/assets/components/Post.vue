@@ -22,23 +22,27 @@ export default {
         return {
             currBodyID: initialBodyID,
         }
-
-
-        
-
-
     },
+    
     methods: {
 
-        addBody(){
+        closeBody(event){
+            if (event.target.nextElementSibling === null){
+                this.currBodyID++
+            }
+            // https://forum.vuejs.org/t/setting-focus-to-textarea-not-working/17891
+            // vue.esm.js:629 [Vue warn]: Error in v-on handler: "TypeError: Cannot read property 'focus' of null"
+            this.$nextTick(
+                // https://www.jstips.co/en/javascript/passing-arguments-to-callback-functions/
+                function callback(event) {
+                    return function(){
+                        console.log(event)
+                        event.target.nextElementSibling.focus()
+                    }
+                }(event)
             
-
-
-        },
-
-        closeBody(){
-            this.currBodyID++
-            alert('HOLA desde Post')
+            )
+            
         }
     }
 }

@@ -10,6 +10,7 @@
 
 export default {
 
+
     data() {
         return {
             maxWidth: 0
@@ -42,7 +43,7 @@ export default {
         },
 
         close(event) {
-            this.$emit('close')
+            this.$emit('close', event)
         }
     },
     mounted () {
@@ -73,7 +74,7 @@ export default {
 
 <style scoped lang="scss">
     textarea {
-        display: inline;
+        display: block;
         overflow-y: hidden;
         overflow-x: hidden;
         resize: none;
