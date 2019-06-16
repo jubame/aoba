@@ -5,7 +5,7 @@
         New thread
     </button>
     <div id="accordion-section-1" class="accordion__section">
-        <resizable-textarea></resizable-textarea>
+        <post></post>
     </div>
 
   </div>
@@ -16,8 +16,7 @@
 
 <script>
 import Vue from 'vue'
-import ResizableTextarea from './ResizableTextarea'
-
+import Post from './Post'
 
 
 const state = {
@@ -29,7 +28,7 @@ export default {
     name: 'HelloWorld',
 
     components: {
-        'resizable-textarea': ResizableTextarea,
+        'post': Post,
     },
 
 

@@ -1,7 +1,7 @@
 // https://github.com/lorisleiva/vue-lab/tree/master/components/resizable-textarea
 <template>
     <textarea rows="1" class="resize-none outline-0 h-full" 
-      placeholder="Write something..."
+      placeholder="Write something..." @keydown.ctrl.enter="close"
     ></textarea>
 </template>
 
@@ -40,6 +40,10 @@ export default {
             
             
         },
+
+        close(event) {
+            this.$emit('close')
+        }
     },
     mounted () {
         this.$nextTick(() => {
