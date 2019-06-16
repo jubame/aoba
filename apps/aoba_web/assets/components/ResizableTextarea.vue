@@ -2,6 +2,8 @@
 <template>
     <textarea rows="1" class="resize-none outline-0 h-full" 
       placeholder="Write something..." @keydown.ctrl.enter="close"
+      @focus="aobaOnFocus"
+      @blur="aobaOnBlur"
     ></textarea>
 </template>
 
@@ -10,10 +12,15 @@
 
 export default {
 
+    props: ['id'],
+
+
 
     data() {
         return {
-            maxWidth: 0
+            maxWidth: 0,
+            interval: null,
+            charCount: 0
         }
     },
 
@@ -43,8 +50,34 @@ export default {
         },
 
         close(event) {
+            alert(this.id)
             this.$emit('close', event)
+        },
+
+        push(){
+            var currentCharCount = this.$el.value.length
+            if (currentCharCount > this.charCount) {
+                console.log('id '+ this.id + ' push')
+                this.charCount = currentCharCount
+            }
+
+
+        },
+
+        aobaOnFocus: function () {
+            this.interval = setInterval(
+                this.push,
+                5000
+            );
+        
+        },
+
+        aobaOnBlur () {
+            clearInterval(this.interval)
+            this.interval = null
         }
+
+
     },
     mounted () {
         this.$nextTick(() => {

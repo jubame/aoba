@@ -1,7 +1,7 @@
 <template>
   <div>
     <resizable-textarea @close="closeBody"
-    v-for="n in currBodyID" v-bind:key="n" v-bind:id="currBodyID">
+    v-for="n in currBodyID" v-bind:key="n" v-bind:id="n">
     </resizable-textarea>
   </div>
 </template>
@@ -23,7 +23,7 @@ export default {
             currBodyID: initialBodyID,
         }
     },
-    
+
     methods: {
 
         closeBody(event){
