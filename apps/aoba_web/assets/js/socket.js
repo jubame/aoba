@@ -61,7 +61,7 @@ channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
 
-export default socket
+
 
 
 
@@ -75,4 +75,7 @@ function newThread(content){
     saveThreadResponse("error", response.reason)
   })
 }
-window.newThread = newThread
+//window.newThread = newThread
+
+export default socket
+export {newThread}

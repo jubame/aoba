@@ -55,9 +55,11 @@ export default {
         },
 
         push(){
+            
             var currentCharCount = this.$el.value.length
             if (currentCharCount > this.charCount) {
                 console.log('id '+ this.id + ' push')
+                this.$emit('push', this)
                 this.charCount = currentCharCount
             }
 

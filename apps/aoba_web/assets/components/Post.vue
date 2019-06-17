@@ -1,6 +1,6 @@
 <template>
   <div>
-    <resizable-textarea @close="closeBody"
+    <resizable-textarea @close="closeBody" @push="push"
     v-for="n in currBodyID" v-bind:key="n" v-bind:id="n">
     </resizable-textarea>
   </div>
@@ -9,10 +9,13 @@
 <script>
 import Vue from 'vue'
 import ResizableTextarea from './ResizableTextarea'
+import {newThread} from '../js/socket.js'
 
 const initialBodyID = 1
 
 export default {
+
+    props: ['newThread'],
     
     components: {
         'resizable-textarea': ResizableTextarea,
@@ -20,11 +23,28 @@ export default {
 
     data() {
         return {
+            id: null,
             currBodyID: initialBodyID,
+            pushes: 0
+            
+
         }
     },
 
     methods: {
+
+
+        push(resizableTextarea){
+            if (this.newThread && this.pushes === 0){
+                console.log(resizableTextarea.$el.value)
+                this.pushes++
+                newThread(resizableTextarea.$el.value)
+
+
+
+            }
+
+        },
 
         closeBody(event){
             if (event.target.nextElementSibling === null){

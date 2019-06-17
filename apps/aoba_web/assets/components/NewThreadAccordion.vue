@@ -5,7 +5,7 @@
         New thread
     </button>
     <div id="accordion-section-1" class="accordion__section">
-        <post></post>
+        <post :newThread="true"></post>
     </div>
 
   </div>
