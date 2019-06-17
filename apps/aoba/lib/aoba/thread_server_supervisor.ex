@@ -24,7 +24,9 @@ defmodule Aoba.ThreadServerSupervisor do
       id: {DateTime.utc_now(), Node.self()},
       content: content
     }
-    DynamicSupervisor.start_child(__MODULE__, child)
+    resultado = DynamicSupervisor.start_child(__MODULE__, child)
+    IO.puts(inspect(resultado))
+    resultado
   end
 
   def stop_thread(name) do

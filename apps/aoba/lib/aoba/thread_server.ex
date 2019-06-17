@@ -6,13 +6,22 @@ defmodule Aoba.ThreadServer do
     IO.puts(inspect(id))
     Apex.ap content
     IO.puts('HOLA')
-    GenServer.start_link(__MODULE__, content, name: via_tuple(id))
+    resultado = GenServer.start_link(__MODULE__, content, name: via_tuple(id))
+    IO.puts(inspect(resultado))
+    resultado
   end
 
   def via_tuple(name), do: {:via, Registry, {Registry.ThreadServer, name}}
 
 
+  def get_ids(thread_server) do
+    GenServer.call(thread_server, :get_ids)
+  end
+
+
+
   def init(content) do
+    IO.puts("creando nuevo hilo")
     {:ok, Thread.new(
       {DateTime.utc_now(), Node.self()},
       content
@@ -20,6 +29,17 @@ defmodule Aoba.ThreadServer do
       )
     }
   end
+
+  def handle_call(:get_ids, _from, thread) do
+    {:reply,
+      {:ok,
+      %{thread_id: thread.thread_id, post_id: thread.post_id - 1}
+      },
+      thread
+    }
+  end
+
+
 
   @docp """
   iex(4)> {:ok, pid} = ThreadServer.start_link("asdf")

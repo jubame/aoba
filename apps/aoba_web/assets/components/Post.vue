@@ -10,6 +10,7 @@
 import Vue from 'vue'
 import ResizableTextarea from './ResizableTextarea'
 import {newThread} from '../js/socket.js'
+window.newThread = newThread
 
 const initialBodyID = 1
 
