@@ -1,13 +1,13 @@
 <template>
   <div id="content">
     <img src="../static/images/aoba_salute.jpg">
-    <new-thread></new-thread>
+    <thread></thread>
   </div>
 </template>
 
 <script>
 
-import NewThreadAccordion from './NewThreadAccordion'
+import Thread from './Thread'
 
 export default {
     name: 'Board',
@@ -19,7 +19,7 @@ export default {
     },
 
     components: {
-        'new-thread': NewThreadAccordion
+        'thread': Thread
     },
 
 

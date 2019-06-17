@@ -1,5 +1,5 @@
 <template>
-  <div id="new-thread">
+  <section data-type="post">
     <button id="accordion-open-1" class="accordion__button" v-bind:class="{expanded: isOpen}"
             v-on:click="toggleState()">
         New thread
@@ -8,7 +8,7 @@
         <post :newThread="true"></post>
     </div>
 
-  </div>
+  </section>
 
 
 
@@ -25,7 +25,6 @@ const state = {
 };
 
 export default {
-    name: 'HelloWorld',
 
     components: {
         'post': Post,
@@ -49,7 +48,8 @@ export default {
     computed: {
         isOpen: function(){
             return this.state === state.OPEN
-        }
+        },
+        
     },
 
     methods: {

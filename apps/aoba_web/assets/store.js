@@ -5,22 +5,26 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 
-export {saveThreadResponse};
 
-function saveThreadResponse(status, response) {
-    store.commit('save_thread', {status, response})
+function saveThreadResponse(status, ids) {
+    store.commit('save_thread', {status, ids})
 }
 
 
 const store = new Vuex.Store({
     state: {
-        thread: null
+        currentThread: null,
+        currentPost: null
     },
     mutations: {
-        save_thread(state, {status, response}) {
-            state.thread = {status: status, response: response}
+        save_thread(state, {status, ids}) {
+            state.currentThread = {status: status, id: ids.thread_id}
+            state.currentPost = {id: ids.post_id}
         }
 
     }
 });
+
+
+export {store, saveThreadResponse};
 

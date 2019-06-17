@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <section data-type="post">
     <resizable-textarea @close="closeBody" @push="push"
     v-for="n in currBodyID" v-bind:key="n" v-bind:id="n">
     </resizable-textarea>
-  </div>
+  </section>
 </template>
 
 <script>

@@ -69,7 +69,7 @@ function newThread(content){
   
   channel.push("new_thread", {content: content})
   .receive("ok", response => {
-    saveThreadResponse("ok", response.reason)
+    saveThreadResponse("ok", response)
   })
   .receive("error", response => {
     saveThreadResponse("error", response.reason)
