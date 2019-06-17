@@ -23,11 +23,19 @@ defmodule Aoba.ThreadServer do
   def init(content) do
     IO.puts("creando nuevo hilo")
     {:ok, Thread.new(
-      {DateTime.utc_now(), Node.self()},
+      DateTime.to_unix(DateTime.utc_now())*10 + node_to_number(),
       content
 
       )
     }
+  end
+
+  defp node_to_number() do
+    Node.self()
+    |> Atom.to_string()
+    |> String.split("@")
+    |> Enum.at(0)
+    |> String.to_integer()
   end
 
   def handle_call(:get_ids, _from, thread) do
