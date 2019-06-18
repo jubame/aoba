@@ -1,7 +1,7 @@
 <template>
   <section data-type="post">
     <resizable-textarea @close="closeBody" @push="push"
-    v-for="n in currBodyID" v-bind:key="n" v-bind:id="n">
+    v-for="n in lastEntryID" v-bind:key="n" v-bind:id="n">
     </resizable-textarea>
   </section>
 </template>
@@ -12,7 +12,7 @@ import ResizableTextarea from './ResizableTextarea'
 import {newThread} from '../js/socket.js'
 window.newThread = newThread
 
-const initialBodyID = 1
+const initialEntryID = 1
 
 export default {
 
@@ -25,7 +25,7 @@ export default {
     data() {
         return {
             id: null,
-            currBodyID: initialBodyID,
+            lastEntryID: initialEntryID,
             pushes: 0
             
 
@@ -46,7 +46,7 @@ export default {
 
         closeBody(event){
             if (event.target.nextElementSibling === null){
-                this.currBodyID++
+                this.lastEntryID++
             }
             // https://forum.vuejs.org/t/setting-focus-to-textarea-not-working/17891
             // vue.esm.js:629 [Vue warn]: Error in v-on handler: "TypeError: Cannot read property 'focus' of null"
