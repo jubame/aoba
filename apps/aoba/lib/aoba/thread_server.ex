@@ -19,6 +19,7 @@ defmodule Aoba.ThreadServer do
   end
 
   def append_to_body_entry(thread_id, post_id, entry_id, iolist) do
+    GenServer.call(via_tuple(thread_id), {:append_to_body_entry, post_id, entry_id, iolist})
 
   end
 
@@ -43,6 +44,19 @@ defmodule Aoba.ThreadServer do
       },
       thread
     }
+  end
+
+  def handle_call({:append_to_body_entry, post_id, entry_id, iolist}, _from, thread) do
+    update_in(thread.posts[post_id].body.entries[entry_id], fn entry ->
+      IO.iodata_to_binary([entry, " ", iolist])
+    end)
+    |> reply_success(:ok)
+
+  end
+
+
+  defp reply_success(state_data, reply) do
+    {:reply, reply, state_data}
   end
 
 

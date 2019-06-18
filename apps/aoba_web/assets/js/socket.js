@@ -75,7 +75,12 @@ function newThread(content){
     saveThreadResponse("error", response.reason)
   })
 }
+
+function appendToBodyEntry(thread_id, post_id, entry_id, content){
+  channel.push("append_to_body_entry", {thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content})
+}
 //window.newThread = newThread
+window.appendToBodyEntry = appendToBodyEntry
 
 export default socket
-export {newThread}
+export {newThread, appendToBodyEntry}
