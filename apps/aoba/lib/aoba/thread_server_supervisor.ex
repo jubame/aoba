@@ -21,13 +21,22 @@ defmodule Aoba.ThreadServerSupervisor do
       Aoba.ThreadServer,
       # varios parámetros como keyword list
       # https://elixirforum.com/t/dynamicsupervisor-starting-child-with-more-than-one-argument/12998/2
-      id: {DateTime.utc_now(), Node.self()},
+      id: DateTime.to_unix(DateTime.utc_now())*10 + node_to_number(),
       content: content
     }
     resultado = DynamicSupervisor.start_child(__MODULE__, child)
     IO.puts(inspect(resultado))
     resultado
   end
+
+  defp node_to_number() do
+    Node.self()
+    |> Atom.to_string()
+    |> String.split("@")
+    |> Enum.at(0)
+    |> String.to_integer()
+  end
+
 
   def stop_thread(name) do
     DynamicSupervisor.terminate_child(__MODULE__, pid_from_name(name))

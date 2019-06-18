@@ -6,7 +6,7 @@ defmodule Aoba.ThreadServer do
     IO.puts(inspect(id))
     Apex.ap content
     IO.puts('HOLA')
-    resultado = GenServer.start_link(__MODULE__, content, name: via_tuple(id))
+    resultado = GenServer.start_link(__MODULE__, [id: id, content: content], name: via_tuple(id))
     IO.puts(inspect(resultado))
     resultado
   end
@@ -18,25 +18,23 @@ defmodule Aoba.ThreadServer do
     GenServer.call(thread_server, :get_ids)
   end
 
+  def append_to_body_entry(thread_id, post_id, entry_id, iolist) do
+
+  end
 
 
-  def init(content) do
+
+  def init([id: id, content: content]) do
     IO.puts("creando nuevo hilo")
     {:ok, Thread.new(
-      DateTime.to_unix(DateTime.utc_now())*10 + node_to_number(),
+      id,
       content
 
       )
     }
   end
 
-  defp node_to_number() do
-    Node.self()
-    |> Atom.to_string()
-    |> String.split("@")
-    |> Enum.at(0)
-    |> String.to_integer()
-  end
+
 
   def handle_call(:get_ids, _from, thread) do
     {:reply,
