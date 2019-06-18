@@ -2,7 +2,10 @@
 import { appendToBodyEntry } from '../js/socket';
 <template>
     <textarea rows="1" class="resize-none outline-0 h-full" 
-      placeholder="Write something..." @keydown.ctrl.enter="close"
+      placeholder="Write something..."
+      @keydown.ctrl.enter="close"
+      @compositionstart="compositionStart"
+      @compositionend="compositionEnd"
       @focus="aobaOnFocus"
       @blur="aobaOnBlur"
     ></textarea>
@@ -24,7 +27,9 @@ export default {
         return {
             maxWidth: 0,
             interval: null,
-            charCount: 0
+            charCount: 0,
+            // Input Method Editor (IME): https://www.stum.de/2016/06/24/handling-ime-events-in-javascript/
+            isComposing: false
         }
     },
 
@@ -61,7 +66,7 @@ export default {
         push(){
             
             var currentCharCount = this.$el.value.length
-            if (currentCharCount > this.charCount) {
+            if (currentCharCount > this.charCount && !this.isComposing) {
 
 
 
@@ -92,6 +97,13 @@ export default {
         aobaOnBlur () {
             clearInterval(this.interval)
             this.interval = null
+        },
+
+        compositionStart(event) {
+            this.isComposing = true
+        },
+        compositionEnd(event) {
+            this.isComposing = false
         }
 
 
