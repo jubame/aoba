@@ -48,7 +48,7 @@ defmodule Aoba.ThreadServer do
 
   def handle_call({:append_to_body_entry, post_id, entry_id, iolist}, _from, thread) do
     update_in(thread.posts[post_id].body.entries[entry_id], fn entry ->
-      IO.iodata_to_binary([entry, " ", iolist])
+      IO.iodata_to_binary([entry, iolist])
     end)
     |> reply_success(:ok)
 

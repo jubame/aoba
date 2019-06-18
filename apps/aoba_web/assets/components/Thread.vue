@@ -1,5 +1,5 @@
 <template>
-  <article data-type="thread" v-bind:id="currentThread">
+  <article data-type="thread" v-bind:id="id">
 
 
     <component v-bind:is="post"></component>
@@ -27,7 +27,7 @@ export default {
     },
     computed: {
 
-        currentThread() {
+        id() {
             if (this.$store.state.currentThread !== null){
                 return this.$store.state.currentThread.id
             }

@@ -2,7 +2,7 @@
   <section data-type="post">
     <button id="accordion-open-1" class="accordion__button" v-bind:class="{expanded: isOpen}"
             v-on:click="toggleState()">
-        New thread
+        {{newThreadTitle}}
     </button>
     <div id="accordion-section-1" class="accordion__section">
         <post :newThread="true"></post>
@@ -49,6 +49,10 @@ export default {
         isOpen: function(){
             return this.state === state.OPEN
         },
+        newThreadTitle() {
+            return this.$store.state.currentThread && this.$store.state.currentThread.id
+                   || "New thread"
+        }
         
     },
 

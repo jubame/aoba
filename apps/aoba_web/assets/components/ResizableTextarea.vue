@@ -1,4 +1,5 @@
 // https://github.com/lorisleiva/vue-lab/tree/master/components/resizable-textarea
+import { appendToBodyEntry } from '../js/socket';
 <template>
     <textarea rows="1" class="resize-none outline-0 h-full" 
       placeholder="Write something..." @keydown.ctrl.enter="close"
@@ -9,6 +10,9 @@
 
 
 <script>
+
+import {newThread, appendToBodyEntry} from '../js/socket.js'
+window.newThread = newThread
 
 export default {
 
@@ -58,8 +62,19 @@ export default {
             
             var currentCharCount = this.$el.value.length
             if (currentCharCount > this.charCount) {
-                console.log('id '+ this.id + ' push')
-                this.$emit('push', this)
+
+
+
+                if (this.$parent.pushes === 0){
+                    console.log(this.$el.value)
+                    newThread(this.$el.value)
+                }
+                else if (this.$parent.pushes > 0 && this.$store.state.currentPost.id !== null){
+                    console.log(this.$parent.id)
+                    appendToBodyEntry(this.$store.state.currentThread.id, this.$store.state.currentPost.id, this.id, this.$el.value.substring(this.charCount, currentCharCount))
+                }
+
+                this.$emit('push')
                 this.charCount = currentCharCount
             }
 
