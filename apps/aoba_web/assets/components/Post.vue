@@ -36,13 +36,10 @@ export default {
 
 
         push(resizableTextarea){
-            if (this.newThread && this.pushes === 0){
+            if (this.pushes === 0){
                 console.log(resizableTextarea.$el.value)
                 this.pushes++
                 newThread(resizableTextarea.$el.value)
-
-
-
             }
 
         },
