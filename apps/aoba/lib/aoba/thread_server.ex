@@ -47,13 +47,28 @@ defmodule Aoba.ThreadServer do
   end
 
   def handle_call({:append_to_body_entry, post_id, entry_id, iolist}, _from, thread) do
-    update_in(thread.posts[post_id].body.entries[entry_id], fn entry ->
-      IO.iodata_to_binary([entry, iolist])
-    end)
+    thread
+
+    |> update_entry(post_id, entry_id, iolist)
     |> reply_success(:ok)
 
   end
 
+  defp update_entry(thread, post_id, entry_id, iolist) do
+
+    entries = thread.posts[post_id].body.entries
+
+    if Map.has_key?(entries, entry_id) do
+      update_in(thread.posts[post_id].body.entries[entry_id], fn entry ->
+        IO.iodata_to_binary([entry, iolist])
+      end)
+    else
+      new_entries = Map.put_new(entries, entry_id, iolist)
+      update_in(thread.posts[post_id].body.entries, fn _entries ->
+        new_entries
+      end)
+    end
+  end
 
   defp reply_success(state_data, reply) do
     {:reply, reply, state_data}
