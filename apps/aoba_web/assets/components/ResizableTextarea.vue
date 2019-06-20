@@ -1,13 +1,15 @@
 // https://github.com/lorisleiva/vue-lab/tree/master/components/resizable-textarea
 import { appendToBodyEntry } from '../js/socket';
 <template>
-    <textarea rows="1" class="resize-none outline-0 h-full" 
+    <textarea rows="1" class="resize-none outline-0 h-full"
       placeholder="Write something..."
+      v-bind:disabled="closed"
       @keydown.ctrl.enter="close"
       @compositionstart="compositionStart"
       @compositionend="compositionEnd"
       @focus="aobaOnFocus"
       @blur="aobaOnBlur"
+      
     ></textarea>
 </template>
 
@@ -30,7 +32,8 @@ export default {
             charCount: 0,
             // Input Method Editor (IME): https://www.stum.de/2016/06/24/handling-ime-events-in-javascript/
             isComposing: false,
-            lastPushText: ''
+            lastPushText: '',
+            closed: false
         }
     },
 
@@ -60,7 +63,8 @@ export default {
         },
 
         close(event) {
-            
+            this.push()
+            this.closed = true
             this.$emit('close', event)
         },
 
@@ -102,8 +106,11 @@ export default {
         },
 
         aobaOnBlur () {
+            //alert('FUERA FOCO')
             clearInterval(this.interval)
             this.interval = null
+            this.push()
+            
         },
 
         compositionStart(event) {
