@@ -83,7 +83,11 @@ function appendToBodyEntry(thread_id, post_id, entry_id, content){
     save(SAVE_LAST_PUSH, "ok", response)
   })
   .receive("error", response => {
-    save(SAVE_LAST_PUSH, "error", response.reason)
+    let info = {
+      reason: response.reason,
+      entry_id: entry_id
+    }
+    save(SAVE_LAST_PUSH, "error", info)
   })
 }
 //window.newThread = newThread

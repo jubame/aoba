@@ -7,8 +7,8 @@ import {SAVE_THREAD, SAVE_LAST_PUSH} from './mutation-types'
 Vue.use(Vuex)
 
 
-function save(mutation, status, response){
-    store.commit(mutation, {status, response})
+function save(mutation, status, info){
+    store.commit(mutation, {status, info})
 }
 
 
@@ -20,12 +20,12 @@ const store = new Vuex.Store({
         currentPost: null
     },
     mutations: {
-        [SAVE_THREAD] (state, {status, response}) {
-            state.currentThread = {status: status, id: response.thread_id}
-            state.currentPost = {id: response.post_id}
+        [SAVE_THREAD] (state, {status, info}) {
+            state.currentThread = {status: status, id: info.thread_id}
+            state.currentPost = {id: info.post_id}
         },
-        [SAVE_LAST_PUSH] (state, {response}) {
-            state.lastPush = {response: response}
+        [SAVE_LAST_PUSH] (state, {status, info}) {
+            state.lastPush = {status: status, info: info}
         }
 
 
