@@ -2,13 +2,16 @@ import Vue from 'vue'
 
 import Vuex from 'vuex'
 
+import {SAVE_THREAD, SAVE_LAST_PUSH} from './mutation-types'
+
 Vue.use(Vuex)
 
 
-
-function saveThreadResponse(status, ids) {
-    store.commit('save_thread', {status, ids})
+function save(mutation, status, response){
+    store.commit(mutation, {status, response})
 }
+
+
 
 
 const store = new Vuex.Store({
@@ -17,14 +20,18 @@ const store = new Vuex.Store({
         currentPost: null
     },
     mutations: {
-        save_thread(state, {status, ids}) {
-            state.currentThread = {status: status, id: ids.thread_id}
-            state.currentPost = {id: ids.post_id}
+        [SAVE_THREAD] (state, {status, response}) {
+            state.currentThread = {status: status, id: response.thread_id}
+            state.currentPost = {id: response.post_id}
+        },
+        [SAVE_LAST_PUSH] (state, {response}) {
+            state.lastPush = {response: response}
         }
+
 
     }
 });
 
 
-export {store, saveThreadResponse};
+export {store, save};
 

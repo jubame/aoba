@@ -48,18 +48,26 @@ defmodule Aoba.ThreadServer do
   end
 
   def handle_call({:append_to_body_entry, post_id, entry_id, iolist}, _from, thread) do
-    thread
 
-    |> update_entry(post_id, entry_id, iolist)
-    |> reply_success(:ok)
+    case update_entry(thread, post_id, entry_id, iolist) do
+      {:ok, thread} ->
+        reply_success(thread, :ok)
+      :error ->
+        {:reply, :error, thread}
+      {:error, :already_closed_entry} ->
+        {:reply, {:error, :already_closed_entry}, thread}
+    end
 
   end
 
   defp update_entry(thread, post_id, entry_id, iolist) do
 
     current_body = thread.posts[post_id].body
-    new_body = Body.add_or_edit_entry(current_body, entry_id, iolist)
-    update_in(thread.posts[post_id].body, fn _body -> new_body end)
+    case Body.add_or_edit_entry(current_body, entry_id, iolist) do
+      {:ok, new_body } ->
+        {:ok, update_in(thread.posts[post_id].body, fn _body -> new_body end)}
+      {:error, :already_closed_entry} -> {:error, :already_closed_entry}
+    end
   end
 
 

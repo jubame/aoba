@@ -7,7 +7,8 @@
 // Pass the token on params as below. Or remove it
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
-import {saveThreadResponse} from '../store'
+import {save} from '../store'
+import {SAVE_THREAD, SAVE_LAST_PUSH} from '../mutation-types'
 
 let socket = new Socket("/socket", {params: {token: window.userToken}})
 
@@ -69,15 +70,21 @@ function newThread(content, entry_id){
   
   channel.push("new_thread", {content: content, entry_id: entry_id})
   .receive("ok", response => {
-    saveThreadResponse("ok", response)
+    save(SAVE_THREAD, "ok", response)
   })
   .receive("error", response => {
-    saveThreadResponse("error", response.reason)
+    save(SAVE_THREAD, "error", response.reason)
   })
 }
 
 function appendToBodyEntry(thread_id, post_id, entry_id, content){
   channel.push("append_to_body_entry", {thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content})
+  .receive("ok", response => {
+    save(SAVE_LAST_PUSH, "ok", response)
+  })
+  .receive("error", response => {
+    save(SAVE_LAST_PUSH, "error", response.reason)
+  })
 }
 //window.newThread = newThread
 window.appendToBodyEntry = appendToBodyEntry

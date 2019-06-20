@@ -18,11 +18,13 @@ defmodule Aoba.Body do
 
   def add_entry(%Body{} = body, entry_id, text_or_reply) do
     entries = Map.put(body.entries, entry_id, text_or_reply)
-    %Body{body |
-      entries: entries,
-      closed_entries: [body.last_edited_entry | body.closed_entries],
-      last_edited_entry: entry_id
-
+    {
+      :ok,
+      %Body{body |
+        entries: entries,
+        closed_entries: [body.last_edited_entry | body.closed_entries],
+        last_edited_entry: entry_id
+      }
     }
   end
 
@@ -43,7 +45,8 @@ defmodule Aoba.Body do
       add_entry(body, entry_id, iolist)
     # Intentando editar entry cerrada
     else
-      body
+      IO.puts("already_closed_entry")
+      {:error, :already_closed_entry}
     end
   end
 
@@ -55,8 +58,9 @@ defmodule Aoba.Body do
     if Map.has_key?(body.entries, entry_id) and entry_id not in body.closed_entries do
 
       updated_content = IO.iodata_to_binary([body.entries[entry_id], iolist])
-      update_in(body.entries, &Map.put(&1, entry_id, updated_content))
+      {:ok, update_in(body.entries, &Map.put(&1, entry_id, updated_content))}
 
+      # No pongo aquí else porque sería un error que nunca debería ocurrir: "let it crash"
     end
 
 

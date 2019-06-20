@@ -26,8 +26,13 @@ defmodule AobaWeb.ThreadServerChannel do
   def handle_in("append_to_body_entry", params, socket) do
     IO.puts("append_to_body_entry")
     %{"thread_id" => thread_id, "post_id" => post_id, "entry_id" => entry_id, "iolist" => iolist} = params
-    ThreadServer.append_to_body_entry(thread_id, post_id, entry_id, iolist)
-    {:reply, :ok, socket}
+    case ThreadServer.append_to_body_entry(thread_id, post_id, entry_id, iolist) do
+      :ok -> {:reply, :ok, socket}
+      {:error, reason } ->
+        Apex.ap reason
+        {:reply, {:error, %{reason: reason}}, socket}
+    end
+
   end
 
 
