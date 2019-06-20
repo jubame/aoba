@@ -29,7 +29,8 @@ export default {
             interval: null,
             charCount: 0,
             // Input Method Editor (IME): https://www.stum.de/2016/06/24/handling-ime-events-in-javascript/
-            isComposing: false
+            isComposing: false,
+            lastPushText: ''
         }
     },
 
@@ -59,27 +60,33 @@ export default {
         },
 
         close(event) {
-            alert(this.id)
+            
             this.$emit('close', event)
         },
 
         push(){
+
+            if (this.$el.value.substring(0, this.lastPushText.length) !== this.lastPushText) {
+                return
+            }
             
             var currentCharCount = this.$el.value.length
+
             if (currentCharCount > this.charCount && !this.isComposing) {
 
 
 
                 if (this.$parent.pushes === 0){
                     console.log(this.$el.value)
-                    newThread(this.$el.value)
+                    newThread(this.$el.value, this.id)
                 }
                 else if (this.$parent.pushes > 0 && this.$store.state.currentPost.id !== null){
                     console.log(this.$parent.id)
                     appendToBodyEntry(this.$store.state.currentThread.id, this.$store.state.currentPost.id, this.id, this.$el.value.substring(this.charCount, currentCharCount))
                 }
-
+                
                 this.$emit('push')
+                this.lastPushText = this.$el.value
                 this.charCount = currentCharCount
             }
 

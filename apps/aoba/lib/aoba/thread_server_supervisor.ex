@@ -15,14 +15,15 @@ defmodule Aoba.ThreadServerSupervisor do
   Got: [{#DateTime<2019-06-15 14:36:56.899639Z>, :nonode@nohost}]
   """
 
-  def start_thread(content) do
+  def start_thread(content, entry_id) do
     # Por lo tanto, esto llamará a ThreadServer.start_link(name)
     child = {
       Aoba.ThreadServer,
       # varios parámetros como keyword list
       # https://elixirforum.com/t/dynamicsupervisor-starting-child-with-more-than-one-argument/12998/2
       id: DateTime.to_unix(DateTime.utc_now())*10 + node_to_number(),
-      content: content
+      content: content,
+      entry_id: entry_id
     }
     resultado = DynamicSupervisor.start_child(__MODULE__, child)
     IO.puts(inspect(resultado))

@@ -15,7 +15,8 @@ appendToBodyEntry(15608779361, 1, 1, "kokoko")
 appendToBodyEntry(15608779361, 1, 1, "今日も一日頑張るぞい！")
 
 # Veamos el resultado en iex:
-
+iex(1@localhost)4> alias Aoba.ThreadServer
+Aoba.ThreadServer
 iex(1@localhost)28> :sys.get_state(ThreadServer.via_tuple(15608779361))
 %Aoba.Thread{
   post_id: 2,

@@ -2,11 +2,11 @@ defmodule Aoba.ThreadServer do
   use GenServer, restart: :transient
   alias Aoba.{Thread, Post, Body, Reply}
 
-  def start_link([id: id, content: content]) do
+  def start_link([id: id, content: content, entry_id: entry_id]) do
     IO.puts(inspect(id))
     Apex.ap content
     IO.puts('HOLA')
-    resultado = GenServer.start_link(__MODULE__, [id: id, content: content], name: via_tuple(id))
+    resultado = GenServer.start_link(__MODULE__, [id: id, content: content, entry_id: entry_id], name: via_tuple(id))
     IO.puts(inspect(resultado))
     resultado
   end
@@ -25,11 +25,12 @@ defmodule Aoba.ThreadServer do
 
 
 
-  def init([id: id, content: content]) do
+  def init([id: id, content: content, entry_id: entry_id]) do
     IO.puts("creando nuevo hilo")
     {:ok, Thread.new(
       id,
-      content
+      content,
+      entry_id
 
       )
     }
@@ -56,19 +57,12 @@ defmodule Aoba.ThreadServer do
 
   defp update_entry(thread, post_id, entry_id, iolist) do
 
-    entries = thread.posts[post_id].body.entries
-
-    if Map.has_key?(entries, entry_id) do
-      update_in(thread.posts[post_id].body.entries[entry_id], fn entry ->
-        IO.iodata_to_binary([entry, iolist])
-      end)
-    else
-      new_entries = Map.put_new(entries, entry_id, iolist)
-      update_in(thread.posts[post_id].body.entries, fn _entries ->
-        new_entries
-      end)
-    end
+    current_body = thread.posts[post_id].body
+    new_body = Body.add_or_edit_entry(current_body, entry_id, iolist)
+    update_in(thread.posts[post_id].body, fn _body -> new_body end)
   end
+
+
 
   defp reply_success(state_data, reply) do
     {:reply, reply, state_data}

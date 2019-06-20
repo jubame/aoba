@@ -65,9 +65,9 @@ channel.join()
 
 
 
-function newThread(content){
+function newThread(content, entry_id){
   
-  channel.push("new_thread", {content: content})
+  channel.push("new_thread", {content: content, entry_id: entry_id})
   .receive("ok", response => {
     saveThreadResponse("ok", response)
   })

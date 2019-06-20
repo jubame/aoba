@@ -4,8 +4,8 @@ defmodule Aoba.Post do
   @enforce_keys [:id, :username, :date, :body, :media]
   defstruct [:id, :username, :date, :body, :media]
 
-  def new(id, username, content) do
-    {:ok, %Post{id: id, username: username, date: DateTime.utc_now(), body: Body.new(content), media: ""}}
+  def new(id, username, content, entry_id) do
+    {:ok, %Post{id: id, username: username, date: DateTime.utc_now(), body: Body.new(content, entry_id), media: ""}}
   end
 
   def add_to_body(post, text_or_quote) do

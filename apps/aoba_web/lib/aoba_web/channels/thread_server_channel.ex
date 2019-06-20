@@ -9,24 +9,9 @@ defmodule AobaWeb.ThreadServerChannel do
   end
 
 
-  def handle_in("new_thread", %{"content" => content}, socket) do
+  def handle_in("new_thread", %{"content" => content, "entry_id" => entry_id}, socket) do
 
-    with {:ok, pid} <- ThreadServerSupervisor.start_thread(content),
-         {:ok, ids} <- ThreadServer.get_ids(pid)
-    do
-
-      Apex.ap(ids)
-      {:reply, {:ok, ids}, socket}
-    else
-      {:error, reason} ->
-        {:reply, {:error, %{reason: inspect(reason)}}, socket}
-    end
-  end
-
-
-  def handle_in("new_thread", %{"content" => content}, socket) do
-
-    with {:ok, pid} <- ThreadServerSupervisor.start_thread(content),
+    with {:ok, pid} <- ThreadServerSupervisor.start_thread(content, entry_id),
          {:ok, ids} <- ThreadServer.get_ids(pid)
     do
 
