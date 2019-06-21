@@ -1,9 +1,20 @@
 <template>
-  <section data-type="post" v-bind:id="id">
-    <div id="drop_zone" @dragleave.prevent @dragover.prevent @drop.prevent="dropHandler">
-        <p>Drag one or more files to this Drop Zone ...</p>
-        <img v-bind:src="imgsrc">
-    </div>
+  <section data-type="post" v-bind:id="id"
+    v-bind:class="dropZoneClass"
+        @drag.stop.prevent
+        @dragstart.stop.prevent
+        @dragover.stop.prevent="drag"
+        @dragenter.stop.prevent="drag"
+        @dragleave.stop.prevent="drop"
+        @dragend.stop.prevent="drop"
+        @drop.stop.prevent="drop"
+        @drop="dropHandler"
+  
+    >
+    
+
+    
+    <img v-bind:src="imgsrc">
 
     <resizable-textarea @close="closeBody" @push="increasePushes"
     v-for="n in lastEntryID" v-bind:key="n" v-bind:id="n">
@@ -28,11 +39,15 @@ export default {
         return {
             lastEntryID: initialEntryID,
             pushes: 0,
-            imgsrc: null
+            imgsrc: null,
+            dragging: false,
+            dropping: false
             
 
         }
     },
+
+    
 
     computed: {
 
@@ -40,9 +55,15 @@ export default {
             if (this.$store.state.currentPost !== null){
                 return this.$store.state.currentPost.id
             }
-            
-
         },
+        dropZoneClass() {
+            if (this.dragging){
+                return 'dragging'
+            }
+            else if (this.dropping){
+                return ''
+            }
+        }
 
     },
 
@@ -72,6 +93,13 @@ export default {
             
             )
             
+        },
+
+        drag() {
+            this.dragging = true
+        },
+        drop() {
+            this.dragging = false
         },
 
 
@@ -131,9 +159,14 @@ export default {
 
 
 <style scoped lang="scss">
-    #drop_zone {
-        border: 5px solid blue;
-        width:  200px;
-        height: 100px;
+    [data-type="post"] {
+        img {
+            width: 20%;
+        }
+        .dragging {
+            background-color: blue;
+
+        }
     }
+    
 </style>

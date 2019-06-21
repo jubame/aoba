@@ -145,7 +145,6 @@ export default {
     &__section {
         border-left: 1px solid $purple;
         border-right: 1px solid $purple;
-        padding: 1rem;
         background: $lavendar;
         max-height: 0vh;
         overflow: hidden;
@@ -155,7 +154,7 @@ export default {
     &__button.expanded + &__section {
         max-height: 100vh;
         overflow: auto;
-        padding: 1.25em;
+        padding: 0;
         visibility: visible;
         textarea {
             display: inline;
