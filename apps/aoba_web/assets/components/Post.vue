@@ -1,13 +1,7 @@
 <template>
-  <section data-type="post" v-bind:id="id"
+  <section data-type="post" lang="en" v-bind:id="id"
     v-bind:class="dropZoneClass"
-        @drag.stop.prevent
-        @dragstart.stop.prevent
-        @dragover.stop.prevent="drag"
-        @dragenter.stop.prevent="drag"
-        @dragleave.stop.prevent="drop"
-        @dragend.stop.prevent="drop"
-        @drop.stop.prevent="drop"
+        
         @drop="dropHandler"
   
     >
@@ -42,7 +36,6 @@ export default {
             lastEntryID: initialEntryID,
             pushes: 0,
             imgsrc: null,
-            dragging: false,
 
             
 
@@ -64,12 +57,7 @@ export default {
             }
         },
         dropZoneClass() {
-            if (this.dragging){
-                return 'dragging'
-            }
-            else if (this.dropping){
-                return ''
-            }
+            return this.$store.state.dragging ? 'dragging' : ''
         }
 
     },
@@ -100,13 +88,6 @@ export default {
             
             )
             
-        },
-
-        drag() {
-            this.dragging = true
-        },
-        drop() {
-            this.dragging = false
         },
 
 
@@ -152,11 +133,35 @@ export default {
 
 <style scoped lang="scss">
     [data-type="post"] {
+        
+        overflow: hidden;
+        padding: 20px;
         img {
             width: 20%;
+            min-width: 200px;
+            display: block;
+            float: left;
+            margin-right: 20px;
+            
         }
+
+
+        
+
         .dragging {
-            background-color: blue;
+            background-color: rgb(118, 118, 180);
+            min-height: 150px;
+
+            &:before{
+                content: "Drop your image here";
+                font-size: xx-large;
+                position: relative;
+                display: block;
+                text-align: center;
+                color: white;
+            }
+
+            
 
         }
     }

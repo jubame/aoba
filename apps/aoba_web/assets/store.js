@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 import Vuex from 'vuex'
 
-import {SAVE_THREAD, SAVE_LAST_PUSH} from './mutation-types'
+import {SAVE_THREAD, SAVE_LAST_PUSH, DRAG, DROP} from './mutation-types'
 
 Vue.use(Vuex)
 
@@ -14,10 +14,12 @@ function save(mutation, status, info){
 
 
 
+
 const store = new Vuex.Store({
     state: {
         currentThread: null,
-        currentPost: null
+        currentPost: null,
+        dragging: false
     },
     mutations: {
         [SAVE_THREAD] (state, {status, info}) {
@@ -26,6 +28,12 @@ const store = new Vuex.Store({
         },
         [SAVE_LAST_PUSH] (state, {status, info}) {
             state.lastPush = {status: status, info: info}
+        },
+        [DRAG] (state) {
+            state.dragging = true
+        },
+        [DROP] (state) {
+            state.dragging = false
         }
 
 
