@@ -28,6 +28,8 @@ import ResizableTextarea from './ResizableTextarea'
 
 
 const initialEntryID = 1
+const reader = new FileReader();
+
 
 export default {
     
@@ -41,9 +43,14 @@ export default {
             pushes: 0,
             imgsrc: null,
             dragging: false,
-            dropping: false
+
             
 
+        }
+    },
+    mounted: function() {
+        reader.onload = (e) => {
+            this.imgsrc = e.target.result
         }
     },
 
@@ -107,46 +114,31 @@ export default {
         //https://stackoverflow.com/questions/44842247/event-datatransfer-files-vs-event-datatransfer-items
         //https://stackoverflow.com/questions/28370240/when-dragging-and-dropping-a-file-the-datatransfer-items-property-is-undefined
         dropHandler(ev) {
-        console.log('File(s) dropped');
+            console.log('File(s) dropped');
 
-        // Prevent default behavior (Prevent file from being opened)
-        ev.preventDefault();
+            // Prevent default behavior (Prevent file from being opened)
+            ev.preventDefault();
 
-        if (ev.dataTransfer.items) {
-            // Use DataTransferItemList interface to access the file(s)
-            for (var i = 0; i < ev.dataTransfer.items.length; i++) {
-            // If dropped items aren't files, reject them
-            if (ev.dataTransfer.items[i].kind === 'file') {
-                var file = ev.dataTransfer.items[i].getAsFile();
-                console.log('... file[' + i + '].name = ' + file.name);
-                this.handleFile(file)
+            if (ev.dataTransfer.items) {
+                // Use DataTransferItemList interface to access the file(s)
+                // If dropped items aren't files, reject them
+                if (ev.dataTransfer.items[0].kind === 'file') {
+                    var file = ev.dataTransfer.items[0].getAsFile();
+                    console.log('... file[' + 0 + '].name = ' + file.name);
+                    this.handleFile(file)
+                }
+                
+            } else {
+                // Use DataTransfer interface to access the file(s)
+                console.log('... file[' + 0 + '].name = ' + ev.dataTransfer.files[0].name);
+                
             }
-            }
-        } else {
-            // Use DataTransfer interface to access the file(s)
-            for (var i = 0; i < ev.dataTransfer.files.length; i++) {
-            console.log('... file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
-            }
-        }
         },
 
 
         handleFile(file) {
-       
-            
             //if (!file.type.startsWith('image/')){ continue }
-            
-    
-            
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                this.imgsrc = e.target.result
-            
-            }
-
-            
             reader.readAsDataURL(file);
-        
         }
 
 
