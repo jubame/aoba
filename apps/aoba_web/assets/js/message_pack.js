@@ -21,7 +21,7 @@ append_to_body_entry
     ** (EXIT) no process: the process is not alive or there's no process currently associated with the given name, possibly because its application isn't started
 
 */
-var codec = msgpack.createCodec({int64: true});
+var codec = msgpack.createCodec({int64: true, binarraybuffer: true});
 var options = {codec: codec};
 
 

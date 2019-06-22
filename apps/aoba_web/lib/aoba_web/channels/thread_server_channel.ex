@@ -35,6 +35,16 @@ defmodule AobaWeb.ThreadServerChannel do
 
   end
 
+  def handle_in("add_media_to_post", params, socket) do
+    %{"thread_id" => thread_id, "post_id" => post_id, "media" => media} = params
+    case ThreadServer.add_media_to_post(thread_id, post_id, media) do
+      :ok -> {:reply, :ok, socket}
+      {:error, reason } ->
+        Apex.ap reason
+        {:reply, {:error, %{reason: reason}}, socket}
+    end
+  end
+
 
 
 

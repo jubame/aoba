@@ -19,6 +19,7 @@
 <script>
 import Vue from 'vue'
 import ResizableTextarea from './ResizableTextarea'
+import {addMediaToPost} from '../js/socket.js'
 
 
 const initialEntryID = 1
@@ -42,9 +43,7 @@ export default {
         }
     },
     mounted: function() {
-        reader.onload = (e) => {
-            this.imgsrc = e.target.result
-        }
+        
     },
 
     
@@ -117,9 +116,32 @@ export default {
         },
 
 
-        handleFile(file) {
+        handleFile(file, as) {
             //if (!file.type.startsWith('image/')){ continue }
-            reader.readAsDataURL(file);
+            reader.readAsArrayBuffer(file);
+
+
+            reader.onload = (e) => { // Closure variable as
+
+                
+                
+                addMediaToPost(
+                    this.$store.state.currentThread.id,
+                    this.$store.state.currentPost.id,
+                    e.target.result
+                
+                )
+                
+            }
+            
+
+                            
+
+
+            
+
+            
+
         }
 
 

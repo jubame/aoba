@@ -16,6 +16,10 @@ defmodule Aoba.Post do
     %Post{ post | body: Body.edit_entry(post.body, body_entry_id, content)}
   end
 
+  def add_media(post, media) do
+    {:ok, %Post{ post | media: media }}
+  end
+
 
 
 

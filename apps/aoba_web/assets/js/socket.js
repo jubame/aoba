@@ -101,8 +101,21 @@ function appendToBodyEntry(thread_id, post_id, entry_id, content){
     save(SAVE_LAST_PUSH, "error", info)
   })
 }
+
+function addMediaToPost(thread_id, post_id, media) {
+  channel.push("add_media_to_post", {thread_id: thread_id, post_id: post_id, media: media})
+  .receive("ok", response => {
+    console.log(response)
+  })
+  .receive("error", response => {
+    console.log(response)
+  })
+}
+
+
+
 //window.newThread = newThread
 window.appendToBodyEntry = appendToBodyEntry
 
 export default socket
-export {newThread, appendToBodyEntry}
+export {newThread, appendToBodyEntry, addMediaToPost}
