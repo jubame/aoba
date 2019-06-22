@@ -45,7 +45,8 @@ defmodule AobaWeb.MixProject do
       {:gettext, "~> 0.11"},
       {:aoba, in_umbrella: true},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:msgpax, "~> 2.0"}
     ]
   end
 

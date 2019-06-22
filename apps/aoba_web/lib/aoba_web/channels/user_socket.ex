@@ -5,6 +5,32 @@ defmodule AobaWeb.UserSocket do
   # channel "room:*", AobaWeb.RoomChannel
   channel "threadserver:*", AobaWeb.ThreadServerChannel
 
+  @docp"""
+  Compiling 13 files (.ex)
+warning: transport/3 in Phoenix.Socket is deprecated.
+
+Instead of defining transports in your socket.ex file:
+
+    transport :websocket, Phoenix.Transport.Websocket,
+      key1: value1, key2: value2, key3: value3
+
+    transport :longpoll, Phoenix.Transport.LongPoll,
+      key1: value1, key2: value2, key3: value3
+
+You should configure websocket/longpoll in your endpoint.ex:
+
+    socket "/socket", MyApp.UserSocket,
+      websocket: [key1: value1, key2: value2, key3: value3],
+      longpoll: [key1: value1, key2: value2, key3: value3]
+
+Note the websocket/longpoll configuration given to socket/3
+will only apply after you remove all transport/3 calls from
+your socket definition. If you have explicitly upgraded to
+Cowboy 2, any transport defined with the transport/3 macro
+will be ignored.
+
+  """
+
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
   # verification, you can put default assigns into

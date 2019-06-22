@@ -2,7 +2,7 @@ defmodule AobaWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :aoba_web
 
   socket "/socket", AobaWeb.UserSocket,
-    websocket: true,
+    websocket: [serializer: [{AobaWeb.MsgpaxSerializer, "~> 2.0.0"}]],
     longpoll: false
 
   # Serve at "/" the static files from "priv/static" directory.

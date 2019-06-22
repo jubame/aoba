@@ -9,8 +9,17 @@
 import {Socket} from "phoenix"
 import {save} from '../store'
 import {SAVE_THREAD, SAVE_LAST_PUSH} from '../mutation-types'
+import {encodeMessage, decodeMessage} from './message_pack'
 
-let socket = new Socket("/socket", {params: {token: window.userToken}})
+
+let socket = new Socket(
+  "/socket",
+  {params:
+    {token: window.userToken},
+    encode: encodeMessage,
+    decode: decodeMessage
+  }
+)
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
@@ -55,6 +64,8 @@ let socket = new Socket("/socket", {params: {token: window.userToken}})
 //
 // Finally, connect to the socket:
 socket.connect()
+socket.conn.binaryType = 'arraybuffer'
+
 
 // Now that you are connected, you can join channels with a topic:
 let channel = socket.channel("threadserver:lobby", {})
