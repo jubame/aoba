@@ -82,7 +82,7 @@ export default {
 
                 if (this.$parent.pushes === 0){
                     console.log(this.$el.value)
-                    newThread(this.$el.value, this.id)
+                    newThread({"type": "text", "content": this.$el.value}, this.id)
                 }
                 else if (this.$parent.pushes > 0 && this.$store.state.currentPost.id !== null){
                     console.log(this.$parent.id)

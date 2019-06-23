@@ -2,11 +2,20 @@ defmodule Aoba.ThreadServer do
   use GenServer, restart: :transient
   alias Aoba.{Thread, Post, Body, Reply}
 
-  def start_link([id: id, content: content, entry_id: entry_id]) do
+  def start_link([id: id, type_and_content: %{type: "text", content: content}, entry_id: entry_id]) do
     IO.puts(inspect(id))
-    Apex.ap content
+
     IO.puts('HOLA')
-    resultado = GenServer.start_link(__MODULE__, [id: id, content: content, entry_id: entry_id], name: via_tuple(id))
+    resultado = GenServer.start_link(__MODULE__, [id: id, type_and_content: %{type: "text", content: content}, entry_id: entry_id], name: via_tuple(id))
+    IO.puts(inspect(resultado))
+    resultado
+  end
+
+  def start_link([id: id, type_and_content: %{type: "media", content: content}]) do
+    IO.puts(inspect(id))
+
+    IO.puts('HOLA')
+    resultado = GenServer.start_link(__MODULE__, [id: id, type_and_content: %{type: "media", content: content}], name: via_tuple(id))
     IO.puts(inspect(resultado))
     resultado
   end
@@ -28,13 +37,22 @@ defmodule Aoba.ThreadServer do
 
 
 
-  def init([id: id, content: content, entry_id: entry_id]) do
+  def init([id: id, type_and_content: %{type: "text", content: content}, entry_id: entry_id]) do
     IO.puts("creando nuevo hilo")
     {:ok, Thread.new(
       id,
-      content,
+      %{type: "text", content: content},
       entry_id
 
+      )
+    }
+  end
+
+  def init([id: id, type_and_content: %{type: "media", content: content}]) do
+    IO.puts("creando nuevo hilo")
+    {:ok, Thread.new(
+      id,
+      %{type: "media", content: content}
       )
     }
   end

@@ -127,12 +127,19 @@ export default {
                 // https://stackoverflow.com/a/40321354
                 this.imgsrc = URL.createObjectURL(new Blob([arrayBuffer]));
                 
-                addMediaToPost(
-                    this.$store.state.currentThread.id,
-                    this.$store.state.currentPost.id,
-                    arrayBuffer
+                if (this.pushes === 0){
+                    newThread({"type": "media", "content": arrayBuffer}, this.id)
+                }
+                else {
+                    addMediaToPost(
+                        this.$store.state.currentThread.id,
+                        this.$store.state.currentPost.id,
+                        arrayBuffer
+                    )
+
+                }
+
                 
-                )
                 
             }
             
