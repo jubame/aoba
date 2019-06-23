@@ -4,7 +4,8 @@ import { appendToBodyEntry } from '../js/socket';
     <textarea rows="1" class="resize-none outline-0 h-full"
       placeholder="Write something..."
       v-bind:disabled="closed"
-      @keydown.ctrl.enter="close"
+      @keydown.ctrl.enter="newBody"
+      @keydown.ctrl.190="close"
       @compositionstart="compositionStart"
       @compositionend="compositionEnd"
       @focus="aobaOnFocus"
@@ -16,7 +17,12 @@ import { appendToBodyEntry } from '../js/socket';
 
 <script>
 
-import {newThread, appendToBodyEntry} from '../js/socket.js'
+import {newThread, operationToBodyEntry} from '../js/socket.js'
+const ENTRY_OPERATION_ADD = "add"
+const ENTRY_OPERATION_APPEND = "append"
+const ENTRY_OPERATION_REPLACE = "replace"
+
+
 window.newThread = newThread
 
 export default {
@@ -62,10 +68,14 @@ export default {
             
         },
 
+        newBody() {
+            this.$emit('newbody', event)
+        },
+
         close(event) {
             this.push()
             this.closed = true
-            this.$emit('close', event)
+            this.$emit('newbody', event)
         },
 
         push(){
@@ -86,7 +96,13 @@ export default {
                 }
                 else if (this.$parent.pushes > 0 && this.$store.state.currentPost.id !== null){
                     console.log(this.$parent.id)
-                    appendToBodyEntry(this.$store.state.currentThread.id, this.$store.state.currentPost.id, this.id, this.$el.value.substring(this.charCount, currentCharCount))
+                    operationToBodyEntry(
+                        ENTRY_OPERATION_APPEND,
+                        this.$store.state.currentThread.id,
+                        this.$store.state.currentPost.id,
+                        this.id,
+                        this.$el.value.substring(this.charCount, currentCharCount)
+                    )
                 }
                 
                 this.$emit('push')

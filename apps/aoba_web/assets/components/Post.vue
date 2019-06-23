@@ -10,7 +10,7 @@
     
     <img v-bind:src="imgsrc">
 
-    <resizable-textarea @close="closeBody" @push="increasePushes"
+    <resizable-textarea @newbody="newBody" @push="increasePushes"
     v-for="n in lastEntryID" v-bind:key="n" v-bind:id="n">
     </resizable-textarea>
   </section>
@@ -70,7 +70,7 @@ export default {
             this.pushes++
         },
 
-        closeBody(event){
+        newBody(event){
             if (event.target.nextElementSibling === null){
                 this.lastEntryID++
             }

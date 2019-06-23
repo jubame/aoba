@@ -27,9 +27,10 @@ defmodule Aoba.ThreadServer do
     GenServer.call(thread_server, :get_ids)
   end
 
-  def append_to_body_entry(thread_id, post_id, entry_id, iolist) do
-    GenServer.call(via_tuple(thread_id), {:append_to_body_entry, post_id, entry_id, iolist})
+  def operation_to_body_entry(action, thread_id, post_id, entry_id, iolist) do
+    GenServer.call(via_tuple(thread_id), {:operation_to_body_entry, action, post_id, entry_id, iolist})
   end
+
 
   def add_media_to_post(thread_id, post_id, media) do
     GenServer.call(via_tuple(thread_id), {:add_media_to_post, post_id, media})
@@ -68,28 +69,22 @@ defmodule Aoba.ThreadServer do
     }
   end
 
-  def handle_call({:append_to_body_entry, post_id, entry_id, iolist}, _from, thread) do
+  def handle_call({:operation_to_body_entry, action, post_id, entry_id, iolist}, _from, thread) do
 
-    case update_entry(thread, post_id, entry_id, iolist) do
-      {:ok, thread} ->
-        reply_success(thread, :ok)
-      :error ->
-        {:reply, :error, thread}
+    current_body = thread.posts[post_id].body
+    case Body.operation_entry(action, current_body, entry_id, iolist) do
+      {:ok, new_body } ->
+        update_in(thread.posts[post_id].body, fn _body -> new_body end)
+        |> reply_success(:ok)
       {:error, :already_closed_entry} ->
         {:reply, {:error, :already_closed_entry}, thread}
     end
 
   end
 
-  defp update_entry(thread, post_id, entry_id, iolist) do
 
-    current_body = thread.posts[post_id].body
-    case Body.add_or_edit_entry(current_body, entry_id, iolist) do
-      {:ok, new_body } ->
-        {:ok, update_in(thread.posts[post_id].body, fn _body -> new_body end)}
-      {:error, :already_closed_entry} -> {:error, :already_closed_entry}
-    end
-  end
+
+
 
   def handle_call({:add_media_to_post, post_id, media}, _from, thread) do
     IO.puts(":add_media_to_post")

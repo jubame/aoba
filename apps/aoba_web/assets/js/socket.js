@@ -88,8 +88,8 @@ function newThread(type_and_content, entry_id){
   })
 }
 
-function appendToBodyEntry(thread_id, post_id, entry_id, content){
-  channel.push("append_to_body_entry", {thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content})
+function operationToBodyEntry(action, thread_id, post_id, entry_id, content){
+  channel.push("operation_to_body_entry", {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content})
   .receive("ok", response => {
     save(SAVE_LAST_PUSH, "ok", response)
   })
@@ -115,7 +115,7 @@ function addMediaToPost(thread_id, post_id, media) {
 
 
 //window.newThread = newThread
-window.appendToBodyEntry = appendToBodyEntry
+window.appendToBodyEntry = operationToBodyEntry
 
 export default socket
-export {newThread, appendToBodyEntry, addMediaToPost}
+export {newThread, operationToBodyEntry, addMediaToPost}
