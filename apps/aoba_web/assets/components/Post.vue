@@ -124,6 +124,7 @@ export default {
             reader.onload = (e) => { // Closure variable as
 
                 let arrayBuffer = e.target.result
+                // https://stackoverflow.com/a/40321354
                 this.imgsrc = URL.createObjectURL(new Blob([arrayBuffer]));
                 
                 addMediaToPost(
