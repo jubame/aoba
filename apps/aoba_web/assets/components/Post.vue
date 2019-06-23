@@ -123,26 +123,20 @@ export default {
 
             reader.onload = (e) => { // Closure variable as
 
-                
+                let arrayBuffer = e.target.result
+                this.imgsrc = URL.createObjectURL(new Blob([arrayBuffer]));
                 
                 addMediaToPost(
                     this.$store.state.currentThread.id,
                     this.$store.state.currentPost.id,
-                    e.target.result
+                    arrayBuffer
                 
                 )
                 
             }
             
 
-                            
-
-
-            
-
-            
-
-        }
+        },
 
 
 
