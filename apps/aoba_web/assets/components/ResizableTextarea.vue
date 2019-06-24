@@ -22,7 +22,7 @@ const ENTRY_OPERATION_ADD = "add"
 const ENTRY_OPERATION_APPEND = "append"
 const ENTRY_OPERATION_APPEND_CLOSE = "append_close"
 const ENTRY_CLOSE = "ENTRY_CLOSE"
-const ENTRY_OPERATION_REPLACE = "replace"
+const ENTRY_OPERATION_REPLACE_CLOSE = "replace_close"
 
 
 window.newThread = newThread
@@ -41,7 +41,14 @@ export default {
             // Input Method Editor (IME): https://www.stum.de/2016/06/24/handling-ime-events-in-javascript/
             isComposing: false,
             lastPushText: '',
-            closed: false
+            closed: false,
+            noPushUntilClose: false
+        }
+    },
+
+    computed: {
+        previousTextModified() {
+            return this.$el.value.substring(0, this.lastPushText.length) !== this.lastPushText
         }
     },
 
@@ -80,44 +87,71 @@ export default {
             this.$emit('newbody', event)
         },
 
+
+
         push(close){
 
-            if (this.$el.value.substring(0, this.lastPushText.length) !== this.lastPushText) {
-                return
-            }
-            
-            var currentCharCount = this.$el.value.length
-
-            if (currentCharCount > this.charCount && !this.isComposing) {
-
-
-
-                if (this.$parent.pushes === 0){
-                    console.log(this.$el.value)
-                    newThread({"type": "text", "content": this.$el.value}, this.id)
+            /* Se ha modificado el texto anterior: sólo haremos push cuando el
+             * usuario cierre el entry, y en ese caso reemplazaremos todo el 
+             * entry (no nos preocupamos de lo que hubiese antes).
+             */
+            if (this.previousTextModified) {
+                
+                if (!close) {
+                    clearInterval(this.interval)
+                    this.interval = null
+                    return
                 }
-                else if (this.$parent.pushes > 0 && this.$store.state.currentPost.id !== null){
-                    console.log(this.$parent.id)
-                    let action = close ? ENTRY_OPERATION_APPEND_CLOSE : ENTRY_OPERATION_APPEND
+                else {
                     operationToBodyEntry(
-                        action,
+                        ENTRY_OPERATION_REPLACE_CLOSE,
                         this.$store.state.currentThread.id,
                         this.$store.state.currentPost.id,
                         this.id,
-                        this.$el.value.substring(this.charCount, currentCharCount)
+                        this.$el.value
                     )
+
                 }
-                
-                this.$emit('push')
-                this.lastPushText = this.$el.value
-                this.charCount = currentCharCount
             }
-            else if (close) {
-                closeBodyEntry(
-                        this.$store.state.currentThread.id,
-                        this.$store.state.currentPost.id,
-                        this.id
-                    )
+            // No se ha modificado el texto anterior
+            else {
+            
+                var currentCharCount = this.$el.value.length
+
+                // Hay nuevo contenido
+                if (currentCharCount > this.charCount && !this.isComposing) {
+
+                    if (this.$parent.pushes === 0){
+                        // Crear nuevo hilo junto con contenido
+                        console.log(this.$el.value)
+                        newThread({"type": "text", "content": this.$el.value}, this.id)
+                    }
+                    else if (this.$parent.pushes > 0 && this.$store.state.currentPost.id !== null){
+                        // Añadir/concatenar a contenido anterior
+                        console.log(this.$parent.id)
+                        let action = close ? ENTRY_OPERATION_APPEND_CLOSE : ENTRY_OPERATION_APPEND
+                        operationToBodyEntry(
+                            action,
+                            this.$store.state.currentThread.id,
+                            this.$store.state.currentPost.id,
+                            this.id,
+                            this.$el.value.substring(this.charCount, currentCharCount)
+                        )
+                    }
+                    
+                    this.$emit('push')
+                    this.lastPushText = this.$el.value
+                    this.charCount = currentCharCount
+                }
+                // Si no hay nuevo contenido, sólo queda por comprobar si estamos cerrando
+                else if (close) {
+                    // Cierre a secas, sin contenido.
+                    closeBodyEntry(
+                            this.$store.state.currentThread.id,
+                            this.$store.state.currentPost.id,
+                            this.id
+                        )
+                }
             }
 
 
