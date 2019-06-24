@@ -17,9 +17,11 @@ import { appendToBodyEntry } from '../js/socket';
 
 <script>
 
-import {newThread, operationToBodyEntry} from '../js/socket.js'
+import {newThread, operationToBodyEntry, closeBodyEntry} from '../js/socket.js'
 const ENTRY_OPERATION_ADD = "add"
 const ENTRY_OPERATION_APPEND = "append"
+const ENTRY_OPERATION_APPEND_CLOSE = "append_close"
+const ENTRY_CLOSE = "ENTRY_CLOSE"
 const ENTRY_OPERATION_REPLACE = "replace"
 
 
@@ -73,12 +75,12 @@ export default {
         },
 
         close(event) {
-            this.push()
+            this.push(true)
             this.closed = true
             this.$emit('newbody', event)
         },
 
-        push(){
+        push(close){
 
             if (this.$el.value.substring(0, this.lastPushText.length) !== this.lastPushText) {
                 return
@@ -96,8 +98,9 @@ export default {
                 }
                 else if (this.$parent.pushes > 0 && this.$store.state.currentPost.id !== null){
                     console.log(this.$parent.id)
+                    let action = close ? ENTRY_OPERATION_APPEND_CLOSE : ENTRY_OPERATION_APPEND
                     operationToBodyEntry(
-                        ENTRY_OPERATION_APPEND,
+                        action,
                         this.$store.state.currentThread.id,
                         this.$store.state.currentPost.id,
                         this.id,
@@ -109,6 +112,13 @@ export default {
                 this.lastPushText = this.$el.value
                 this.charCount = currentCharCount
             }
+            else if (close) {
+                closeBodyEntry(
+                        this.$store.state.currentThread.id,
+                        this.$store.state.currentPost.id,
+                        this.id
+                    )
+            }
 
 
         },
@@ -116,7 +126,7 @@ export default {
         aobaOnFocus: function () {
             this.interval = setInterval(
                 this.push,
-                5000
+                5000, false
             );
         
         },
@@ -125,7 +135,7 @@ export default {
             //alert('FUERA FOCO')
             clearInterval(this.interval)
             this.interval = null
-            this.push()
+            this.push(false)
             
         },
 

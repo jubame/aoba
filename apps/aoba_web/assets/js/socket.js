@@ -102,6 +102,22 @@ function operationToBodyEntry(action, thread_id, post_id, entry_id, content){
   })
 }
 
+function closeBodyEntry(thread_id, post_id, entry_id){
+  channel.push("close_body_entry", {thread_id: thread_id, post_id: post_id, entry_id: entry_id})
+  .receive("ok", response => {
+    save(SAVE_LAST_PUSH, "ok", response)
+  })
+  .receive("error", response => {
+    let info = {
+      reason: response.reason,
+      entry_id: entry_id
+    }
+    save(SAVE_LAST_PUSH, "error", info)
+  })
+}
+
+
+
 function addMediaToPost(thread_id, post_id, media) {
   channel.push("add_media_to_post", {thread_id: thread_id, post_id: post_id, media: media})
   .receive("ok", response => {
@@ -118,4 +134,4 @@ function addMediaToPost(thread_id, post_id, media) {
 window.appendToBodyEntry = operationToBodyEntry
 
 export default socket
-export {newThread, operationToBodyEntry, addMediaToPost}
+export {newThread, operationToBodyEntry, closeBodyEntry, addMediaToPost}

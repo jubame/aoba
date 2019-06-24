@@ -31,6 +31,10 @@ defmodule Aoba.ThreadServer do
     GenServer.call(via_tuple(thread_id), {:operation_to_body_entry, action, post_id, entry_id, iolist})
   end
 
+  def close_body_entry(thread_id, post_id, entry_id) do
+    GenServer.call(via_tuple(thread_id), {:close_body_entry, post_id, entry_id})
+  end
+
 
   def add_media_to_post(thread_id, post_id, media) do
     GenServer.call(via_tuple(thread_id), {:add_media_to_post, post_id, media})
@@ -78,6 +82,17 @@ defmodule Aoba.ThreadServer do
         |> reply_success(:ok)
       {:error, :already_closed_entry} ->
         {:reply, {:error, :already_closed_entry}, thread}
+    end
+
+  end
+
+  def handle_call({:close_body_entry, post_id, entry_id}, _from, thread) do
+
+    current_body = thread.posts[post_id].body
+    case Body.close_entry(current_body, entry_id) do
+      {:ok, new_body} ->
+        update_in(thread.posts[post_id].body, fn _body -> new_body end)
+        |> reply_success(:ok)
     end
 
   end

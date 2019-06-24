@@ -1,7 +1,15 @@
 defmodule Aoba.Body do
   alias __MODULE__
 
-  defstruct closed_entries: [], entries: %{}
+  defstruct closed_entries: MapSet.new(), entries: %{}
+
+
+  def close_entry(%Body{closed_entries: closed_entries} = body, entry_id) do
+    new_body = %Body{ body |
+      closed_entries: MapSet.put(closed_entries, entry_id)
+    }
+    {:ok, new_body}
+  end
 
 
   def operation_entry(action, %Body{closed_entries: closed_entries} = body, entry_id, text_or_reply) do
@@ -29,9 +37,11 @@ defmodule Aoba.Body do
     else
       aoba_operation_entry(:new, body, entry_id, iolist)
     end
+  end
 
-
-
+  defp aoba_operation_entry(:append_close, body, entry_id, iolist)  do
+    {:ok, new_body} = aoba_operation_entry(:append, body, entry_id, iolist)
+    close_entry(new_body, entry_id)
   end
 
 
