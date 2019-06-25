@@ -3,6 +3,7 @@
     v-bind:class="dropZoneClass"
         
         @drop="dropHandler"
+        @keydown.ctrl.alt.190.exact="close"
   
     >
     
@@ -11,7 +12,7 @@
     <img v-bind:src="imgsrc">
 
     <resizable-textarea @newbody="newBody" @push="increasePushes"
-    v-for="n in lastEntryID" v-bind:key="n" v-bind:id="n">
+    v-for="n in lastEntryID" v-bind:key="n" v-bind:id="n" ref="resizableTextarea">
     </resizable-textarea>
   </section>
 </template>
@@ -87,6 +88,20 @@ export default {
             
             )
             
+        },
+
+        close(ev) {
+            
+            if (!this.id){
+                return
+            }
+            let pendingOpenEntry = this.$refs.resizableTextarea.find(
+                (entry) => entry.hasFocus
+            )
+
+            pendingOpenEntry.closeFromPost()
+
+
         },
 
 

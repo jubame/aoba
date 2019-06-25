@@ -47,8 +47,16 @@ defmodule AobaWeb.ThreadServerChannel do
 
   def handle_in("operation_to_body_entry", params, socket) do
     IO.puts("append_to_body_entry")
-    %{"action" => action, "thread_id" => thread_id, "post_id" => post_id, "entry_id" => entry_id, "iolist" => iolist} = params
-    case ThreadServer.operation_to_body_entry(String.to_atom(action), thread_id, post_id, entry_id, iolist) do
+    %{
+      "action" => action,
+      "thread_id" => thread_id,
+      "post_id" => post_id,
+      "entry_id" => entry_id,
+      "iolist" => iolist,
+      "close_entry" => close_entry,
+      "close_post" => close_post
+    } = params
+    case ThreadServer.operation_to_body_entry(String.to_atom(action), thread_id, post_id, entry_id, iolist, close_entry, close_post) do
       :ok -> {:reply, :ok, socket}
       {:error, reason } ->
         Apex.ap reason
@@ -59,8 +67,8 @@ defmodule AobaWeb.ThreadServerChannel do
 
   def handle_in("close_body_entry", params, socket) do
     IO.puts("append_to_body_entry")
-    %{"thread_id" => thread_id, "post_id" => post_id, "entry_id" => entry_id} = params
-    case ThreadServer.close_body_entry(thread_id, post_id, entry_id) do
+    %{"thread_id" => thread_id, "post_id" => post_id, "entry_id" => entry_id, "close_post" => close_post} = params
+    case ThreadServer.close_body_entry(thread_id, post_id, entry_id, close_post) do
       :ok -> {:reply, :ok, socket}
       {:error, reason } ->
         Apex.ap reason
@@ -68,6 +76,7 @@ defmodule AobaWeb.ThreadServerChannel do
     end
 
   end
+
 
 
   def handle_in("add_media_to_post", params, socket) do

@@ -5,7 +5,7 @@ import { appendToBodyEntry } from '../js/socket';
       placeholder="Write something..."
       v-bind:disabled="closed"
       @keydown.ctrl.enter="newBody"
-      @keydown.ctrl.190="close"
+      @keydown.ctrl.190.exact="close"
       @compositionstart="compositionStart"
       @compositionend="compositionEnd"
       @focus="aobaOnFocus"
@@ -18,11 +18,8 @@ import { appendToBodyEntry } from '../js/socket';
 <script>
 
 import {newThread, operationToBodyEntry, closeBodyEntry} from '../js/socket.js'
-const ENTRY_OPERATION_ADD = "add"
 const ENTRY_OPERATION_APPEND = "append"
-const ENTRY_OPERATION_APPEND_CLOSE = "append_close"
-const ENTRY_CLOSE = "ENTRY_CLOSE"
-const ENTRY_OPERATION_REPLACE_CLOSE = "replace_close"
+const ENTRY_OPERATION_REPLACE = "replace"
 
 
 window.newThread = newThread
@@ -41,8 +38,10 @@ export default {
             // Input Method Editor (IME): https://www.stum.de/2016/06/24/handling-ime-events-in-javascript/
             isComposing: false,
             lastPushText: '',
+            pushes: 0,
             closed: false,
-            noPushUntilClose: false
+            hasFocus: false
+            
         }
     },
 
@@ -82,14 +81,20 @@ export default {
         },
 
         close(event) {
-            this.push(true)
+            this.push(true, false)
             this.closed = true
             this.$emit('newbody', event)
+            
+        },
+
+
+        closeFromPost(){
+            this.push(false, true)
         },
 
 
 
-        push(close){
+        push(closeEntry, closePost){
 
             /* Se ha modificado el texto anterior: sólo haremos push cuando el
              * usuario cierre el entry, y en ese caso reemplazaremos todo el 
@@ -97,19 +102,22 @@ export default {
              */
             if (this.previousTextModified) {
                 
-                if (!close) {
+                if (!closeEntry) {
                     clearInterval(this.interval)
                     this.interval = null
                     return
                 }
                 else {
                     operationToBodyEntry(
-                        ENTRY_OPERATION_REPLACE_CLOSE,
+                        ENTRY_OPERATION_REPLACE,
                         this.$store.state.currentThread.id,
                         this.$store.state.currentPost.id,
                         this.id,
-                        this.$el.value
+                        this.$el.value,
+                        closeEntry,
+                        closePost
                     )
+                    this.pushes++
 
                 }
             }
@@ -129,14 +137,17 @@ export default {
                     else if (this.$parent.pushes > 0 && this.$store.state.currentPost.id !== null){
                         // Añadir/concatenar a contenido anterior
                         console.log(this.$parent.id)
-                        let action = close ? ENTRY_OPERATION_APPEND_CLOSE : ENTRY_OPERATION_APPEND
+                        
                         operationToBodyEntry(
-                            action,
+                            ENTRY_OPERATION_APPEND,
                             this.$store.state.currentThread.id,
                             this.$store.state.currentPost.id,
                             this.id,
-                            this.$el.value.substring(this.charCount, currentCharCount)
+                            this.$el.value.substring(this.charCount, currentCharCount),
+                            closeEntry,
+                            closePost
                         )
+                        this.pushes++
                     }
                     
                     this.$emit('push')
@@ -144,13 +155,15 @@ export default {
                     this.charCount = currentCharCount
                 }
                 // Si no hay nuevo contenido, sólo queda por comprobar si estamos cerrando
-                else if (close) {
+                else if (closeEntry || closePost) {
                     // Cierre a secas, sin contenido.
                     closeBodyEntry(
                             this.$store.state.currentThread.id,
                             this.$store.state.currentPost.id,
-                            this.id
+                            this.id,
+                            closePost
                         )
+                    this.pushes++
                 }
             }
 
@@ -158,18 +171,20 @@ export default {
         },
 
         aobaOnFocus: function () {
+            this.hasFocus = true
             this.interval = setInterval(
                 this.push,
-                5000, false
+                5000, false, false
             );
         
         },
 
         aobaOnBlur () {
+            this.hasFocus = false
             //alert('FUERA FOCO')
             clearInterval(this.interval)
             this.interval = null
-            this.push(false)
+            this.push(false, false)
             
         },
 

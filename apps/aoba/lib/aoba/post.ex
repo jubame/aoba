@@ -1,25 +1,32 @@
 defmodule Aoba.Post do
   alias Aoba.{Post, Body}
 
-  @enforce_keys [:id, :username, :date, :body, :media]
-  defstruct [:id, :username, :date, :body, :media]
+  @enforce_keys [:id, :username, :date, :body, :media, :closed]
+  defstruct [:id, :username, :date, :body, :media, :closed]
 
   def new(id, username, %{type: "text", content: content}, entry_id) do
     IO.puts("DENTRO DE POST.new")
     {:ok, body} = Body.new(content, entry_id)
-    {:ok, new_post} = {:ok, %Post{id: id, username: username, date: DateTime.utc_now(), body: body, media: ""}}
+    {:ok, new_post} = {:ok, %Post{id: id, username: username, date: DateTime.utc_now(), body: body, media: "", closed: false}}
     Apex.ap new_post
     {:ok, new_post}
   end
 
   def new(id, username, %{type: "media", content: content}) do
-    {:ok, %Post{id: id, username: username, date: DateTime.utc_now(), body: %Body{}, media: content}}
+    {:ok, %Post{id: id, username: username, date: DateTime.utc_now(), body: %Body{}, media: content, closed: false}}
   end
 
-  def add_media(post, media) do
+  def add_media(%Post{closed: false} = post, media) do
     {:ok, %Post{ post | media: media }}
   end
 
+  def close(post) do
+    {:ok, %Post{ post | closed: true}}
+  end
+
+  def close(post, body) do
+    {:ok, %Post{ post | closed: true, body: body}}
+  end
 
 
 

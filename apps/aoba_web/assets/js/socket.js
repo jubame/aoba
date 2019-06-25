@@ -88,8 +88,8 @@ function newThread(type_and_content, entry_id){
   })
 }
 
-function operationToBodyEntry(action, thread_id, post_id, entry_id, content){
-  channel.push("operation_to_body_entry", {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content})
+function operationToBodyEntry(action, thread_id, post_id, entry_id, content, closeEntry, closePost){
+  channel.push("operation_to_body_entry", {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost})
   .receive("ok", response => {
     save(SAVE_LAST_PUSH, "ok", response)
   })
@@ -102,8 +102,8 @@ function operationToBodyEntry(action, thread_id, post_id, entry_id, content){
   })
 }
 
-function closeBodyEntry(thread_id, post_id, entry_id){
-  channel.push("close_body_entry", {thread_id: thread_id, post_id: post_id, entry_id: entry_id})
+function closeBodyEntry(thread_id, post_id, entry_id, closePost){
+  channel.push("close_body_entry", {thread_id: thread_id, post_id: post_id, entry_id: entry_id, close_post: closePost})
   .receive("ok", response => {
     save(SAVE_LAST_PUSH, "ok", response)
   })
@@ -115,6 +115,7 @@ function closeBodyEntry(thread_id, post_id, entry_id){
     save(SAVE_LAST_PUSH, "error", info)
   })
 }
+
 
 
 
