@@ -102,7 +102,7 @@ export default {
              */
             if (this.previousTextModified) {
                 
-                if (!closeEntry) {
+                if (!(closeEntry || closePost)) {
                     clearInterval(this.interval)
                     this.interval = null
                     return

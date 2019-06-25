@@ -44,6 +44,9 @@ defmodule Aoba.Body do
     close_entry(new_body, entry_id)
   end
 
+  defp aoba_operation_entry(:replace, body, entry_id, iolist, false)  do
+    {:ok, update_in(body.entries, &Map.put(&1, entry_id, iolist))}
+  end
 
   defp aoba_operation_entry(:replace, body, entry_id, iolist, true)  do
     new_body = update_in(body.entries, &Map.put(&1, entry_id, iolist))
