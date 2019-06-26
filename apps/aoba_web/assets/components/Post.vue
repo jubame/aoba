@@ -40,14 +40,14 @@ export default {
             lastEntryID: initialEntryID,
             pushes: 0,
             imgsrc: null,
-            drag: null
+            drag: this.$Drag()
 
             
 
         }
     },
     mounted: function() {
-        this.drag = this.$Drag(this.$el)
+        
     },
 
     

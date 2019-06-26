@@ -22,8 +22,8 @@ const Drag = () => {
         x_pos = document.all ? window.event.clientX : e.pageX;
         y_pos = document.all ? window.event.clientY : e.pageY;
         if (selected !== null) {
-            selected.style.left = (x_pos - x_elem) + 'px';
-            selected.style.top = (y_pos - y_elem) + 'px';
+            selected.style.left = (window.event.clientX- x_elem) + 'px';
+            selected.style.top = (window.event.clientY - y_elem) + 'px';
         }
     }
     
