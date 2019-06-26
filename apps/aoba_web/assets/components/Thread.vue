@@ -3,6 +3,15 @@
 
 
     <component v-bind:is="post"></component>
+
+
+    <regular-post v-if="this.replyPost"></regular-post>
+
+
+
+
+    <button v-if="this.id" v-on:click="reply">Reply</button>
+
     
   </article>
 </template>
@@ -17,7 +26,8 @@ export default {
     
     data () {
         return {
-            msg: '今日も一日頑張るぞい！'
+            msg: '今日も一日頑張るぞい！',
+            replyPost: false
         }
     },
 
@@ -31,8 +41,6 @@ export default {
             if (this.$store.state.currentThread !== null){
                 return this.$store.state.currentThread.id
             }
-            
-
         },
 
         post: function () {
@@ -42,6 +50,12 @@ export default {
             else{
                 return 'regular-post'
             }
+        }
+    },
+
+    methods: {
+        reply() {
+            this.replyPost = true
         }
     }
 

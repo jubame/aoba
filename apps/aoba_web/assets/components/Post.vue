@@ -1,6 +1,6 @@
 <template>
   <section data-type="post" lang="en" v-bind:id="id"
-    v-bind:class="dropZoneClass"
+    v-bind:class="[dropZoneClass, postType]"
         
         @drop="dropHandler"
         @keydown.ctrl.alt.190.exact="close"
@@ -28,6 +28,8 @@ const reader = new FileReader();
 
 
 export default {
+
+    props: ['newThread'],
     
     components: {
         'resizable-textarea': ResizableTextarea,
@@ -58,6 +60,9 @@ export default {
         },
         dropZoneClass() {
             return this.$store.state.dragging ? 'dragging' : ''
+        },
+        postType() {
+            return this.newThread ? 'initial-post' : 'regular-post'
         }
 
     },
@@ -172,6 +177,14 @@ export default {
 
 <style scoped lang="scss">
     [data-type="post"] {
+
+        &.regular-post {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-color: beige;
+
+        }
         
         overflow: hidden;
         padding: 20px;
