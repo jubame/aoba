@@ -19,6 +19,7 @@ const Drag = () => {
 
     // Will be called when user dragging an element
     function _move_elem(e) {
+        console.log('MOVE')
         x_pos = document.all ? window.event.clientX : e.pageX;
         y_pos = document.all ? window.event.clientY : e.pageY;
         if (selected !== null) {

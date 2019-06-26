@@ -1,6 +1,6 @@
 <template>
   <section data-type="post" lang="en" v-bind:id="id"
-    v-bind:class="[dropZoneClass, postType]" @mousedown="drag._drag_init" @mousemove="drag._move_elem" @mouseup="drag._drag_destroy"
+    v-bind:class="[dropZoneClass, postType]" @mousedown="drag._drag_init"
         
         @drop="dropHandler"
         @keydown.ctrl.alt.190.exact="close"
@@ -47,7 +47,8 @@ export default {
         }
     },
     mounted: function() {
-        
+        window.addEventListener("mousemove", this.drag._move_elem);
+        window.addEventListener("mouseup", this.drag._drag_destroy);
     },
 
     
