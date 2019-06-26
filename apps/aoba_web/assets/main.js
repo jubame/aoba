@@ -4,10 +4,14 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import {store} from './store'
+import dragPlugin from './js/drag'
 
 Vue.config.productionTip = false
 
 
+
+// https://forum.vuejs.org/t/how-to-use-helper-functions-for-imported-modules-in-vuejs-vue-template/6266/7
+Vue.use(dragPlugin)
 
 
 /* eslint-disable no-new */

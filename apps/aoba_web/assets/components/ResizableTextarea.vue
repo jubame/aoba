@@ -76,7 +76,7 @@ export default {
             
         },
 
-        newBody() {
+        newBody(event) {
             this.$emit('newbody', event)
         },
 

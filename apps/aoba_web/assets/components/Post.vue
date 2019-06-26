@@ -1,6 +1,6 @@
 <template>
   <section data-type="post" lang="en" v-bind:id="id"
-    v-bind:class="[dropZoneClass, postType]"
+    v-bind:class="[dropZoneClass, postType]" @mousedown="drag._drag_init" @mousemove="drag._move_elem" @mouseup="drag._drag_destroy"
         
         @drop="dropHandler"
         @keydown.ctrl.alt.190.exact="close"
@@ -40,13 +40,14 @@ export default {
             lastEntryID: initialEntryID,
             pushes: 0,
             imgsrc: null,
+            drag: null
 
             
 
         }
     },
     mounted: function() {
-        
+        this.drag = this.$Drag(this.$el)
     },
 
     
@@ -165,6 +166,9 @@ export default {
             
 
         },
+
+
+        
 
 
 

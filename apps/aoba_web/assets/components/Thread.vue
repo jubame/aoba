@@ -5,7 +5,7 @@
     <component v-bind:is="post"></component>
 
 
-    <regular-post v-if="this.replyPost"></regular-post>
+    <regular-post ></regular-post>
 
 
 
@@ -21,13 +21,16 @@
 import NewThreadAccordionPost from './NewThreadAccordionPost'
 import Post from './Post'
 
+
 export default {
     name: 'Thread',
     
     data () {
         return {
             msg: '今日も一日頑張るぞい！',
-            replyPost: false
+            replyPost: false,
+            
+            
         }
     },
 
@@ -56,7 +59,11 @@ export default {
     methods: {
         reply() {
             this.replyPost = true
-        }
+        },
+        
+
+
+
     }
 
 
