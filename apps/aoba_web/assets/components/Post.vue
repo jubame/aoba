@@ -1,6 +1,6 @@
 <template>
   <section data-type="post" lang="en" v-bind:id="id"
-    v-bind:class="[dropZoneClass, postType]" @mousedown="drag._drag_init"
+    v-bind:class="[dropZoneClass, postType]" 
         
         @drop="dropHandler"
         @keydown.ctrl.alt.190.exact="close"
@@ -40,7 +40,7 @@ export default {
             lastEntryID: initialEntryID,
             pushes: 0,
             imgsrc: null,
-            drag: this.$Drag()
+            
 
             
 
@@ -183,10 +183,7 @@ export default {
     [data-type="post"] {
 
         &.regular-post {
-            position: absolute;
-            top: 0;
-            left: 0;
-            background-color: beige;
+            
 
         }
         

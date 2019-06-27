@@ -5,7 +5,7 @@
     <component v-bind:is="post"></component>
 
 
-    <regular-post ></regular-post>
+    <reply-post ></reply-post>
 
 
 
@@ -19,7 +19,7 @@
 <script>
 
 import NewThreadAccordionPost from './NewThreadAccordionPost'
-import Post from './Post'
+import ReplyPost from './ReplyPost'
 
 
 export default {
@@ -36,7 +36,7 @@ export default {
 
     components: {
         'new-thread-post': NewThreadAccordionPost,
-        'regular-post': Post
+        'reply-post': ReplyPost
     },
     computed: {
 
