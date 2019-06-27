@@ -38,6 +38,12 @@ const Drag = () => {
         y_pos = document.all ? window.event.clientY : ev.pageY;
         x_elem = x_pos - selected.offsetLeft;
         y_elem = y_pos - selected.offsetTop;
+        /* Por si luego en CSS utilizo right y/o bottom para la posición
+         * inicial.
+         */
+        selected.style.right = 'auto';
+        selected.style.bottom = 'auto';
+
 
         window.addEventListener("mousemove", _move_elem);
         window.addEventListener("mouseup", _drag_destroy);

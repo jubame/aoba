@@ -188,7 +188,7 @@ export default {
         }
         
         overflow: hidden;
-        padding: 20px;
+        
         img {
             width: 20%;
             min-width: 200px;

@@ -57,9 +57,25 @@ export default {
     }
     
     position: absolute;
-    top: 0;
-    left: 0;
+    right: 0;
+    bottom: 0;
     background-color: beige;
+
+    $header-post-padding: 20px;
+
+    header {
+        $height: 20px;
+        font-size: 10pt;
+        height: $height;
+        line-height: $height;
+        background-color: #98e;
+        padding-left: $header-post-padding;
+    }
+
+    [data-type="post"] {
+        padding: $header-post-padding 0 2*$header-post-padding $header-post-padding;
+    }
+
 }
 
 
