@@ -47,8 +47,7 @@ export default {
         }
     },
     mounted: function() {
-        window.addEventListener("mousemove", this.drag._move_elem);
-        window.addEventListener("mouseup", this.drag._drag_destroy);
+        
     },
 
     
