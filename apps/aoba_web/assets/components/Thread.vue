@@ -5,7 +5,7 @@
     <component v-bind:is="post"></component>
 
 
-    <reply-post ></reply-post>
+    <reply-post v-if="this.replyPost"></reply-post>
 
 
 

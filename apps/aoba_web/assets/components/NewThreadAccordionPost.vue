@@ -1,5 +1,5 @@
 <template>
-  <section data-type="post">
+  <section>
     <button id="accordion-open-1" class="accordion__button" v-bind:class="{expanded: isOpen}"
             v-on:click="toggleState()">
         {{newThreadTitle}}

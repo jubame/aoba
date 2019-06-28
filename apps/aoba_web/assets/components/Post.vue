@@ -179,14 +179,12 @@ export default {
 </script>
 
 
-<style scoped lang="scss">
+<style lang="scss">
     [data-type="post"] {
 
-        &.regular-post {
-            
-
-        }
-        
+        $header-post-padding: 20px;
+        padding: $header-post-padding 0 2*$header-post-padding $header-post-padding;
+                
         overflow: hidden;
         
         img {

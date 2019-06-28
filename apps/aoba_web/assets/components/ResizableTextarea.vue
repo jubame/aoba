@@ -63,8 +63,8 @@ export default {
                 
             }
             else{
-                
-                event.target.style.whiteSpace = "pre-line"
+                // pre-wrap para poder hacer trifuerza sin NBSP
+                event.target.style.whiteSpace = "pre-wrap"
                 event.target.style.width = this.maxWidth + 'px'
             }
 
@@ -225,13 +225,27 @@ export default {
 
 <style scoped lang="scss">
     textarea {
+
+        // Esto permite crecer a lo ancho el textarea cuando sólo hay una línea
+        white-space: nowrap;
+        /* Esto es por el else de resizeTextArea, que cambia style.whitespace a
+         * pre-wrap cuando event.target.scrollWidth >= this.maxWidth (else de
+         * if (event.target.scrollWidth < this.maxWidth). En estado disabled
+         * pierde el style.whitespace pre-wrap, tomando efecto el nowrap que
+         * hemos puesto arriba en CSS
+         */
+        &:disabled {
+            // pre-wrap para poder hacer trifuerza sin NBSP
+            white-space: pre-wrap;
+        }
+
         display: block;
         overflow-y: hidden;
         overflow-x: hidden;
         resize: none;
-        vertical-align: baseline;
         outline: none;
-        white-space: nowrap;
+        
+
 
     }
 </style>

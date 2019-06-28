@@ -1,7 +1,7 @@
 <template>
   <section class="reply-post" @mousedown="drag._drag_init">
 
-    <header>Reply to thread #</header>
+    <header>Reply to thread #{{this.threadID}}</header>
     <post></post>
     
 
@@ -26,6 +26,14 @@ export default {
             drag: this.$Drag()
         }
     },
+    computed: {
+        threadID() {
+            return this.$store.state.currentThread !== null ?
+            this.$store.state.currentThread.id :
+            '<no_thread_yet>'
+            
+        },
+    }
 
 
 }
