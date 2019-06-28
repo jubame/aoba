@@ -87,8 +87,12 @@ export default {
             
         },
 
+        closeFromPost(event) {
+            this.closed = true
+        },
 
-        closeFromPost(){
+
+        pushFromPost(){
             this.push(false, true)
         },
 

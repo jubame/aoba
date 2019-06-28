@@ -1,6 +1,6 @@
 <template>
   <section data-type="post" lang="en" v-bind:id="id"
-    v-bind:class="[dropZoneClass, postType]" 
+    v-bind:class="[dropZoneClass, postType, closedClass]" 
         
         @drop="dropHandler"
         @keydown.ctrl.alt.190.exact="close"
@@ -40,6 +40,7 @@ export default {
             lastEntryID: initialEntryID,
             pushes: 0,
             imgsrc: null,
+            closed: false
             
 
             
@@ -64,6 +65,9 @@ export default {
         },
         postType() {
             return this.newThread ? 'initial-post' : 'regular-post'
+        },
+        closedClass() {
+            return this.closed ? 'closed' : ''
         }
 
     },
@@ -105,7 +109,17 @@ export default {
                 (entry) => entry.hasFocus
             )
 
-            pendingOpenEntry.closeFromPost()
+            pendingOpenEntry.pushFromPost()
+
+            
+            this.$refs.resizableTextarea.forEach(
+                function(entry, index) {
+                    entry.closeFromPost()
+                }
+            )
+
+
+            this.closed = true
 
 
         },
@@ -181,6 +195,16 @@ export default {
 
 <style lang="scss">
     [data-type="post"] {
+        $lavendar: #eedbff;
+
+        &.closed {
+            textarea:disabled {
+                background-color: $lavendar;
+                color: black;
+            }
+        }
+
+
 
         $header-post-padding: 20px;
         padding: $header-post-padding 0 2*$header-post-padding $header-post-padding;
