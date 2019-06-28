@@ -21,11 +21,19 @@ defmodule Aoba.Post do
   end
 
   def close(post) do
-    {:ok, %Post{ post | closed: true}}
+    %Post{ post | closed: true}
   end
 
   def close(post, body) do
-    {:ok, %Post{ post | closed: true, body: body}}
+    %Post{ post | closed: true, body: body}
+  end
+
+  def is_not_closed?(%Post{closed: false}) do
+    :ok
+  end
+
+  def is_not_closed?(%Post{closed: true}) do
+    {:error, :already_closed_post}
   end
 
 

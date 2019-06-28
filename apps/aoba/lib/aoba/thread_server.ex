@@ -77,38 +77,85 @@ defmodule Aoba.ThreadServer do
 
 
   def handle_call({:operation_to_body_entry, action, post_id, entry_id, iolist, close_entry, close_post}, _from, thread) do
+    IO.puts("aquí")
+    IO.puts(inspect(thread.posts[post_id]))
 
-    case Body.operation_entry(action, thread.posts[post_id].body, entry_id, iolist, close_entry)
-    do
-      {:ok, new_body} ->
-        new_thread = if close_post do
-          update_in(thread.posts[post_id], fn post -> Post.close(post, new_body) end)
-        else
-          update_in(thread.posts[post_id].body, fn _body -> new_body end)
-        end
+
+    case operation_to_body_entry_check_post(thread, action, thread.posts[post_id], entry_id, iolist, close_entry, close_post) do
+      {:ok, new_thread} ->
         reply_success(new_thread, :ok)
+      {:error, :already_closed_post} ->
+        {:reply, {:error, :already_closed_post}, thread}
       {:error, :already_closed_entry} ->
         {:reply, {:error, :already_closed_entry}, thread}
 
     end
 
+
+
   end
 
+  defp operation_to_body_entry_check_post(_thread, _action, %Post{closed: true} = _post, _entry_id, _iolist, _close_entry, _close_post) do
+    {:error, :already_closed_post}
+  end
+
+  defp operation_to_body_entry_check_post(thread, action, %Post{closed: false} = post, entry_id, iolist, close_entry, close_post) do
+    case Body.operation_entry(action, post.body, entry_id, iolist, close_entry) do
+      {:ok, new_body} ->
+        new_thread = if close_post do
+          update_in(thread.posts[post.id], fn post -> Post.close(post, new_body) end)
+        else
+          update_in(thread.posts[post.id].body, fn _body -> new_body end)
+        end
+        {:ok, new_thread}
+      {:error, :already_closed_entry} ->
+        {:error, :already_closed_entry}
+
+    end
+  end
 
 
   def handle_call({:close_body_entry, post_id, entry_id, close_post}, _from, thread) do
 
-
-    new_thread = if close_post do
-      update_in(thread.posts[post_id], fn post -> Post.close(post) end)
-    else
-      {:ok, new_body} = Body.close_entry(thread.posts[post_id].body, entry_id)
-      update_in(thread.posts[post_id].body, fn _body -> new_body end)
+    case close_body_entry_check_post(thread, thread.posts[post_id], entry_id, close_post) do
+      {:ok, new_thread } ->
+        reply_success(new_thread, :ok)
+      {:error, :already_closed_post} ->
+        {:reply, {:error, :already_closed_post}, thread}
     end
 
-    reply_success(new_thread, :ok)
+  end
+
+
+  def close_body_entry_check_post(_thread, %Post{closed: true}, _entry_id, _close_post) do
+    {:error, :already_closed_post}
+  end
+
+
+  def close_body_entry_check_post(thread, %Post{closed: false} = post, _entry_id, true) do
+
+    {
+      :ok,
+      update_in(thread.posts[post.id], fn post -> Post.close(post) end)
+    }
+
+
 
   end
+
+  def close_body_entry_check_post(thread, %Post{closed: false} = post, entry_id, false) do
+
+    {:ok, new_body} = Body.close_entry(thread.posts[post.id].body, entry_id)
+    {
+      :ok,
+      update_in(thread.posts[post.id].body, fn _body -> new_body end)
+    }
+
+
+
+  end
+
+
 
 
 
