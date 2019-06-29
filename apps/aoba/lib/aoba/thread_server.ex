@@ -3,20 +3,14 @@ defmodule Aoba.ThreadServer do
   alias Aoba.{Thread, Post, Body, Reply}
 
   def start_link([id: id, type_and_content: %{type: "text", content: content}, entry_id: entry_id]) do
-    IO.puts(inspect(id))
 
-    IO.puts('HOLA')
     resultado = GenServer.start_link(__MODULE__, [id: id, type_and_content: %{type: "text", content: content}, entry_id: entry_id], name: via_tuple(id))
-    IO.puts(inspect(resultado))
     resultado
   end
 
   def start_link([id: id, type_and_content: %{type: "media", content: content}]) do
-    IO.puts(inspect(id))
 
-    IO.puts('HOLA')
     resultado = GenServer.start_link(__MODULE__, [id: id, type_and_content: %{type: "media", content: content}], name: via_tuple(id))
-    IO.puts(inspect(resultado))
     resultado
   end
 
@@ -40,10 +34,13 @@ defmodule Aoba.ThreadServer do
     GenServer.call(via_tuple(thread_id), {:add_media_to_post, post_id, media})
   end
 
+  def add_post(thread_id, entry_id, type_and_content) do
+    GenServer.call(via_tuple(thread_id), {:add_post, entry_id, type_and_content})
+  end
+
 
 
   def init([id: id, type_and_content: %{type: "text", content: content}, entry_id: entry_id]) do
-    IO.puts("creando nuevo hilo")
     {:ok, Thread.new(
       id,
       %{type: "text", content: content},
@@ -54,7 +51,6 @@ defmodule Aoba.ThreadServer do
   end
 
   def init([id: id, type_and_content: %{type: "media", content: content}]) do
-    IO.puts("creando nuevo hilo")
     {:ok, Thread.new(
       id,
       %{type: "media", content: content}
@@ -74,11 +70,23 @@ defmodule Aoba.ThreadServer do
   end
 
 
+  def handle_call({:add_post, entry_id, type_and_content}, _from, thread) do
+
+    thread = Thread.add_post(
+      thread,
+      type_and_content,
+      entry_id
+    )
+
+
+    |> reply_success(thread.post_id)
+  end
+
+
+
 
 
   def handle_call({:operation_to_body_entry, action, post_id, entry_id, iolist, close_entry, close_post}, _from, thread) do
-    IO.puts("aquí")
-    IO.puts(inspect(thread.posts[post_id]))
 
 
     case operation_to_body_entry_check_post(thread, action, thread.posts[post_id], entry_id, iolist, close_entry, close_post) do
@@ -162,7 +170,6 @@ defmodule Aoba.ThreadServer do
 
 
   def handle_call({:add_media_to_post, post_id, media}, _from, thread) do
-    IO.puts(":add_media_to_post")
     case Post.add_media(thread.posts[post_id], media) do
       {:ok, new_post} ->
         update_in(thread.posts[post_id], fn _post -> new_post end)

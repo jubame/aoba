@@ -5,10 +5,10 @@ defmodule Aoba.Post do
   defstruct [:id, :username, :date, :body, :media, :closed]
 
   def new(id, username, %{type: "text", content: content}, entry_id) do
-    IO.puts("DENTRO DE POST.new")
+    #IO.puts("DENTRO DE POST.new")
     {:ok, body} = Body.new(content, entry_id)
     {:ok, new_post} = {:ok, %Post{id: id, username: username, date: DateTime.utc_now(), body: body, media: "", closed: false}}
-    Apex.ap new_post
+    #Apex.ap new_post
     {:ok, new_post}
   end
 

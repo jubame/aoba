@@ -28,6 +28,7 @@ defmodule Aoba.Thread do
       post_id: thread.post_id + 1
     }
 
+
   end
 
   def add_post(thread, %{type: "media", content: _content} = type_and_content) do

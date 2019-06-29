@@ -17,7 +17,7 @@ import { appendToBodyEntry } from '../js/socket';
 
 <script>
 
-import {newThread, operationToBodyEntry, closeBodyEntry} from '../js/socket.js'
+import {newThread, operationToBodyEntry, closeBodyEntry, newPost} from '../js/socket.js'
 const ENTRY_OPERATION_APPEND = "append"
 const ENTRY_OPERATION_REPLACE = "replace"
 
@@ -133,10 +133,13 @@ export default {
                 // Hay nuevo contenido
                 if (currentCharCount > this.charCount && !this.isComposing) {
 
-                    if (this.$parent.pushes === 0){
+                    if (!this.$store.state.currentThread){
                         // Crear nuevo hilo junto con contenido
                         console.log(this.$el.value)
                         newThread({"type": "text", "content": this.$el.value}, this.id)
+                    }
+                    else if (!this.$store.state.currentPost){
+                        newPost(this.$store.state.currentThread.id, this.id, {"type": "text", "content": this.$el.value})
                     }
                     else if (this.$parent.pushes > 0 && this.$store.state.currentPost.id !== null){
                         // Añadir/concatenar a contenido anterior

@@ -24,7 +24,7 @@ defmodule Aoba.Body do
 
 
   defp aoba_operation_entry(:new, body, entry_id, iolist, false) do
-    IO.puts("new2")
+    #IO.puts("new2")
 
     {:ok, update_in(body.entries, &Map.put_new(&1, entry_id, iolist))}
   end
@@ -57,7 +57,7 @@ defmodule Aoba.Body do
 
 
   def new(content, entry_id) do
-    IO.puts("new1")
+    #IO.puts("new1")
     operation_entry(:new, %Body{}, entry_id, content, false)
   end
 

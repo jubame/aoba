@@ -26,7 +26,7 @@ defmodule Aoba.ThreadServerSupervisor do
       entry_id: entry_id
     }
     resultado = DynamicSupervisor.start_child(__MODULE__, child)
-    IO.puts(inspect(resultado))
+    #IO.puts(inspect(resultado))
     resultado
   end
 
@@ -41,7 +41,7 @@ defmodule Aoba.ThreadServerSupervisor do
       type_and_content: %{type: "media", content: content}
     }
     resultado = DynamicSupervisor.start_child(__MODULE__, child)
-    IO.puts(inspect(resultado))
+    #IO.puts(inspect(resultado))
     resultado
   end
 

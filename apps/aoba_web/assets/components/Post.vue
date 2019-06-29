@@ -21,6 +21,7 @@
 import Vue from 'vue'
 import ResizableTextarea from './ResizableTextarea'
 import {addMediaToPost} from '../js/socket.js'
+import {closeCurrentPost} from '../js/socket.js'
 
 
 const initialEntryID = 1
@@ -117,6 +118,8 @@ export default {
                     entry.closeFromPost()
                 }
             )
+
+            closeCurrentPost();
 
 
             this.closed = true

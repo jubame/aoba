@@ -7,8 +7,8 @@
 // Pass the token on params as below. Or remove it
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
-import {save} from '../store'
-import {SAVE_THREAD, SAVE_LAST_PUSH} from '../mutation-types'
+import {save, saveClosePost} from '../store'
+import {SAVE_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST} from '../mutation-types'
 import {encodeMessage, decodeMessage} from './message_pack'
 
 
@@ -88,6 +88,18 @@ function newThread(type_and_content, entry_id){
   })
 }
 
+function newPost(thread_id, entry_id, type_and_content){
+  
+  channel.push("new_post", {thread_id: thread_id, entry_id: entry_id, type_and_content: type_and_content})
+  .receive("ok", response => {
+    save(SAVE_POST, "ok", response)
+  })
+  .receive("error", response => {
+    save(SAVE_POST, "error", response.reason)
+  })
+}
+
+
 function operationToBodyEntry(action, thread_id, post_id, entry_id, content, closeEntry, closePost){
   channel.push("operation_to_body_entry", {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost})
   .receive("ok", response => {
@@ -116,6 +128,9 @@ function closeBodyEntry(thread_id, post_id, entry_id, closePost){
   })
 }
 
+function closeCurrentPost() {
+  saveClosePost(CLOSE_POST);
+}
 
 
 
@@ -135,4 +150,4 @@ function addMediaToPost(thread_id, post_id, media) {
 window.appendToBodyEntry = operationToBodyEntry
 
 export default socket
-export {newThread, operationToBodyEntry, closeBodyEntry, addMediaToPost}
+export {newThread, operationToBodyEntry, closeBodyEntry, addMediaToPost, closeCurrentPost, newPost}
