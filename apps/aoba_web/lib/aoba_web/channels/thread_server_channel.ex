@@ -50,7 +50,7 @@ defmodule AobaWeb.ThreadServerChannel do
     do
       IO.puts("HEY KIDS! WANNA DIE!??")
       Apex.ap post_id
-      {:reply, {:ok, %{post_id: post_id - 1}}, socket}
+      {:reply, {:ok, %{post_id: post_id}}, socket}
     end
 
 

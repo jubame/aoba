@@ -1,7 +1,7 @@
 <template>
   <section class="reply-post" @mousedown="drag._drag_init">
 
-    <header>Reply to thread #{{this.threadID}}</header>
+    <header>Reply to thread #{{this.threadID}} - Post #{{this.postID}}</header>
     <post></post>
     
 
@@ -31,8 +31,12 @@ export default {
             return this.$store.state.currentThread !== null ?
             this.$store.state.currentThread.id :
             '<no_thread_yet>'
-            
         },
+        postID(){
+            return this.$store.state.currentPost !== null ?
+            this.$store.state.currentPost.id :
+            '<no_post_yet>'
+        }
     }
 
 
