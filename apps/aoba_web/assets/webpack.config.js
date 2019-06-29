@@ -78,10 +78,14 @@ module.exports = (env, options) => ({
   https://github.com/vuejs-templates/webpack/issues/215#issuecomment-238095102
   */
   resolve: {
-    extensions: ['.js', '.vue', '.json'],
+    extensions: ['.js', '.vue', '.json', '.scss'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('assets'),
+      // https://github.com/vuejs/vue-loader/issues/328#issuecomment-249206638
+      // Variables y mixins globales
+      styles: path.resolve(__dirname, './css') // relative to the location of the webpack config file!
+
     }
   }
 });

@@ -69,14 +69,16 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 
+    @import "styles/app-no-styles.scss";
+
     #content {
-    background-color: #ffe;
+        background-color: #ffe;
     }
 
     // https://www.a11ywithlindsey.com/blog/javascript-accessibility-accordions/
     $purple: #6505cc;
     $dark-purple: #310363;
-    $lavendar: #eedbff;
+    
 
     body {
     font-family: 'Roboto', sans-serif;
@@ -145,7 +147,7 @@ export default {
     &__section {
         border-left: 1px solid $purple;
         border-right: 1px solid $purple;
-        background: $lavendar;
+        //background: $lavendar;
         max-height: 0vh;
         overflow: hidden;
         padding: 0;

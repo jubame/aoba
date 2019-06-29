@@ -198,7 +198,10 @@ export default {
 
 <style lang="scss">
     [data-type="post"] {
-        $lavendar: #eedbff;
+        
+        @import "styles/app-no-styles.scss";
+
+        background-color: $lavendar;
 
         &.closed {
             textarea:disabled {
