@@ -3,14 +3,14 @@
 
 
     <component v-bind:is="post"></component>
-
+    <button v-if="this.canReply" v-on:click="reply">Reply</button>
 
     <reply-post v-if="this.replyPost"></reply-post>
 
 
 
 
-    <button v-if="this.id" v-on:click="reply">Reply</button>
+    
 
     
   </article>
@@ -20,6 +20,7 @@
 
 import NewThreadAccordionPost from './NewThreadAccordionPost'
 import ReplyPost from './ReplyPost'
+import {NOT_SET, CLOSED} from '../state'
 
 
 export default {
@@ -28,7 +29,8 @@ export default {
     data () {
         return {
             msg: '今日も一日頑張るぞい！',
-            replyPost: false,
+            replyPost: false
+            
             
             
         }
@@ -41,7 +43,7 @@ export default {
     computed: {
 
         id() {
-            if (this.$store.state.currentThread !== null){
+            if (this.$store.state.currentThread.status !== NOT_SET){
                 return this.$store.state.currentThread.id
             }
         },
@@ -53,7 +55,21 @@ export default {
             else{
                 return 'regular-post'
             }
+        },
+
+        canReply() {
+    
+            return this.$store.state.currentThread.status !== NOT_SET &&
+            (
+                this.$store.state.currentPost.status === CLOSED ||
+                this.$store.state.currentPost.status === NOT_SET
+            )
         }
+
+
+
+
+
     },
 
     methods: {

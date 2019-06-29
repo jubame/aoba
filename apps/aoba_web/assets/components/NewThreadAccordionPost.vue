@@ -17,7 +17,7 @@
 <script>
 import Vue from 'vue'
 import Post from './Post'
-
+import {NOT_SET, CLOSED} from '../state'
 
 const state = {
     OPEN: 'open',
@@ -50,7 +50,7 @@ export default {
             return this.state === state.OPEN
         },
         newThreadTitle() {
-            return this.$store.state.currentThread && this.$store.state.currentThread.id
+            return this.$store.state.currentThread.status !== NOT_SET && this.$store.state.currentThread.id
                    || "New thread"
         }
         

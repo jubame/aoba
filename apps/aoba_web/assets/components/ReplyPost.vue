@@ -14,6 +14,7 @@
 <script>
 import Vue from 'vue'
 import Post from './Post'
+import {NOT_SET, CLOSED} from '../state'
 
 export default {
 
@@ -28,12 +29,13 @@ export default {
     },
     computed: {
         threadID() {
-            return this.$store.state.currentThread !== null ?
+            return this.$store.state.currentThread.status !== NOT_SET ?
             this.$store.state.currentThread.id :
             '<no_thread_yet>'
         },
         postID(){
-            return this.$store.state.currentPost !== null ?
+            return this.$store.state.currentPost.status !== CLOSED &&
+            this.$store.state.currentPost.status !== NOT_SET ?
             this.$store.state.currentPost.id :
             '<no_post_yet>'
         }

@@ -3,6 +3,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import {SAVE_THREAD, SAVE_LAST_PUSH, DRAG, DROP, CLOSE_POST, SAVE_POST} from './mutation-types'
+import {NOT_SET, CLOSED} from './state'
+
 
 Vue.use(Vuex)
 
@@ -20,23 +22,23 @@ function saveClosePost(mutation){
 
 const store = new Vuex.Store({
     state: {
-        currentThread: null,
-        currentPost: null,
+        currentThread: {status: NOT_SET, response: null, id: null},
+        currentPost: {status: NOT_SET, response: null, id: null},
         dragging: false
     },
     mutations: {
-        [SAVE_THREAD] (state, {status, info}) {
-            state.currentThread = {status: status, id: info.thread_id}
-            state.currentPost = {id: info.post_id}
+        [SAVE_THREAD] (state, {response, info}) {
+            state.currentThread = {status: 'OK', response: response, id: info.thread_id}
+            state.currentPost = {status: 'OK', response: response, id: info.post_id}
         },
-        [SAVE_POST](state, {status, info}) {
-            state.currentPost = {id: info.post_id}
+        [SAVE_POST](state, {response, info}) {
+            state.currentPost = {status: 'OK', response: 'OK', id: info.post_id}
         },
         [CLOSE_POST] (state) {
-            state.currentPost = null
+            state.currentPost = {status: CLOSED, response: 'OK', id: state.currentPost.id}
         },
-        [SAVE_LAST_PUSH] (state, {status, info}) {
-            state.lastPush = {status: status, info: info}
+        [SAVE_LAST_PUSH] (state, {response, info}) {
+            state.lastPush = {status: 'OK', response: response, info: info}
         },
         [DRAG] (state) {
             state.dragging = true
