@@ -253,6 +253,7 @@ export default {
         resize: none;
         outline: none;
         
+        
 
 
     }

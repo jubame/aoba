@@ -39,11 +39,16 @@ const Drag = () => {
         x_elem = x_pos - selected.offsetLeft;
         y_elem = y_pos - selected.offsetTop;
         /* Por si luego en CSS utilizo right y/o bottom para la posición
-         * inicial.
+         * inicial.Debo setear inmediatamente left y top después para
+         * evitar que se mueva a su posición por defecto cuando no
+         * tiene ni right ni bottom ni left ni top.
          */
         selected.style.right = 'auto';
         selected.style.bottom = 'auto';
-
+        if (selected !== null) {
+            selected.style.left = (x_pos- x_elem) + 'px';
+            selected.style.top = (y_pos - y_elem) + 'px';
+        }    
 
         window.addEventListener("mousemove", _move_elem);
         window.addEventListener("mouseup", _drag_destroy);

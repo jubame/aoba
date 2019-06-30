@@ -5,7 +5,7 @@
     <component v-bind:is="post"></component>
     <button v-if="this.canReply" v-on:click="reply">Reply</button>
 
-    <reply-post v-if="this.replyPost"></reply-post>
+    <reply-post  :replyPost="true"></reply-post>
 
 
 
@@ -19,7 +19,7 @@
 <script>
 
 import NewThreadAccordionPost from './NewThreadAccordionPost'
-import ReplyPost from './ReplyPost'
+import Post from './Post'
 import {NOT_SET, CLOSED} from '../state'
 
 
@@ -38,7 +38,7 @@ export default {
 
     components: {
         'new-thread-post': NewThreadAccordionPost,
-        'reply-post': ReplyPost
+        'reply-post': Post
     },
     computed: {
 

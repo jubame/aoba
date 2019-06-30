@@ -1,6 +1,6 @@
 <template>
   <section data-type="post" lang="en" v-bind:id="id"
-    v-bind:class="[dropZoneClass, postType, closedClass]" 
+    v-bind:class="[dropZoneClass, postType, closedClass]" @mousedown="dragInit"
         
         @drop="dropHandler"
         @keydown.ctrl.alt.190.exact="close"
@@ -8,8 +8,8 @@
     >
     
 
-    
-    <img v-bind:src="imgsrc">
+    <header v-if="!this.newThread">Reply to thread #{{this.threadID}} - Post #{{this.postID}}</header>
+    <img v-if="imgsrc" v-bind:src="imgsrc">
 
     <resizable-textarea @newbody="newBody" @push="increasePushes"
     v-for="n in lastEntryID" v-bind:key="n" v-bind:id="n" ref="resizableTextarea">
@@ -22,7 +22,7 @@ import Vue from 'vue'
 import ResizableTextarea from './ResizableTextarea'
 import {addMediaToPost} from '../js/socket.js'
 import {closeCurrentPost} from '../js/socket.js'
-
+import {NOT_SET, CLOSED} from '../state'
 
 const initialEntryID = 1
 const reader = new FileReader();
@@ -30,7 +30,7 @@ const reader = new FileReader();
 
 export default {
 
-    props: ['newThread'],
+    props: ['newThread', 'replyPost'],
     
     components: {
         'resizable-textarea': ResizableTextarea,
@@ -41,7 +41,8 @@ export default {
             lastEntryID: initialEntryID,
             pushes: 0,
             imgsrc: null,
-            closed: false
+            closed: false,
+            drag: this.$Drag()
             
 
             
@@ -65,16 +66,43 @@ export default {
             return this.$store.state.dragging ? 'dragging' : ''
         },
         postType() {
-            return this.newThread ? 'initial-post' : 'regular-post'
+            let className
+            if (this.newThread) {
+                className = 'initial-post'
+            }
+            else if (this.replyPost){
+                className = 'reply-post'
+            }
+            else {
+                className = 'regular-post'
+            }
+            return className
         },
         closedClass() {
             return this.closed ? 'closed' : ''
-        }
+        },
+
+        threadID() {
+            return this.$store.state.currentThread.status !== NOT_SET ?
+            this.$store.state.currentThread.id :
+            '<no_thread_yet>'
+        },
+        postID(){
+            return this.$store.state.currentPost.status !== CLOSED &&
+            this.$store.state.currentPost.status !== NOT_SET ?
+            this.$store.state.currentPost.id :
+            '<no_post_yet>'
+        },
 
     },
 
     methods: {
 
+        dragInit(ev) {
+            if (this.replyPost){
+                this.drag._drag_init(ev)
+            }
+        },
 
 
 
@@ -197,9 +225,51 @@ export default {
 
 
 <style lang="scss">
+
+    @import "styles/app-no-styles.scss";
+
+
     [data-type="post"] {
         
-        @import "styles/app-no-styles.scss";
+
+        $header-post-padding: 20px;
+
+
+
+
+        &.reply-post{
+            cursor: move;
+            /* https://css-tricks.com/slightly-careful-sub-elements-clickable-things/
+            * Sin pointer-events:none para los hijos, event.target es uno de los hijos
+            * del section (header o post), y drag no funciona.
+            */ 
+            * {
+                pointer-events: none;
+            }
+
+            textarea {
+                pointer-events: auto;
+            }
+            
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            background-color: beige;
+
+            //$header-post-padding: 20px;
+
+            header {
+                $height: 20px;
+                font-size: 10pt;
+                height: $height;
+                line-height: $height;
+                background-color: #98e;
+                margin: (-$header-post-padding) (-$header-post-padding) $header-post-padding (-$header-post-padding);
+            }
+
+            
+
+        }
 
         background-color: $lavendar;
 
@@ -212,8 +282,8 @@ export default {
 
 
 
-        $header-post-padding: 20px;
-        padding: $header-post-padding 0 2*$header-post-padding $header-post-padding;
+        
+        padding: $header-post-padding;
                 
         overflow: hidden;
         
