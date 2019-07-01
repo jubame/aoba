@@ -70,11 +70,11 @@ export default {
             if (this.newThread) {
                 className = 'initial-post'
             }
-            else if (this.replyPost){
+            else if (this.replyPost && !this.closed){
                 className = 'reply-post'
             }
             else {
-                className = 'regular-post'
+                className = ''
             }
             return className
         },
@@ -148,7 +148,6 @@ export default {
             )
 
             closeCurrentPost();
-
 
             this.closed = true
 
