@@ -319,7 +319,7 @@ export default {
 
         
 
-        .dragging {
+        &.dragging {
             background-color: rgb(118, 118, 180);
             min-height: 150px;
 
