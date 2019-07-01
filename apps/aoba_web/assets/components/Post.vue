@@ -1,6 +1,6 @@
 <template>
   <section data-type="post" lang="en" v-bind:id="id"
-    v-bind:class="[dropZoneClass, postType, closedClass]" @mousedown="dragInit"
+    v-bind:class="[dropZoneClass, postType, closedClass, imageLoadedClass]" @mousedown="dragInit"
         
         @drop="dropHandler"
         @keydown.ctrl.alt.190.exact="close"
@@ -98,6 +98,9 @@ export default {
             this.$store.state.currentPost.id :
             '<no_post_yet>'
         },
+        imageLoadedClass() {
+            return this.imgsrc !== null ? 'image-loaded' : ''
+        }
 
     },
 
@@ -197,6 +200,8 @@ export default {
                 // https://stackoverflow.com/a/40321354
                 this.imgsrc = URL.createObjectURL(new Blob([arrayBuffer]));
                 
+                this.$emit('imageLoaded')
+                
                 if (this.pushes === 0){
                     newThread({"type": "media", "content": arrayBuffer}, this.id)
                 }
@@ -237,7 +242,16 @@ export default {
         
 
         $header-post-padding: 20px;
-        display: inline-block;
+
+        background-color: $lavendar;
+
+        
+        &.initial-post {
+            &.image-loaded {
+                background-color: transparent;
+            }
+            overflow: visible;
+        }
 
 
 
@@ -265,12 +279,13 @@ export default {
 
         }
 
-        background-color: $lavendar;
+        
 
         &.closed {
             textarea:disabled {
-                background-color: $lavendar;
+                background-color: transparent;
                 color: black;
+                border: none;
             }
         }
 
