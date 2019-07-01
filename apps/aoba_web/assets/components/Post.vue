@@ -8,7 +8,7 @@
     >
     
 
-    <header v-if="!this.newThread">Reply to thread #{{this.threadID}} - Post #{{this.postID}}</header>
+    <header v-if="!this.newThread">{{this.headerText}}</header>
     <img v-if="imgsrc" v-bind:src="imgsrc">
 
     <resizable-textarea @newbody="newBody" @push="increasePushes"
@@ -77,6 +77,11 @@ export default {
                 className = ''
             }
             return className
+        },
+        headerText() {
+            return this.replyPost && !this.closed ? 
+                'Reply to thread ' + this.threadID + ' - ' + 'Post #' + this.postID :
+                'Post #' + this.postID
         },
         closedClass() {
             return this.closed ? 'closed' : ''
@@ -232,6 +237,7 @@ export default {
         
 
         $header-post-padding: 20px;
+        display: inline-block;
 
 
 
@@ -254,17 +260,6 @@ export default {
             right: 0;
             bottom: 0;
             background-color: beige;
-
-            //$header-post-padding: 20px;
-
-            header {
-                $height: 20px;
-                font-size: 10pt;
-                height: $height;
-                line-height: $height;
-                background-color: #98e;
-                margin: (-$header-post-padding) (-$header-post-padding) $header-post-padding (-$header-post-padding);
-            }
 
             
 
@@ -293,6 +288,17 @@ export default {
             float: left;
             margin-right: 20px;
             
+        }
+
+        header {
+            $height: 20px;
+            font-size: 10pt;
+            height: $height;
+            line-height: $height;
+            background-color: #98e;
+            margin: (-$header-post-padding) (-$header-post-padding) $header-post-padding (-$header-post-padding);
+            padding: 0 $header-post-padding;
+
         }
 
 
