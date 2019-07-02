@@ -1,16 +1,23 @@
 <template>
   <div id="app"
-        @drag.stop.prevent
-        @dragstart.stop.prevent
-        @dragover.stop.prevent="drag"
-        @dragenter.stop.prevent="drag"
-        @dragleave.stop.prevent="drop"
-        @dragend.stop.prevent="drop"
-        @drop.stop.prevent="drop"
+        
+
+        
+        @drag.stop.prevent=""
+            @dragover.stop.prevent=""
+            @dragstart.stop.prevent=""
+            @dragend.stop.prevent=""
+            @dragenter.stop.prevent="dragEnter"
+            @dragleave.stop.prevent="dragLeave"
+            @drop.stop.prevent="drop"
+ 
+
+
+        :class="dragging"
   >
-    <nav-aoba></nav-aoba>
-    <hello-world v-if="isThis('/')"></hello-world>
-    <board v-if="isThis('/board')"></board>
+    <nav-aoba ></nav-aoba>
+    <hello-world v-if="isThis('/')" ></hello-world>
+    <board v-if="isThis('/board')" ></board>
 
 
   </div>
@@ -23,7 +30,8 @@ import Nav from './components/Nav'
 import HelloWorld from './components/HelloWorld'
 import Board from './components/Board'
 import store from './store'
-import {DRAG, DROP} from './mutation-types'
+import {DRAG_N_DROP} from './mutation-types'
+import {NOT_SET, DRAGENTER, DRAGLEAVE, DROP} from './state'
 
 
 
@@ -42,15 +50,49 @@ export default {
       return this.$route.path === url
     },
 
-    drag(){
-      this.$store.commit(DRAG)
+    dragEnter(event){
+      
+      console.log(event.target)
+      //if (this.$el === event.target){
+      if (this.$store.state.dragging === NOT_SET ||
+          this.$store.state.dragging !== DRAGENTER){
+        console.log(event.target)
+        console.log('DRAGENTER')
+        this.$store.commit(DRAG_N_DROP, DRAGENTER)
+        
+      }
+      //}
+      
+      
+    },
+
+    dragLeave(event) {
+      console.log(event.target)
+      if (this.$el === event.target){
+        this.$store.commit(DRAG_N_DROP, DRAGLEAVE)
+        console.log('DRAGLEAVE')
+      }
     },
 
     drop() {
-      this.$store.commit(DROP)
+      console.log(event.target)
+      if (this.$el === event.target){
+        console.log(event.target)
+        console.log('DROP')
+        this.$store.commit(DRAG_N_DROP, DROP)
+        
+      }
+      
     }
 
   },
+
+  computed: {
+    dragging() {
+      return this.$store.state.dragging === DRAGENTER ? 'dragging' : ''
+    },
+  }
+
 }
 </script>
 
@@ -59,6 +101,13 @@ export default {
 #app {
   display: flex;
   height: 100%;
+
+  &.dragging :not([data-type="post"]) {
+    pointer-events: none;
+  }
+
+  
+
 }
 #content {
   flex: 1;

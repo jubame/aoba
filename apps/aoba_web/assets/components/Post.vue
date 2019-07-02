@@ -1,6 +1,6 @@
 <template>
   <section data-type="post" lang="en" v-bind:id="id"
-    v-bind:class="[dropZoneClass, postType, closedClass, imageLoadedClass]" @mousedown="dragInit"
+    v-bind:class="[dragging, postType, closedClass, imageLoadedClass]" @mousedown="dragInit"
         
         @drop="dropHandler"
         @keydown.ctrl.alt.190.exact="close"
@@ -22,7 +22,8 @@ import Vue from 'vue'
 import ResizableTextarea from './ResizableTextarea'
 import {addMediaToPost} from '../js/socket.js'
 import {closeCurrentPost} from '../js/socket.js'
-import {NOT_SET, CLOSED} from '../state'
+import {NOT_SET, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from '../state'
+
 
 const initialEntryID = 1
 const reader = new FileReader();
@@ -62,8 +63,8 @@ export default {
                 return this.$store.state.currentPost.id
             }
         },
-        dropZoneClass() {
-            return this.$store.state.dragging ? 'dragging' : ''
+        dragging() {
+            return this.$store.state.dragging === DRAGENTER ? 'dragging' : ''
         },
         postType() {
             let className
@@ -239,7 +240,7 @@ export default {
 
 
     [data-type="post"] {
-        
+        pointer-events: initial;
 
         $header-post-padding: 20px;
 
@@ -321,7 +322,7 @@ export default {
 
         &.dragging {
             background-color: rgb(118, 118, 180);
-            min-height: 150px;
+            //min-height: 150px;
 
             &:before{
                 content: "Drop your image here";
