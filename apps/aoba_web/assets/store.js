@@ -24,7 +24,7 @@ const store = new Vuex.Store({
     state: {
         currentThread: {status: NOT_SET, response: null, id: null},
         currentPost: {status: NOT_SET, response: null, id: null},
-        dragging: NOT_SET,
+        app_dragging: NOT_SET,
         post_dragging: NOT_SET
     },
     mutations: {
@@ -42,7 +42,7 @@ const store = new Vuex.Store({
             state.lastPush = {status: 'OK', response: response, info: info}
         },
         [DRAG_N_DROP] (state, eventName) {
-            state.dragging = eventName
+            state.app_dragging = eventName
         },
         [POST_DRAG_N_DROP] (state, eventName) {
             state.post_dragging = eventName

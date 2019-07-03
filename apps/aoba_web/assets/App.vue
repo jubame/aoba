@@ -54,7 +54,7 @@ export default {
       
       console.log(event.target)
       //if (this.$el === event.target){
-      if (this.$store.state.dragging !== DRAGENTER){
+      if (this.$store.state.app_dragging !== DRAGENTER){
         console.log(event.target)
         console.log('DRAGENTER')
         this.$store.commit(DRAG_N_DROP, DRAGENTER)
@@ -88,7 +88,7 @@ export default {
 
   computed: {
     dragging() {
-      return this.$store.state.dragging === DRAGENTER ||
+      return this.$store.state.app_dragging === DRAGENTER ||
              this.$store.state.post_dragging === DRAGENTER ? 'dragging' : ''
     },
   }

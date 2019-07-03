@@ -67,7 +67,7 @@ export default {
             }
         },
         dragging() {
-            return this.$store.state.dragging === DRAGENTER ||
+            return this.$store.state.app_dragging === DRAGENTER ||
                    this.$store.state.post_dragging === DRAGENTER ? 'dragging' : ''
         },
         postType() {
