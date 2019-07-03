@@ -62,7 +62,6 @@ export default {
             this.state =  this.state === state.CLOSED || this.imageLoaded ? state.OPEN : state.CLOSED
         },
         imageLoadedFromPost(){
-            alert('Image loaded')
             this.imageLoaded = true
 
         }

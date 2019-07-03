@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 import Vuex from 'vuex'
 
-import {SAVE_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP} from './mutation-types'
+import {SAVE_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP} from './mutation-types'
 import {NOT_SET, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from './state'
 
 
@@ -24,7 +24,8 @@ const store = new Vuex.Store({
     state: {
         currentThread: {status: NOT_SET, response: null, id: null},
         currentPost: {status: NOT_SET, response: null, id: null},
-        dragging: NOT_SET
+        dragging: NOT_SET,
+        post_dragging: NOT_SET
     },
     mutations: {
         [SAVE_THREAD] (state, {response, info}) {
@@ -42,6 +43,9 @@ const store = new Vuex.Store({
         },
         [DRAG_N_DROP] (state, eventName) {
             state.dragging = eventName
+        },
+        [POST_DRAG_N_DROP] (state, eventName) {
+            state.post_dragging = eventName
         },
 
 

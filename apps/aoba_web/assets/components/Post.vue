@@ -2,6 +2,8 @@
   <section data-type="post" lang="en" v-bind:id="id"
     v-bind:class="[dragging, postType, closedClass, imageLoadedClass]" @mousedown="dragInit"
         
+        @dragenter.stop.prevent="dragEnter"
+        @dragleave.stop.prevent="dragLeave"
         @drop="dropHandler"
         @keydown.ctrl.alt.190.exact="close"
   
@@ -23,6 +25,7 @@ import ResizableTextarea from './ResizableTextarea'
 import {addMediaToPost} from '../js/socket.js'
 import {closeCurrentPost} from '../js/socket.js'
 import {NOT_SET, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from '../state'
+import {SAVE_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP} from '../mutation-types'
 
 
 const initialEntryID = 1
@@ -64,7 +67,8 @@ export default {
             }
         },
         dragging() {
-            return this.$store.state.dragging === DRAGENTER ? 'dragging' : ''
+            return this.$store.state.dragging === DRAGENTER ||
+                   this.$store.state.post_dragging === DRAGENTER ? 'dragging' : ''
         },
         postType() {
             let className
@@ -110,6 +114,22 @@ export default {
         dragInit(ev) {
             if (this.replyPost){
                 this.drag._drag_init(ev)
+            }
+        },
+
+
+        dragEnter(event){
+            
+            console.log('POST_DRAGENTER')
+            console.log(event.target)
+            this.$store.commit(POST_DRAG_N_DROP, DRAGENTER)
+        },
+
+        dragLeave(event) {
+            console.log('POST_DRAGLEAVE')
+            if (this.$el === event.target){
+                this.$store.commit(POST_DRAG_N_DROP, DRAGLEAVE)
+                
             }
         },
 
@@ -169,6 +189,7 @@ export default {
         //https://stackoverflow.com/questions/28370240/when-dragging-and-dropping-a-file-the-datatransfer-items-property-is-undefined
         dropHandler(ev) {
             console.log('File(s) dropped');
+            this.$store.commit(POST_DRAG_N_DROP, DROP)
 
             // Prevent default behavior (Prevent file from being opened)
             ev.preventDefault();
