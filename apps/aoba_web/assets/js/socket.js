@@ -74,7 +74,9 @@ channel.join()
   .receive("error", resp => { console.log("Unable to join", resp) })
 
 
-
+channel.on("new_thread", response => {
+    console.log("New thread:", response.ids)
+})
 
 
 function newThread(type_and_content, entry_id){
