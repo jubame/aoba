@@ -262,6 +262,7 @@ export default {
 
     [data-type="post"] {
         pointer-events: initial;
+        display: inline-block;
 
         $header-post-padding: 20px;
 
@@ -269,10 +270,16 @@ export default {
 
         
         &.initial-post {
+            display: block;
             &.image-loaded {
                 background-color: transparent;
             }
             overflow: visible;
+
+            img {
+                max-height: 250px;
+                max-width: 250px;
+            }
         }
 
 
@@ -319,8 +326,9 @@ export default {
         overflow: hidden;
         
         img {
-            width: 20%;
-            min-width: 200px;
+
+            max-height: 125px;
+            max-width: 125px;
             display: block;
             float: left;
             margin-right: 20px;
