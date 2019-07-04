@@ -18,7 +18,7 @@ defmodule AobaWeb.ThreadServerChannel do
     do
 
       #Apex.ap(ids)
-      broadcast! socket, "new_thread", %{type: "text", content: content, ids: ids}
+      broadcast! socket, "new_thread", %{type: "text", content: content, ids: Map.put(ids, "entry_id", entry_id)}
       {:reply, {:ok, ids}, socket}
     else
       {:error, reason} ->

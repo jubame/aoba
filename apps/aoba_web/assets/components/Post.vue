@@ -14,8 +14,12 @@
     <img v-if="imgsrc" v-bind:src="imgsrc">
 
     <resizable-textarea @newbody="newBody" @push="increasePushes"
-    v-for="n in lastEntryID" v-bind:key="n" v-bind:id="n" ref="resizableTextarea">
+    v-for="n in lastEntryID" v-bind:key="`user-edited-entry-${n}`" ref="resizableTextarea">
     </resizable-textarea>
+
+    <p v-for="entry in receivedEntries" v-bind:key="`received-entry-${entry.entry_id}`">{{entry.content}}</p>
+
+
   </section>
 </template>
 
@@ -26,7 +30,7 @@ import {addMediaToPost} from '../js/socket.js'
 import {closeCurrentPost} from '../js/socket.js'
 import {NOT_SET, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from '../state'
 import {SAVE_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP} from '../mutation-types'
-
+import {EventBus} from '../main.js'
 
 const initialEntryID = 1
 const reader = new FileReader();
@@ -46,7 +50,10 @@ export default {
             pushes: 0,
             imgsrc: null,
             closed: false,
-            drag: this.$Drag()
+            drag: this.$Drag(),
+            receivedThreadID: null,
+            receivedPostID: null,
+            receivedEntries: null
             
 
             
@@ -56,7 +63,24 @@ export default {
     mounted: function() {
         
     },
+    
+    created() {
+        EventBus.$on('new_thread', 
+            (type, content, ids) => {
 
+                console.log('new_thread')
+                this.receivedThreadID = ids.thread_id
+                this.receivedPostID = ids.post_id
+                this.receivedEntries = [{'entry_id': ids.entry_id, 'content': content}]
+                console.log(type)
+                console.log(content)
+                console.log(ids)
+
+
+
+            }
+        );
+    },
     
 
     computed: {
@@ -93,15 +117,18 @@ export default {
         },
 
         threadID() {
-            return this.$store.state.currentThread.status !== NOT_SET ?
+            return 
+            this.receivedThreadID ||
+            (this.$store.state.currentThread.status !== NOT_SET ?
             this.$store.state.currentThread.id :
-            '<no_thread_yet>'
+            '<no_thread_yet>')
         },
         postID(){
-            return this.$store.state.currentPost.status !== CLOSED &&
+            return this.receivedPostID ||
+            (this.$store.state.currentPost.status !== CLOSED &&
             this.$store.state.currentPost.status !== NOT_SET ?
             this.$store.state.currentPost.id :
-            '<no_post_yet>'
+            '<no_post_yet>')
         },
         imageLoadedClass() {
             return this.imgsrc !== null ? 'image-loaded' : ''
