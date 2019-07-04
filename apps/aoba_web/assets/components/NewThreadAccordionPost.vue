@@ -18,6 +18,7 @@
 import Vue from 'vue'
 import Post from './Post'
 import {NOT_SET, CLOSED} from '../state'
+import {EventBus} from '../main.js'
 
 const state = {
     OPEN: 'open',
@@ -42,8 +43,25 @@ export default {
 
         return {
             state: state.CLOSED,
-            imageLoaded: false
+            imageLoaded: false,
+            thread: null
         }
+    },
+
+    created() {
+        EventBus.$on('new_thread', 
+            (type, content, ids) => {
+
+                console.log('new_thread')
+                this.thread = ids.thread_id
+                console.log(type)
+                console.log(content)
+                console.log(ids)
+
+
+
+            }
+        );
     },
 
     computed: {
@@ -51,8 +69,9 @@ export default {
             return this.state === state.OPEN
         },
         newThreadTitle() {
-            return this.$store.state.currentThread.status !== NOT_SET && this.$store.state.currentThread.id
-                   || "New thread"
+            return this.thread ||
+                   (this.$store.state.currentThread.status !== NOT_SET && this.$store.state.currentThread.id) ||
+                   "New thread"
         }
         
     },
