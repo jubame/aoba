@@ -10,7 +10,7 @@ import {Socket} from "phoenix"
 import {save, saveClosePost} from '../store'
 import {SAVE_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST} from '../mutation-types'
 import {encodeMessage, decodeMessage} from './message_pack'
-
+import {EventBus} from '../main.js'
 
 let socket = new Socket(
   "/socket",
@@ -76,6 +76,7 @@ channel.join()
 
 channel.on("new_thread", response => {
     console.log("New thread:", response.ids)
+    EventBus.$emit('new_thread', response.type, response.content, response.ids)
 })
 
 

@@ -7,6 +7,7 @@ import {store} from './store'
 import dragPlugin from './js/drag'
 import without from 'lodash';
 Vue.config.productionTip = false
+export const EventBus = new Vue();
 
 
 
@@ -15,7 +16,7 @@ Vue.use(dragPlugin)
 
 
 /* eslint-disable no-new */
-new Vue({
+let vm = new Vue({
   el: '#app',
   store,
   router,
@@ -23,4 +24,7 @@ new Vue({
       App
     },
   template: '<App/>'
-})
+});
+
+
+

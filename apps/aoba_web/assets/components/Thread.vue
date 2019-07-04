@@ -21,6 +21,7 @@
 import NewThreadAccordionPost from './NewThreadAccordionPost'
 import Post from './Post'
 import {NOT_SET, CLOSED} from '../state'
+import {EventBus} from '../main.js'
 
 
 export default {
@@ -72,11 +73,25 @@ export default {
 
     },
 
+    created() {
+        EventBus.$on('new_thread', 
+            function(type, content, ids){
+
+                console.log('new_thread')
+                console.log(type)
+                console.log(content)
+                console.log(ids)
+
+
+
+            }
+        );
+    },
+
     methods: {
         reply() {
             this.replyPost = true
         },
-        
 
 
 
