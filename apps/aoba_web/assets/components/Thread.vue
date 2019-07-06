@@ -1,19 +1,23 @@
 <template>
-  <article data-type="thread" v-bind:id="id">
+    <div>
+        <new-thread-post></new-thread-post>
+        <article data-type="thread" v-bind:id="id"
+        v-for="(thread, id) in receivedThreads" v-bind:key="id"
+        >
+
+            <span>{{id}}</span>
+
+            
+            
+            <button v-if="canReply" v-on:click="reply">Reply</button>
+
+            <reply-post  :replyPost="true"></reply-post>
+            
+        
+        </article>
+    </div>
 
 
-    <component v-bind:is="post"></component>
-    <button v-if="this.canReply" v-on:click="reply">Reply</button>
-
-    <reply-post  :replyPost="true"></reply-post>
-
-
-
-
-    
-
-    
-  </article>
 </template>
 
 <script>
@@ -41,23 +45,12 @@ export default {
     },
     created() {
 
-
-        
-        
-        
         EventBus.$on('new_thread', 
             (type, content, ids) => {
-                console.log('new_thread')
+
+                console.log('new_thread recibido')
 
                 this.$store.commit(SAVE_RECEIVED_THREAD, {content, ids})
-                
-                
-
-    
-
-                
-
-
             }
         );
     },
@@ -90,7 +83,14 @@ export default {
                 this.$store.state.currentPost.status === CLOSED ||
                 this.$store.state.currentPost.status === NOT_SET
             )
+        },
+
+        receivedThreads() {
+            alert('recalculado')
+            return this.$store.state.receivedThreads
         }
+
+        
 
 
 

@@ -32,6 +32,7 @@ const store = new Vuex.Store({
         [SAVE_RECEIVED_THREAD] (state, {content, ids}) {
             let entry_id = ids.entry_id || 1
             // https://stackoverflow.com/a/31788802
+            /*
             state.receivedThreads[ids.thread_id.toString()] =
                 {
                     [ids.post_id]: {
@@ -40,7 +41,21 @@ const store = new Vuex.Store({
                     },
                 }
             
-            
+            */
+
+            // https://vuex.vuejs.org/guide/mutations.html#mutations-follow-vue-s-reactivity-rules
+            Vue.set(
+                state.receivedThreads,
+                ids.thread_id.toString(),
+                {
+                    [ids.post_id]: {
+                        [entry_id]:
+                        content
+                    },
+                }
+                
+            )
+           
             
 
         },
