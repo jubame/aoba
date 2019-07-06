@@ -65,10 +65,14 @@ export default {
     },
     
     created() {
+
+        if (!this.newThread) {return}
+
         EventBus.$on('new_thread', 
             (type, content, ids) => {
 
-                console.log('new_thread')
+
+                //console.log('new_thread')
                 this.receivedThreadID = ids.thread_id
                 this.receivedPostID = ids.post_id
                 this.receivedEntries = [{'entry_id': ids.entry_id, 'content': content}]

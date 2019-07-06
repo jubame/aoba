@@ -22,6 +22,7 @@ import NewThreadAccordionPost from './NewThreadAccordionPost'
 import Post from './Post'
 import {NOT_SET, CLOSED} from '../state'
 import {EventBus} from '../main.js'
+import {SAVE_RECEIVED_THREAD} from '../mutation-types'
 
 
 export default {
@@ -30,11 +31,35 @@ export default {
     data () {
         return {
             msg: '今日も一日頑張るぞい！',
-            replyPost: false
+            replyPost: false,
+            
+
             
             
             
         }
+    },
+    created() {
+
+
+        
+        
+        
+        EventBus.$on('new_thread', 
+            (type, content, ids) => {
+                console.log('new_thread')
+
+                this.$store.commit(SAVE_RECEIVED_THREAD, {content, ids})
+                
+                
+
+    
+
+                
+
+
+            }
+        );
     },
 
     components: {
@@ -71,21 +96,6 @@ export default {
 
 
 
-    },
-
-    created() {
-        EventBus.$on('new_thread', 
-            function(type, content, ids){
-
-                console.log('new_thread')
-                console.log(type)
-                console.log(content)
-                console.log(ids)
-
-
-
-            }
-        );
     },
 
     methods: {
