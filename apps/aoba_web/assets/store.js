@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 import Vuex from 'vuex'
 
-import {SAVE_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP, SAVE_RECEIVED_THREAD, NEW_THREAD} from './mutation-types'
+import {SAVE_PENDING_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP, SAVE_RECEIVED_THREAD, NEW_PENDING_THREAD} from './mutation-types'
 import {NOT_SET, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from './state'
 
 
@@ -56,27 +56,36 @@ const store = new Vuex.Store({
                         },
                     }
                 }
-                )
+            )
                 
             
            
             
 
         },
-        [NEW_THREAD] (state) {
+        [NEW_PENDING_THREAD] (state) {
             
             state.newThreads.push(
                 {
-                    thread_id: 'new',
+                    thread_id: 'pending',
                     posts: {}
                 }
             )
                 
             
         },
-        [SAVE_THREAD] (state, {response, info}) {
+        [SAVE_PENDING_THREAD] (state, {response, info}) {
             state.currentThread = {status: 'OK', response: response, id: info.thread_id}
             state.currentPost = {status: 'OK', response: response, id: info.post_id}
+
+            let pendingThread = state.newThreads.find(function(element) {
+                return element.thread_id === 'pending'
+            })
+
+            pendingThread.thread_id = info.thread_id
+
+
+
         },
         [SAVE_POST](state, {response, info}) {
             state.currentPost = {status: 'OK', response: 'OK', id: info.post_id}

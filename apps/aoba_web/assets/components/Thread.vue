@@ -6,9 +6,9 @@
 
 
         <article data-type="thread" v-bind:id="id"
-        v-for="(thread, id) in newThreads" v-bind:key="`new-thread-${id}`"
+        v-for="thread in newThreads" v-bind:key="`new-thread-${thread.thread_id}`"
         >
-            <new-thread-post></new-thread-post>
+            <new-thread-post :newUserThread="thread"></new-thread-post>
 
             <span>{{id}}</span>
 
@@ -22,7 +22,7 @@
         </article>
 
         <article data-type="thread" v-bind:id="id"
-        v-for="(thread, id) in receivedThreads" v-bind:key="`received-thread-${id}`"
+        v-for="thread in receivedThreads" v-bind:key="`received-thread-${thread.thread_id}`"
         >
             <new-thread-post></new-thread-post>
 
@@ -47,7 +47,7 @@ import NewThreadAccordionPost from './NewThreadAccordionPost'
 import Post from './Post'
 import {NOT_SET, CLOSED} from '../state'
 import {EventBus} from '../main.js'
-import {SAVE_RECEIVED_THREAD, NEW_THREAD} from '../mutation-types'
+import {SAVE_RECEIVED_THREAD, NEW_PENDING_THREAD} from '../mutation-types'
 
 
 export default {
@@ -128,7 +128,7 @@ export default {
         },
 
         createThread(){
-            this.$store.commit(NEW_THREAD)
+            this.$store.commit(NEW_PENDING_THREAD)
 
 
         }

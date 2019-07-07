@@ -2,7 +2,7 @@
   <section class="new-thread-post">
     <button id="accordion-open-1" class="accordion__button" v-bind:class="{expanded: isOpen}"
             v-on:click="toggleState()">
-        {{newThreadTitle}}
+        {{newUserThread.thread_id}}
     </button>
     <div id="accordion-section-1" class="accordion__section" v-bind:class="{freeze: imageLoaded}">
         <post newThread = "true"  @imageLoaded="imageLoadedFromPost"></post>
@@ -26,6 +26,8 @@ const state = {
 };
 
 export default {
+
+    props: ['newUserThread'],
 
     components: {
         'post': Post,
@@ -68,11 +70,6 @@ export default {
         isOpen: function(){
             return this.state === state.OPEN
         },
-        newThreadTitle() {
-            return this.thread ||
-                   (this.$store.state.currentThread.status !== NOT_SET && this.$store.state.currentThread.id) ||
-                   "New thread"
-        }
         
     },
 

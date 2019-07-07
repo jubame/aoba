@@ -17,13 +17,13 @@ import { appendToBodyEntry } from '../js/socket';
 
 <script>
 
-import {newThread, operationToBodyEntry, closeBodyEntry, newPost} from '../js/socket.js'
+import {newPendingThread, operationToBodyEntry, closeBodyEntry, newPost} from '../js/socket.js'
 import {NOT_SET, CLOSED} from '../state'
 const ENTRY_OPERATION_APPEND = "append"
 const ENTRY_OPERATION_REPLACE = "replace"
 
 
-window.newThread = newThread
+//window.newThread = newPendingThread
 
 export default {
 
@@ -137,7 +137,7 @@ export default {
                     if (this.$store.state.currentThread.status === NOT_SET){
                         // Crear nuevo hilo junto con contenido
                         console.log(this.$el.value)
-                        newThread({"type": "text", "content": this.$el.value}, this.id)
+                        newPendingThread({"type": "text", "content": this.$el.value}, this.id)
                     }
                     else if (this.$store.state.currentPost.status === CLOSED || this.$store.state.currentPost.status === NOT_SET){
                         newPost(this.$store.state.currentThread.id, this.id, {"type": "text", "content": this.$el.value})

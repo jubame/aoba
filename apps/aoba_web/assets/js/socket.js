@@ -8,7 +8,7 @@
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
 import {save, saveClosePost} from '../store'
-import {SAVE_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST} from '../mutation-types'
+import {SAVE_PENDING_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST} from '../mutation-types'
 import {encodeMessage, decodeMessage} from './message_pack'
 import {EventBus} from '../main.js'
 
@@ -80,14 +80,14 @@ channel.on("new_thread", response => {
 })
 
 
-function newThread(type_and_content, entry_id){
+function newPendingThread(type_and_content, entry_id){
   
   channel.push("new_thread", {type_and_content: type_and_content, entry_id: entry_id})
   .receive("ok", response => {
-    save(SAVE_THREAD, "ok", response)
+    save(SAVE_PENDING_THREAD, "ok", response)
   })
   .receive("error", response => {
-    save(SAVE_THREAD, "error", response.reason)
+    save(SAVE_PENDING_THREAD, "error", response.reason)
   })
 }
 
@@ -153,4 +153,4 @@ function addMediaToPost(thread_id, post_id, media) {
 window.appendToBodyEntry = operationToBodyEntry
 
 export default socket
-export {newThread, operationToBodyEntry, closeBodyEntry, addMediaToPost, closeCurrentPost, newPost}
+export {newPendingThread, operationToBodyEntry, closeBodyEntry, addMediaToPost, closeCurrentPost, newPost}
