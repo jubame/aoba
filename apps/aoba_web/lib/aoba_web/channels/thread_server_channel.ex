@@ -18,7 +18,14 @@ defmodule AobaWeb.ThreadServerChannel do
     do
 
       #Apex.ap(ids)
-      broadcast! socket, "new_thread", %{type: "text", content: content, ids: Map.put(ids, "entry_id", entry_id)}
+      '''
+      https://www.reddit.com/r/elixir/comments/4t6k6w/phoenix_what_is_the_difference_between_broadcast/d5f1ijm?utm_source=share&utm_medium=web2x
+      broadcast sends an event to all clients that are in the channel that you're handling right now
+      broadcast_from does the same as broadcast but does not send to the client that sent you the message you're handling right now
+      push only sends the message to the client you pass it
+      '''
+
+      broadcast_from! socket, "new_thread", %{type: "text", content: content, ids: Map.put(ids, "entry_id", entry_id)}
       {:reply, {:ok, ids}, socket}
     else
       {:error, reason} ->

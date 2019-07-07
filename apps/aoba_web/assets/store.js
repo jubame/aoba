@@ -26,7 +26,8 @@ const store = new Vuex.Store({
         currentPost: {status: NOT_SET, response: null, id: null},
         app_dragging: NOT_SET,
         post_dragging: NOT_SET,
-        receivedThreads: []
+        receivedThreads: [],
+        newThreads: []
     },
     mutations: {
         [SAVE_RECEIVED_THREAD] (state, {content, ids}) {
@@ -64,12 +65,12 @@ const store = new Vuex.Store({
         },
         [NEW_THREAD] (state) {
             
-            state.receivedThreads.push(
+            state.newThreads.push(
                 {
                     thread_id: 'new',
                     posts: {}
                 }
-                )
+            )
                 
             
         },

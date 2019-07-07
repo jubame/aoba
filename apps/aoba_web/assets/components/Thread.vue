@@ -4,8 +4,25 @@
 
 
 
+
         <article data-type="thread" v-bind:id="id"
-        v-for="(thread, id) in receivedThreads" v-bind:key="id"
+        v-for="(thread, id) in newThreads" v-bind:key="`new-thread-${id}`"
+        >
+            <new-thread-post></new-thread-post>
+
+            <span>{{id}}</span>
+
+            
+            
+            <button v-if="canReply" v-on:click="reply">Reply</button>
+
+            <reply-post  :replyPost="true"></reply-post>
+            
+        
+        </article>
+
+        <article data-type="thread" v-bind:id="id"
+        v-for="(thread, id) in receivedThreads" v-bind:key="`received-thread-${id}`"
         >
             <new-thread-post></new-thread-post>
 
@@ -87,6 +104,10 @@ export default {
                 this.$store.state.currentPost.status === CLOSED ||
                 this.$store.state.currentPost.status === NOT_SET
             )
+        },
+
+        newThreads() {
+            return this.$store.state.newThreads
         },
 
         receivedThreads() {
