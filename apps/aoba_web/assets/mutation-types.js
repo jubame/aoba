@@ -9,5 +9,7 @@ export const POST_DRAG_N_DROP = 'POST_DRAG_N_DROP'
 
 export const SAVE_RECEIVED_THREAD = 'SAVE_RECEIVED_THREAD'
 
+export const NEW_THREAD = 'NEW_THREAD'
+
 
 

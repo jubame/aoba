@@ -42,7 +42,7 @@ export default {
 
 
         return {
-            state: state.CLOSED,
+            state: state.OPEN,
             imageLoaded: false,
             thread: null
         }

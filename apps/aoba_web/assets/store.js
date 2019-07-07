@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 import Vuex from 'vuex'
 
-import {SAVE_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP, SAVE_RECEIVED_THREAD} from './mutation-types'
+import {SAVE_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP, SAVE_RECEIVED_THREAD, NEW_THREAD} from './mutation-types'
 import {NOT_SET, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from './state'
 
 
@@ -26,7 +26,7 @@ const store = new Vuex.Store({
         currentPost: {status: NOT_SET, response: null, id: null},
         app_dragging: NOT_SET,
         post_dragging: NOT_SET,
-        receivedThreads: {},
+        receivedThreads: []
     },
     mutations: {
         [SAVE_RECEIVED_THREAD] (state, {content, ids}) {
@@ -44,20 +44,34 @@ const store = new Vuex.Store({
             */
 
             // https://vuex.vuejs.org/guide/mutations.html#mutations-follow-vue-s-reactivity-rules
-            Vue.set(
-                state.receivedThreads,
-                ids.thread_id.toString(),
+            
+            state.receivedThreads.push(
                 {
-                    [ids.post_id]: {
-                        [entry_id]:
-                        content
-                    },
+                    thread_id: ids.thread_id.toString(),
+                    posts: {
+                        [ids.post_id]: {
+                            [entry_id]:
+                            content
+                        },
+                    }
                 }
+                )
                 
-            )
+            
            
             
 
+        },
+        [NEW_THREAD] (state) {
+            
+            state.receivedThreads.push(
+                {
+                    thread_id: 'new',
+                    posts: {}
+                }
+                )
+                
+            
         },
         [SAVE_THREAD] (state, {response, info}) {
             state.currentThread = {status: 'OK', response: response, id: info.thread_id}

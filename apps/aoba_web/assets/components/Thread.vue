@@ -1,9 +1,13 @@
 <template>
     <div>
-        <new-thread-post></new-thread-post>
+        <button @mousedown="createThread">New Thread</button>
+
+
+
         <article data-type="thread" v-bind:id="id"
         v-for="(thread, id) in receivedThreads" v-bind:key="id"
         >
+            <new-thread-post></new-thread-post>
 
             <span>{{id}}</span>
 
@@ -26,7 +30,7 @@ import NewThreadAccordionPost from './NewThreadAccordionPost'
 import Post from './Post'
 import {NOT_SET, CLOSED} from '../state'
 import {EventBus} from '../main.js'
-import {SAVE_RECEIVED_THREAD} from '../mutation-types'
+import {SAVE_RECEIVED_THREAD, NEW_THREAD} from '../mutation-types'
 
 
 export default {
@@ -86,7 +90,6 @@ export default {
         },
 
         receivedThreads() {
-            alert('recalculado')
             return this.$store.state.receivedThreads
         }
 
@@ -102,6 +105,12 @@ export default {
         reply() {
             this.replyPost = true
         },
+
+        createThread(){
+            this.$store.commit(NEW_THREAD)
+
+
+        }
 
 
 
