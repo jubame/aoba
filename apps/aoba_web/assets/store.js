@@ -68,6 +68,8 @@ const store = new Vuex.Store({
             state.newThreads.push(
                 {
                     thread_id: 'pending',
+                    // para v-bind:key, puesto que no tenemos ID del hilo todavía
+                    threadPendingID: Date.now(), 
                     posts: {}
                 }
             )

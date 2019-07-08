@@ -6,9 +6,9 @@
 
 
         <article data-type="thread" v-bind:id="id"
-        v-for="thread in newThreads" v-bind:key="`new-thread-${thread.thread_id}`"
+        v-for="thread in newThreads" v-bind:key="`new-thread-${thread.threadPendingID}`"
         >
-            <new-thread-post :newUserThread="thread"></new-thread-post>
+            <new-thread-post :thread="thread"></new-thread-post>
 
             <span>{{id}}</span>
 
@@ -24,7 +24,7 @@
         <article data-type="thread" v-bind:id="id"
         v-for="thread in receivedThreads" v-bind:key="`received-thread-${thread.thread_id}`"
         >
-            <new-thread-post></new-thread-post>
+            <new-thread-post :thread="thread"></new-thread-post>
 
             <span>{{id}}</span>
 

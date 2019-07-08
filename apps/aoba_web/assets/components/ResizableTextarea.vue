@@ -41,7 +41,7 @@ export default {
             lastPushText: '',
             pushes: 0,
             closed: false,
-            hasFocus: false
+            hasFocus: false,
             
         }
     },
