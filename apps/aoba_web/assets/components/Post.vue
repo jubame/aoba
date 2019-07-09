@@ -6,19 +6,21 @@
         @dragleave.stop.prevent="dragLeave"
         @drop="dropHandler"
         @keydown.ctrl.alt.190.exact="close"
+        
   
     >
     
 
-    <header v-if="!this.newThread">{{this.headerText}}</header>
+    <header v-if="!newThread">{{this.headerText}}</header>
     <img v-if="imgsrc" v-bind:src="imgsrc">
 
     <resizable-textarea @newbody="newBody" @push="increasePushes"
     v-for="n in lastEntryID" v-bind:key="`user-edited-entry-${n}`" ref="resizableTextarea">
     </resizable-textarea>
 
-    <p v-for="entry in receivedEntries" v-bind:key="`received-entry-${entry.entry_id}`">{{entry.content}}</p>
-
+    <template v-if="!newThread">
+    <p  v-for="(content, entry_id) in post.entries" v-bind:key="`received-entry-${entry_id}`">{{content}}</p>
+    </template>
 
   </section>
 </template>
@@ -38,7 +40,7 @@ const reader = new FileReader();
 
 export default {
 
-    props: ['newThread', 'replyPost'],
+    props: ['newThread', 'replyPost', 'post'],
     
     components: {
         'resizable-textarea': ResizableTextarea,
@@ -51,10 +53,11 @@ export default {
             imgsrc: null,
             closed: false,
             drag: this.$Drag(),
+            /*
             receivedThreadID: null,
             receivedPostID: null,
             receivedEntries: null
-            
+            */
 
             
 
@@ -66,10 +69,11 @@ export default {
     
     created() {
 
-        if (!this.newThread) {return}
+        //if (!this.newThread) {return}
 
         EventBus.$on('new_thread', 
             (type, content, ids) => {
+                console.log('POST: new_thread')
 
 
                 //console.log('new_thread')
@@ -88,6 +92,16 @@ export default {
     
 
     computed: {
+
+
+        post_entries() {
+            return this.post !== undefined ? this.post.entries : []
+        },
+
+        receivedThreads() {
+            this.$store.state.receivedThreads
+
+        },
 
         id() {
             if (this.$store.state.currentPost !== null){
@@ -141,6 +155,15 @@ export default {
     },
 
     methods: {
+
+
+        checkNewThread(){
+            console.log('newThread es ' + this.newThread)
+            console.log('replyPost es ' + this.replyPost)
+            console.log('post es ' + this.post)
+            return this.newThread
+
+        },
 
         dragInit(ev) {
             if (this.replyPost){

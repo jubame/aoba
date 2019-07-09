@@ -8,7 +8,9 @@
         <article data-type="thread" v-bind:id="id"
         v-for="thread in newThreads" v-bind:key="`new-thread-${thread.threadPendingID}`"
         >
-            <new-thread-post :thread="thread"></new-thread-post>
+
+            
+            <regular-post v-for="(post, index) in thread.posts" v-bind:key="`new-thread-post-${index}`" :newThread="true" :post="thread.posts[index]"></regular-post>
 
             <span>{{id}}</span>
 
@@ -16,7 +18,7 @@
             
             <button v-if="canReply" v-on:click="reply">Reply</button>
 
-            <reply-post  :replyPost="true"></reply-post>
+            <regular-post :newThread="true" :post="null" :replyPost="true"></regular-post>
             
         
         </article>
@@ -24,7 +26,7 @@
         <article data-type="thread" v-bind:id="id"
         v-for="thread in receivedThreads" v-bind:key="`received-thread-${thread.thread_id}`"
         >
-            <new-thread-post :thread="thread"></new-thread-post>
+            <regular-post  :newThread="false" v-for="(post, index) in thread.posts" v-bind:key="`new-thread-post-${index}`" :post="thread.posts[index]"></regular-post>
 
             <span>{{id}}</span>
 
@@ -32,7 +34,7 @@
             
             <button v-if="canReply" v-on:click="reply">Reply</button>
 
-            <reply-post  :replyPost="true"></reply-post>
+            <regular-post :newThread="true" :post="null" :replyPost="true"></regular-post>
             
         
         </article>
@@ -78,7 +80,7 @@ export default {
 
     components: {
         'new-thread-post': NewThreadAccordionPost,
-        'reply-post': Post
+        'regular-post': Post
     },
     computed: {
 
