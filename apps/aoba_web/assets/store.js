@@ -26,12 +26,13 @@ const store = new Vuex.Store({
         currentPost: {status: NOT_SET, response: null, id: null},
         app_dragging: NOT_SET,
         post_dragging: NOT_SET,
-        receivedThreads: [],
-        newThreads: []
+        threads: {},
+        threadIDs: [],
+        threadIDsUser: []
     },
     mutations: {
         [SAVE_RECEIVED_THREAD] (state, {content, ids}) {
-            let entry_id = ids.entry_id || 1
+            //let entry_id = 
             // https://stackoverflow.com/a/31788802
             /*
             state.receivedThreads[ids.thread_id.toString()] =
@@ -46,19 +47,21 @@ const store = new Vuex.Store({
 
             // https://vuex.vuejs.org/guide/mutations.html#mutations-follow-vue-s-reactivity-rules
             
-            state.receivedThreads.push(
-                {
-                    thread_id: ids.thread_id.toString(),
-                    posts: {
-                        [ids.post_id]: {
-                            entries: {
-                                [entry_id]:
-                                content
-                            }
-                        },
-                    }
+            state.threads[ids.thread_id.toString()] = {
+                posts: {
+                    [ids.post_id]: {
+                        entries: {
+                            [ids.entry_id || 1]:
+                            content
+                        }
+                    },
                 }
-            )
+            }
+            
+            state.threadIDs.push(ids.thread_id.toString())
+            
+                
+            
                 
             
            
@@ -67,15 +70,17 @@ const store = new Vuex.Store({
         },
         [SAVE_NEW_THREAD] (state, response) {
             
-            state.newThreads.push(
-                {
-                    thread_id: response.info.thread_id.toString(),
-                    posts: {
-                    }
+            state.threads[response.info.thread_id.toString()] = 
+            {
+                posts: {
                 }
-            )
-                
-            
+            }
+
+            state.threadIDs.push(response.info.thread_id.toString())
+            state.threadIDsUser.push(response.info.thread_id.toString())
+
+
+
         },
         [SAVE_POST](state, {response, info}) {
             state.currentPost = {status: 'OK', response: 'OK', id: info.post_id}
