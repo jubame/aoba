@@ -50,7 +50,7 @@ import Post from './Post'
 import {NOT_SET, CLOSED} from '../state'
 import {EventBus} from '../main.js'
 import {SAVE_RECEIVED_THREAD, NEW_PENDING_THREAD} from '../mutation-types'
-
+import {newThread} from '../js/socket'
 
 export default {
     name: 'Thread',
@@ -130,7 +130,8 @@ export default {
         },
 
         createThread(){
-            this.$store.commit(NEW_PENDING_THREAD)
+            newThread();
+            
 
 
         }

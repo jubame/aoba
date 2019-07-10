@@ -3,19 +3,8 @@ defmodule Aoba.Thread do
   alias Aoba.{Thread, Post}
   defstruct thread_id: nil, post_id: 1, posts: %{}
 
-  def new(thread_id, %{type: "text", content: _content} = type_and_content, entry_id) do
-    add_post(
-      %Thread{thread_id: thread_id},
-      type_and_content,
-      entry_id
-    )
-  end
-
-  def new(thread_id, %{type: "media", content: _content} = type_and_content) do
-    add_post(
-      %Thread{thread_id: thread_id},
-      type_and_content
-    )
+  def new(thread_id) do
+    %Thread{thread_id: thread_id}
   end
 
   def add_post(thread, %{type: "text", content: _content} = type_and_content, entry_id) do

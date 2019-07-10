@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 import Vuex from 'vuex'
 
-import {SAVE_PENDING_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP, SAVE_RECEIVED_THREAD, NEW_PENDING_THREAD} from './mutation-types'
+import {SAVE_NEW_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP, SAVE_RECEIVED_THREAD} from './mutation-types'
 import {NOT_SET, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from './state'
 
 
@@ -65,32 +65,17 @@ const store = new Vuex.Store({
             
 
         },
-        [NEW_PENDING_THREAD] (state) {
+        [SAVE_NEW_THREAD] (state, response) {
             
             state.newThreads.push(
                 {
-                    thread_id: 'pending',
-                    // para v-bind:key, puesto que no tenemos ID del hilo todavía
-                    threadPendingID: Date.now(), 
+                    thread_id: response.info.thread_id.toString(),
                     posts: {
                     }
                 }
             )
                 
             
-        },
-        [SAVE_PENDING_THREAD] (state, {response, info}) {
-            state.currentThread = {status: 'OK', response: response, id: info.thread_id}
-            state.currentPost = {status: 'OK', response: response, id: info.post_id}
-
-            let pendingThread = state.newThreads.find(function(element) {
-                return element.thread_id === 'pending'
-            })
-
-            pendingThread.thread_id = info.thread_id
-
-
-
         },
         [SAVE_POST](state, {response, info}) {
             state.currentPost = {status: 'OK', response: 'OK', id: info.post_id}

@@ -2,9 +2,9 @@ defmodule Aoba.ThreadServer do
   use GenServer, restart: :transient
   alias Aoba.{Thread, Post, Body, Reply}
 
-  def start_link([id: id, type_and_content: %{type: "text", content: content}, entry_id: entry_id]) do
+  def start_link([id: id]) do
 
-    resultado = GenServer.start_link(__MODULE__, [id: id, type_and_content: %{type: "text", content: content}, entry_id: entry_id], name: via_tuple(id))
+    resultado = GenServer.start_link(__MODULE__, [id: id], name: via_tuple(id))
     resultado
   end
 
@@ -40,30 +40,19 @@ defmodule Aoba.ThreadServer do
 
 
 
-  def init([id: id, type_and_content: %{type: "text", content: content}, entry_id: entry_id]) do
+  def init([id: id]) do
     {:ok, Thread.new(
-      id,
-      %{type: "text", content: content},
-      entry_id
+      id
 
       )
     }
   end
-
-  def init([id: id, type_and_content: %{type: "media", content: content}]) do
-    {:ok, Thread.new(
-      id,
-      %{type: "media", content: content}
-      )
-    }
-  end
-
 
 
   def handle_call(:get_ids, _from, thread) do
     {:reply,
       {:ok,
-      %{thread_id: thread.thread_id, post_id: thread.post_id - 1}
+      %{thread_id: thread.thread_id}
       },
       thread
     }

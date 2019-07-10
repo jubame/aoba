@@ -14,9 +14,11 @@
     <header v-if="!newThread">{{this.headerText}}</header>
     <img v-if="imgsrc" v-bind:src="imgsrc">
 
+    <template v-if="newThread || replyPost">
     <resizable-textarea @newbody="newBody" @push="increasePushes"
     v-for="n in lastEntryID" v-bind:key="`user-edited-entry-${n}`" ref="resizableTextarea">
     </resizable-textarea>
+    </template>
 
     <template v-if="!newThread">
     <p  v-for="(content, entry_id) in post.entries" v-bind:key="`received-entry-${entry_id}`">{{content}}</p>

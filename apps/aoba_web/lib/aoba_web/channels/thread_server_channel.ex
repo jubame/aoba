@@ -9,15 +9,12 @@ defmodule AobaWeb.ThreadServerChannel do
   end
 
 
-  def handle_in("new_thread", %{"type_and_content" => %{"type" => "text", "content" => content} , "entry_id" => entry_id}, socket) do
-
-
-
-    with {:ok, pid} <- ThreadServerSupervisor.start_thread(%{type: "text", content: content}, entry_id),
-         {:ok, ids} <- ThreadServer.get_ids(pid)
+  def handle_in("new_thread", _params, socket) do
+    with {:ok, pid} <- ThreadServerSupervisor.start_thread(),
+         {:ok,  ids=%{thread_id: _thread_id}} <- ThreadServer.get_ids(pid)
     do
 
-      #Apex.ap(ids)
+      Apex.ap(ids)
       '''
       https://www.reddit.com/r/elixir/comments/4t6k6w/phoenix_what_is_the_difference_between_broadcast/d5f1ijm?utm_source=share&utm_medium=web2x
       broadcast sends an event to all clients that are in the channel that you're handling right now
@@ -25,29 +22,13 @@ defmodule AobaWeb.ThreadServerChannel do
       push only sends the message to the client you pass it
       '''
 
-      broadcast_from! socket, "new_thread", %{type: "text", content: content, ids: Map.put(ids, "entry_id", entry_id)}
+      broadcast_from! socket, "new_thread", ids
       {:reply, {:ok, ids}, socket}
     else
       {:error, reason} ->
         {:reply, {:error, %{reason: inspect(reason)}}, socket}
     end
   end
-
-
-  def handle_in("new_thread", %{"type_and_content" => %{"type" => "media", "content" => content}}, socket) do
-
-    with {:ok, pid} <- ThreadServerSupervisor.start_thread(%{type: "media", content: content}),
-         {:ok, ids} <- ThreadServer.get_ids(pid)
-    do
-
-      #Apex.ap(ids)
-      {:reply, {:ok, ids}, socket}
-    else
-      {:error, reason} ->
-        {:reply, {:error, %{reason: inspect(reason)}}, socket}
-    end
-  end
-
 
 
   def handle_in("new_post", %{"thread_id" => thread_id, "entry_id" => entry_id, "type_and_content" => %{"type" => "text", "content" => content} = type_and_content}, socket) do
