@@ -4,7 +4,20 @@ defmodule Aoba.Thread do
   defstruct thread_id: nil, post_id: 1, posts: %{}
 
   def new(thread_id) do
-    %Thread{thread_id: thread_id}
+    add_post(
+      %Thread{thread_id: thread_id}
+    )
+  end
+
+
+  def add_post(thread) do
+    {:ok, new_post} = Post.new(thread.post_id, "anon")
+    posts = Map.put(thread.posts, thread.post_id, new_post)
+
+    %Thread{thread |
+      posts: posts,
+      post_id: thread.post_id + 1
+    }
   end
 
   def add_post(thread, %{type: "text", content: _content} = type_and_content, entry_id) do

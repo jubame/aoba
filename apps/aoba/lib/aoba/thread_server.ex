@@ -52,7 +52,7 @@ defmodule Aoba.ThreadServer do
   def handle_call(:get_ids, _from, thread) do
     {:reply,
       {:ok,
-      %{thread_id: thread.thread_id}
+      %{thread_id: thread.thread_id, post_id: thread.post_id - 1}
       },
       thread
     }

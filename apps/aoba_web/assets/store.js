@@ -3,7 +3,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import {SAVE_NEW_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP, SAVE_RECEIVED_THREAD} from './mutation-types'
-import {NOT_SET, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from './state'
+import {NOT_SET, OPEN, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from './state'
 
 
 Vue.use(Vuex)
@@ -28,7 +28,8 @@ const store = new Vuex.Store({
         post_dragging: NOT_SET,
         threads: {},
         threadIDs: [],
-        threadIDsUser: []
+        threadIDsUser: [],
+        replyPostID: null
     },
     mutations: {
         [SAVE_RECEIVED_THREAD] (state, {content, ids}) {
@@ -52,9 +53,12 @@ const store = new Vuex.Store({
                 state.threads,
                 ids.thread_id.toString(),
                 {
+                    status: OPEN,
                     posts: {
                         [ids.post_id]: {
+                            status: OPEN,
                             entries: {
+                                status: OPEN,
                                 [ids.entry_id || 1]:
                                 content
                             }
@@ -80,10 +84,17 @@ const store = new Vuex.Store({
                 state.threads,
                 response.info.thread_id.toString(),
                 {
+                    status: OPEN,
                     posts: {
+                        /*
+                        [response.info.post_id]: {
+                            status: OPEN
+                        }*/
                     }
                 }    
             )
+
+
 
             state.threadIDs.push(response.info.thread_id.toString())
             state.threadIDsUser.push(response.info.thread_id.toString())

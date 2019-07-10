@@ -4,6 +4,14 @@ defmodule Aoba.Post do
   @enforce_keys [:id, :username, :date, :body, :media, :closed]
   defstruct [:id, :username, :date, :body, :media, :closed]
 
+  def new(id, username) do
+    #IO.puts("DENTRO DE POST.new")
+
+    {:ok, new_post} = {:ok, %Post{id: id, username: username, date: DateTime.utc_now(), body: %Body{}, media: "", closed: false}}
+    #Apex.ap new_post
+    {:ok, new_post}
+  end
+
   def new(id, username, %{type: "text", content: content}, entry_id) do
     #IO.puts("DENTRO DE POST.new")
     {:ok, body} = Body.new(content, entry_id)

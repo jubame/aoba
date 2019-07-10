@@ -6,19 +6,32 @@
 
 
         <article data-type="thread" v-bind:id="id"
-        v-for="(thread, thread_id) in threads" v-bind:key="`thread-${thread_id}`"
+        v-for="(thread, threadID) in threads" v-bind:key="`thread-${threadID}`"
         >
 
+            <regular-post
+                :newThread="true"
+                :post="null"
+                :replyPost="true"
+                :threadID="threadID"
+                :postID="replyPostID"
+                >
+            </regular-post>
             
-            <regular-post v-for="(post, post_id) in thread.posts" v-bind:key="`thread-${thread_id}-post-${post_id}`" :newThread="true" :post="thread.posts[index]"></regular-post>
+            <regular-post
+                v-for="(post, postID) in thread.posts" v-bind:key="`thread-${threadID}-post-${postID}`"
+                :newThread="true"
+                :threadID="threadID"
+                :postID="postID">
+            </regular-post>
 
-            <span>{{thread_id}}</span>
+            <span>{{threadID}}</span>
 
             
             
             <button v-if="canReply" v-on:click="reply">Reply</button>
 
-            <regular-post :newThread="true" :post="null" :replyPost="true"></regular-post>
+            
             
         
         </article>
@@ -45,6 +58,7 @@ export default {
         return {
             msg: '今日も一日頑張るぞい！',
             replyPost: false,
+            replyPostID: null
             
 
             
@@ -62,6 +76,9 @@ export default {
                 this.$store.commit(SAVE_RECEIVED_THREAD, {content, ids})
             }
         );
+
+
+
     },
 
     components: {
@@ -100,6 +117,8 @@ export default {
 
         
 
+        
+
 
 
 
@@ -111,10 +130,16 @@ export default {
             this.replyPost = true
         },
 
-        createThread(){
-            newThread();
-            
+        callbackThreadCreated(response){
+            console.log('RECIBIDO!!!!')
+            console.log('response es ' + response.thread_id.toString())
+            console.log('response es ' + response.post_id)
+            this.replyPostID = response.post_id
 
+        },
+
+        createThread(){
+            newThread(this.callbackThreadCreated);
 
         }
 

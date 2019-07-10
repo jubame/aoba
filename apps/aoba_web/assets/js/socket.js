@@ -80,11 +80,12 @@ channel.on("new_thread", response => {
 })
 
 
-function newThread(){
+function newThread(callbackThreadCreated){
   
   channel.push("new_thread")
   .receive("ok", response => {
     save(SAVE_NEW_THREAD, "ok", response)
+    callbackThreadCreated(response)
   })
   .receive("error", response => {
     save(SAVE_NEW_THREAD, "error", response.reason)

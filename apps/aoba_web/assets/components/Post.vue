@@ -15,13 +15,19 @@
     <img v-if="imgsrc" v-bind:src="imgsrc">
 
     <template v-if="newThread || replyPost">
-    <resizable-textarea @newbody="newBody" @push="increasePushes"
-    v-for="n in lastEntryID" v-bind:key="`user-edited-entry-${n}`" ref="resizableTextarea">
+    <resizable-textarea
+        @newbody="newBody"
+        @push="increasePushes"
+        v-for="n in lastEntryID" v-bind:key="`user-edited-entry-${n}`"
+        ref="resizableTextarea"
+        :threadID="threadID"
+        :postID="postID"
+    >
     </resizable-textarea>
     </template>
 
     <template v-if="!newThread">
-    <p  v-for="(content, entry_id) in post.entries" v-bind:key="`received-entry-${entry_id}`">{{content}}</p>
+    <p  v-for="(content, entry_id) in currentPost.entries" v-bind:key="`received-entry-${entry_id}`">{{content}}</p>
     </template>
 
   </section>
@@ -42,7 +48,7 @@ const reader = new FileReader();
 
 export default {
 
-    props: ['newThread', 'replyPost', 'post'],
+    props: ['newThread', 'replyPost', 'threadID', 'postID'],
     
     components: {
         'resizable-textarea': ResizableTextarea,
@@ -95,6 +101,14 @@ export default {
 
     computed: {
 
+        currentThread(){
+            this.$store.state.threads[this.threadID]
+        },
+
+        currentPost(){
+            this.$store.state.threads[this.threadID].posts[this.postID]
+        },
+
 
         post_entries() {
             return this.post !== undefined ? this.post.entries : []
@@ -135,21 +149,7 @@ export default {
         closedClass() {
             return this.closed ? 'closed' : ''
         },
-
-        threadID() {
-            return 
-            this.receivedThreadID ||
-            (this.$store.state.currentThread.status !== NOT_SET ?
-            this.$store.state.currentThread.id :
-            '<no_thread_yet>')
-        },
-        postID(){
-            return this.receivedPostID ||
-            (this.$store.state.currentPost.status !== CLOSED &&
-            this.$store.state.currentPost.status !== NOT_SET ?
-            this.$store.state.currentPost.id :
-            '<no_post_yet>')
-        },
+        
         imageLoadedClass() {
             return this.imgsrc !== null ? 'image-loaded' : ''
         }

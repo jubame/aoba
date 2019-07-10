@@ -27,7 +27,7 @@ const ENTRY_OPERATION_REPLACE = "replace"
 
 export default {
 
-    props: ['id'],
+    props: ['id', 'threadID', 'postID'],
 
 
 
@@ -49,7 +49,17 @@ export default {
     computed: {
         previousTextModified() {
             return this.$el.value.substring(0, this.lastPushText.length) !== this.lastPushText
-        }
+        },
+
+        currentThread(){
+            this.$store.state.threads[this.threadID]
+        },
+
+        currentPost(){
+            this.$store.state.threads[this.threadID].posts[this.postID]
+        },
+
+
     },
 
 
@@ -115,8 +125,8 @@ export default {
                 else {
                     operationToBodyEntry(
                         ENTRY_OPERATION_REPLACE,
-                        this.$store.state.currentThread.id,
-                        this.$store.state.currentPost.id,
+                        this.threadID,
+                        this.postID,
                         this.id,
                         this.$el.value,
                         closeEntry,
@@ -133,23 +143,23 @@ export default {
 
                 // Hay nuevo contenido
                 if (currentCharCount > this.charCount && !this.isComposing) {
-
-                    if (this.$store.state.currentThread.status === NOT_SET){
+                    /*
+                    if (this.currentThread.status === NOT_SET){
                         // Crear nuevo hilo junto con contenido
                         console.log(this.$el.value)
                         newPendingThread({"type": "text", "content": this.$el.value}, this.id)
                     }
-                    else if (this.$store.state.currentPost.status === CLOSED || this.$store.state.currentPost.status === NOT_SET){
-                        newPost(this.$store.state.currentThread.id, this.id, {"type": "text", "content": this.$el.value})
+                    else */if (this.currentPost.status === CLOSED){
+                        newPost(this.threadID, this.id, {"type": "text", "content": this.$el.value})
                     }
-                    else if (this.$parent.pushes > 0 && this.$store.state.currentPost.id !== null){
+                    else if (this.$parent.pushes > 0 && this.postID !== null){
                         // Añadir/concatenar a contenido anterior
                         console.log(this.$parent.id)
                         
                         operationToBodyEntry(
                             ENTRY_OPERATION_APPEND,
-                            this.$store.state.currentThread.id,
-                            this.$store.state.currentPost.id,
+                            this.threadID,
+                            this.postID,
                             this.id,
                             this.$el.value.substring(this.charCount, currentCharCount),
                             closeEntry,
@@ -166,8 +176,8 @@ export default {
                 else if (closeEntry || closePost) {
                     // Cierre a secas, sin contenido.
                     closeBodyEntry(
-                            this.$store.state.currentThread.id,
-                            this.$store.state.currentPost.id,
+                            this.threadID,
+                            this.postID,
                             this.id,
                             closePost
                         )
