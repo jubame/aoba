@@ -6,13 +6,13 @@
 
 
         <article data-type="thread" v-bind:id="id"
-        v-for="thread in newThreads" v-bind:key="`new-thread-${thread.threadPendingID}`"
+        v-for="(thread, thread_id) in threads" v-bind:key="`thread-${thread_id}`"
         >
 
             
-            <regular-post v-for="(post, index) in thread.posts" v-bind:key="`new-thread-post-${index}`" :newThread="true" :post="thread.posts[index]"></regular-post>
+            <regular-post v-for="(post, post_id) in thread.posts" v-bind:key="`thread-${thread_id}-post-${post_id}`" :newThread="true" :post="thread.posts[index]"></regular-post>
 
-            <span>{{id}}</span>
+            <span>{{thread_id}}</span>
 
             
             
@@ -23,21 +23,7 @@
         
         </article>
 
-        <article data-type="thread" v-bind:id="id"
-        v-for="thread in receivedThreads" v-bind:key="`received-thread-${thread.thread_id}`"
-        >
-            <regular-post  :newThread="false" v-for="(post, index) in thread.posts" v-bind:key="`new-thread-post-${index}`" :post="thread.posts[index]"></regular-post>
-
-            <span>{{id}}</span>
-
-            
-            
-            <button v-if="canReply" v-on:click="reply">Reply</button>
-
-            <regular-post :newThread="true" :post="null" :replyPost="true"></regular-post>
-            
         
-        </article>
     </div>
 
 
@@ -108,13 +94,9 @@ export default {
             )
         },
 
-        newThreads() {
-            return this.$store.state.newThreads
+        threads() {
+            return this.$store.state.threads
         },
-
-        receivedThreads() {
-            return this.$store.state.receivedThreads
-        }
 
         
 

@@ -47,16 +47,22 @@ const store = new Vuex.Store({
 
             // https://vuex.vuejs.org/guide/mutations.html#mutations-follow-vue-s-reactivity-rules
             
-            state.threads[ids.thread_id.toString()] = {
-                posts: {
-                    [ids.post_id]: {
-                        entries: {
-                            [ids.entry_id || 1]:
-                            content
-                        }
-                    },
+
+            Vue.set(
+                state.threads,
+                ids.thread_id.toString(),
+                {
+                    posts: {
+                        [ids.post_id]: {
+                            entries: {
+                                [ids.entry_id || 1]:
+                                content
+                            }
+                        },
+                    }
                 }
-            }
+
+            )
             
             state.threadIDs.push(ids.thread_id.toString())
             
@@ -69,12 +75,15 @@ const store = new Vuex.Store({
 
         },
         [SAVE_NEW_THREAD] (state, response) {
-            
-            state.threads[response.info.thread_id.toString()] = 
-            {
-                posts: {
-                }
-            }
+
+            Vue.set(
+                state.threads,
+                response.info.thread_id.toString(),
+                {
+                    posts: {
+                    }
+                }    
+            )
 
             state.threadIDs.push(response.info.thread_id.toString())
             state.threadIDsUser.push(response.info.thread_id.toString())
