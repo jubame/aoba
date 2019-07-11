@@ -51,7 +51,7 @@ const store = new Vuex.Store({
 
             Vue.set(
                 state.threads,
-                ids.thread_id.toString(),
+                ids.thread_id/*.toString()*/,
                 {
                     status: OPEN,
                     posts: {
@@ -69,7 +69,7 @@ const store = new Vuex.Store({
 
             )
             
-            state.threadIDs.push(ids.thread_id.toString())
+            state.threadIDs.push(ids.thread_id/*.toString()*/)
             
                 
             
@@ -83,7 +83,7 @@ const store = new Vuex.Store({
 
             Vue.set(
                 state.threads,
-                response.info.thread_id.toString(),
+                response.info.thread_id/*.toString()*/,
                 {
                     status: OPEN,
                     posts: {
@@ -105,8 +105,8 @@ const store = new Vuex.Store({
 
 
 
-            state.threadIDs.push(response.info.thread_id.toString())
-            state.threadIDsUser.push(response.info.thread_id.toString())
+            state.threadIDs.push(response.info.thread_id/*.toString()*/)
+            state.threadIDsUser.push(response.info.thread_id/*.toString()*/)
 
 
 

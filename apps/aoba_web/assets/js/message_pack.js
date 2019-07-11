@@ -3,6 +3,7 @@ import * as  msgpack from 'msgpack-lite';
 
 
 /*
+Actualización: ahora no utilizo int64, sino que hago un Kernel.trunc en servidor
 Tengo que poner {int64: true} o de lo contrario, en el servidor me pone un .0 al final del identificador
 HOLA
 creando nuevo hilo
@@ -21,7 +22,7 @@ append_to_body_entry
     ** (EXIT) no process: the process is not alive or there's no process currently associated with the given name, possibly because its application isn't started
 
 */
-var codec = msgpack.createCodec({int64: true, binarraybuffer: true});
+var codec = msgpack.createCodec({/*int64: true, */binarraybuffer: true});
 var options = {codec: codec};
 
 

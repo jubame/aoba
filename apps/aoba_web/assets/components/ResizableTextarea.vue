@@ -27,8 +27,13 @@ const ENTRY_OPERATION_REPLACE = "replace"
 
 export default {
 
-    props: ['id', 'threadID', 'postID'],
+    //props: ['id', 'threadID', 'postID'],
 
+    props: {
+        id: Number,
+        threadID: Number,
+        postID: Number
+    },
 
 
     data() {

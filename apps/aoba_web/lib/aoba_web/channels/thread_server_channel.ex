@@ -50,6 +50,10 @@ defmodule AobaWeb.ThreadServerChannel do
 
   def handle_in("operation_to_body_entry", params, socket) do
     #IO.puts("append_to_body_entry")
+
+
+
+    params = %{params | "thread_id" => Kernel.trunc(params["thread_id"])}
     %{
       "action" => action,
       "thread_id" => thread_id,
@@ -59,6 +63,7 @@ defmodule AobaWeb.ThreadServerChannel do
       "close_entry" => close_entry,
       "close_post" => close_post
     } = params
+    Apex.ap params
     case ThreadServer.operation_to_body_entry(String.to_atom(action), thread_id, post_id, entry_id, iolist, close_entry, close_post) do
       :ok -> {:reply, :ok, socket}
       {:error, reason } ->

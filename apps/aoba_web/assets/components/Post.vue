@@ -49,7 +49,15 @@ const reader = new FileReader();
 
 export default {
 
-    props: ['newThread', 'replyPost', 'threadID', 'postID'],
+    //props: ['newThread', 'replyPost', 'threadID', 'postID'],
+
+    props: {
+        newThread: Boolean,
+        replyPost: Boolean,
+        threadID: Number,
+        postID: Number
+
+    },
     
     components: {
         'resizable-textarea': ResizableTextarea,

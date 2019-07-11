@@ -12,8 +12,8 @@
             <regular-post
                 v-for="(post, postID) in thread.posts" v-bind:key="`thread-${threadID}-post-${postID}`"
                 :newThread="true"
-                :threadID="threadID"
-                :postID="postID">
+                :threadID="parseInt(threadID)"
+                :postID="parseInt(postID)">
             </regular-post>
 
             <span>{{threadID}}</span>
