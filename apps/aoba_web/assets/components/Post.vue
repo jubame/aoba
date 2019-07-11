@@ -14,7 +14,7 @@
     <header v-if="!newThread">{{this.headerText}}</header>
     <img v-if="imgsrc" v-bind:src="imgsrc">
 
-    <template v-if="newThread || replyPost">
+    <template v-if="isTypeUser">
     <resizable-textarea
         @newbody="newBody"
         @push="increasePushes"
@@ -26,7 +26,7 @@
     </resizable-textarea>
     </template>
 
-    <template v-if="!newThread">
+    <template v-if="isTypeReceived">
     <p  v-for="(content, entry_id) in currentPost.entries" v-bind:key="`received-entry-${entry_id}`">{{content}}</p>
     </template>
 
@@ -41,6 +41,7 @@ import {closeCurrentPost} from '../js/socket.js'
 import {NOT_SET, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from '../state'
 import {SAVE_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP} from '../mutation-types'
 import {EventBus} from '../main.js'
+import {USER, RECEIVED} from '../types'
 
 const initialEntryID = 1
 const reader = new FileReader();
@@ -100,13 +101,19 @@ export default {
     
 
     computed: {
+        isTypeUser(){
+            return this.$store.state.threads[this.threadID].posts[this.postID].type === USER
+        },
+        isTypeReceived(){
+            return this.$store.state.threads[this.threadID].posts[this.postID].type === RECEIVED
+        },
 
         currentThread(){
-            this.$store.state.threads[this.threadID]
+            return this.$store.state.threads[this.threadID]
         },
 
         currentPost(){
-            this.$store.state.threads[this.threadID].posts[this.postID]
+            return this.$store.state.threads[this.threadID].posts[this.postID]
         },
 
 
@@ -149,7 +156,7 @@ export default {
         closedClass() {
             return this.closed ? 'closed' : ''
         },
-        
+
         imageLoadedClass() {
             return this.imgsrc !== null ? 'image-loaded' : ''
         }

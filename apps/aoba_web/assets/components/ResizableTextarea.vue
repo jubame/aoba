@@ -52,11 +52,11 @@ export default {
         },
 
         currentThread(){
-            this.$store.state.threads[this.threadID]
+            return this.$store.state.threads[this.threadID]
         },
 
         currentPost(){
-            this.$store.state.threads[this.threadID].posts[this.postID]
+            return this.$store.state.threads[this.threadID].posts[this.postID]
         },
 
 

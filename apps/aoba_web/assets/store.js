@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 
 import {SAVE_NEW_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP, SAVE_RECEIVED_THREAD} from './mutation-types'
 import {NOT_SET, OPEN, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from './state'
-
+import {USER, RECEIVED} from './types'
 
 Vue.use(Vuex)
 
@@ -57,6 +57,7 @@ const store = new Vuex.Store({
                     posts: {
                         [ids.post_id]: {
                             status: OPEN,
+                            type: RECEIVED,
                             entries: {
                                 status: OPEN,
                                 [ids.entry_id || 1]:
@@ -86,11 +87,19 @@ const store = new Vuex.Store({
                 {
                     status: OPEN,
                     posts: {
-                        /*
+                        
+                        [response.info.post_id]: {
+                            status: OPEN,
+                            type: USER
+                        }
+                        
+                    },
+                    /*
+                    replyPosts: {
                         [response.info.post_id]: {
                             status: OPEN
-                        }*/
-                    }
+                        }
+                    }*/
                 }    
             )
 

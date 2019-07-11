@@ -8,15 +8,6 @@
         <article data-type="thread" v-bind:id="id"
         v-for="(thread, threadID) in threads" v-bind:key="`thread-${threadID}`"
         >
-
-            <regular-post
-                :newThread="true"
-                :post="null"
-                :replyPost="true"
-                :threadID="threadID"
-                :postID="replyPostID"
-                >
-            </regular-post>
             
             <regular-post
                 v-for="(post, postID) in thread.posts" v-bind:key="`thread-${threadID}-post-${postID}`"
@@ -135,6 +126,7 @@ export default {
             console.log('response es ' + response.thread_id.toString())
             console.log('response es ' + response.post_id)
             this.replyPostID = response.post_id
+
 
         },
 
