@@ -171,8 +171,13 @@ export default {
                     this.lastPushText = this.$el.value
                     this.charCount = currentCharCount
                 }
-                // Si no hay nuevo contenido, sólo queda por comprobar si estamos cerrando
-                else if (closeEntry || closePost) {
+                /* Si no hay nuevo contenido, sólo queda por comprobar si
+                 * estamos cerrando
+                 * currentCharCount > 0 porque no hace falta enviar al servidor
+                 * el cierre de un entry vacío, puesto que todavía no se ha
+                 * enviado.
+                 */
+                else if ((closeEntry || closePost) && currentCharCount) {
                     // Cierre a secas, sin contenido.
                     closeBodyEntry(
                             this.threadID,
