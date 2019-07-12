@@ -75,8 +75,8 @@ channel.join()
 
 
 channel.on("new_thread", response => {
-    console.log("New thread:", response.ids)
-    EventBus.$emit('new_thread', response.type, response.content, response.ids)
+    console.log("New thread:", response.thread_id)
+    EventBus.$emit('new_thread', response.thread_id, response.post_id)
 })
 
 

@@ -32,7 +32,7 @@ const store = new Vuex.Store({
         replyPostID: null
     },
     mutations: {
-        [SAVE_RECEIVED_THREAD] (state, {content, ids}) {
+        [SAVE_RECEIVED_THREAD] (state, {threadID, postID}) {
             //let entry_id = 
             // https://stackoverflow.com/a/31788802
             /*
@@ -51,17 +51,19 @@ const store = new Vuex.Store({
 
             Vue.set(
                 state.threads,
-                ids.thread_id/*.toString()*/,
+                threadID/*.toString()*/,
                 {
                     status: OPEN,
                     posts: {
-                        [ids.post_id]: {
+                        [postID]: {
                             status: OPEN,
                             type: RECEIVED,
                             entries: {
-                                status: OPEN,
+                                /*
                                 [ids.entry_id || 1]:
-                                content
+                                status: OPEN,
+                                content: content
+                                */
                             }
                         },
                     }
@@ -69,7 +71,7 @@ const store = new Vuex.Store({
 
             )
             
-            state.threadIDs.push(ids.thread_id/*.toString()*/)
+            state.threadIDs.push(threadID)
             
                 
             

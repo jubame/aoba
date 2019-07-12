@@ -60,11 +60,11 @@ export default {
     created() {
 
         EventBus.$on('new_thread', 
-            (type, content, ids) => {
+            (threadID, postID) => {
 
                 console.log('new_thread recibido')
 
-                this.$store.commit(SAVE_RECEIVED_THREAD, {content, ids})
+                this.$store.commit(SAVE_RECEIVED_THREAD, {threadID, postID})
             }
         );
 
