@@ -5,12 +5,12 @@
 
 
 
-        <article data-type="thread" v-bind:id="id"
-        v-for="(thread, threadID) in threads" v-bind:key="`thread-${threadID}`"
+        <article data-type="thread" :id="threadID"
+        v-for="(thread, threadID) in threads" v-bind:key="`${threadID}`"
         >
             
             <regular-post
-                v-for="(post, postID) in thread.posts" v-bind:key="`thread-${threadID}-post-${postID}`"
+                v-for="(post, postID) in thread.posts" v-bind:key="`${threadID}_${postID}`"
                 :newThread="true"
                 :threadID="parseInt(threadID)"
                 :postID="parseInt(postID)">
@@ -78,11 +78,6 @@ export default {
     },
     computed: {
 
-        id() {
-            if (this.$store.state.currentThread.status !== NOT_SET){
-                return this.$store.state.currentThread.id
-            }
-        },
 
         post: function () {
             if (this.$store.thread !== null){

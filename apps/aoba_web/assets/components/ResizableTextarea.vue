@@ -30,7 +30,7 @@ export default {
     //props: ['id', 'threadID', 'postID'],
 
     props: {
-        id: Number,
+        entryID: Number,
         threadID: Number,
         postID: Number
     },
@@ -132,7 +132,7 @@ export default {
                         ENTRY_OPERATION_REPLACE,
                         this.threadID,
                         this.postID,
-                        this.id,
+                        this.entryID,
                         this.$el.value,
                         closeEntry,
                         closePost
@@ -149,7 +149,7 @@ export default {
                 // Hay nuevo contenido
                 if (currentCharCount > this.charCount && !this.isComposing) {
                     if (this.currentPost.status === CLOSED){
-                        newPost(this.threadID, this.id, {"type": "text", "content": this.$el.value})
+                        newPost(this.threadID, this.entryID, {"type": "text", "content": this.$el.value})
                     }
                     else if (this.postID !== null){
                         // Añadir/concatenar a contenido anterior
@@ -159,7 +159,7 @@ export default {
                             ENTRY_OPERATION_APPEND,
                             this.threadID,
                             this.postID,
-                            this.id,
+                            this.entryID,
                             this.$el.value.substring(this.charCount, currentCharCount),
                             closeEntry,
                             closePost
@@ -177,7 +177,7 @@ export default {
                     closeBodyEntry(
                             this.threadID,
                             this.postID,
-                            this.id,
+                            this.entryID,
                             closePost
                         )
                     this.pushes++

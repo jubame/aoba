@@ -1,5 +1,5 @@
 <template>
-  <section data-type="post" lang="en" v-bind:id="id"
+  <section data-type="post" lang="en" :id="`thread-${threadID}_${postID}`"
     v-bind:class="[dragging, postType, closedClass, imageLoadedClass]" @mousedown="dragInit"
         
         @dragenter.stop.prevent="dragEnter"
@@ -18,17 +18,17 @@
     <resizable-textarea
         @newbody="newBody"
         @push="increasePushes"
-        v-for="entry_id in lastEntryID" v-bind:key="`user-edited-entry-${entry_id}`"
+        v-for="entryID in lastEntryID" v-bind:key="`${threadID}_${postID}_${entryID}`"
         ref="resizableTextarea"
         :threadID="threadID"
         :postID="postID"
-        :id="entry_id"
+        :entryID="entryID"
     >
     </resizable-textarea>
     </template>
 
     <template v-if="isTypeReceived">
-    <p  v-for="(content, entry_id) in currentPost.entries" v-bind:key="`received-entry-${entry_id}`">{{content}}</p>
+    <p  v-for="(content, entryID) in currentPost.entries" v-bind:key="`${threadID}_${postID}_${entryID}`">{{content}}</p>
     </template>
 
   </section>
@@ -130,16 +130,6 @@ export default {
             return this.post !== undefined ? this.post.entries : []
         },
 
-        receivedThreads() {
-            this.$store.state.receivedThreads
-
-        },
-
-        id() {
-            if (this.$store.state.currentPost !== null){
-                return this.$store.state.currentPost.id
-            }
-        },
         dragging() {
             return this.$store.state.app_dragging === DRAGENTER ||
                    this.$store.state.post_dragging === DRAGENTER ? 'dragging' : ''
@@ -232,7 +222,7 @@ export default {
 
         close(ev) {
             
-            if (!this.id){
+            if (!this.postID){
                 return
             }
             let pendingOpenEntry = this.$refs.resizableTextarea.find(
@@ -297,12 +287,12 @@ export default {
                 this.$emit('imageLoaded')
                 
                 if (this.pushes === 0){
-                    newThread({"type": "media", "content": arrayBuffer}, this.id)
+                    newThread({"type": "media", "content": arrayBuffer}, this.postID)
                 }
                 else {
                     addMediaToPost(
-                        this.$store.state.currentThread.id,
-                        this.$store.state.currentPost.id,
+                        this.threadID,
+                        this.postID,
                         arrayBuffer
                     )
 
