@@ -18,10 +18,11 @@
     <resizable-textarea
         @newbody="newBody"
         @push="increasePushes"
-        v-for="n in lastEntryID" v-bind:key="`user-edited-entry-${n}`"
+        v-for="entry_id in lastEntryID" v-bind:key="`user-edited-entry-${entry_id}`"
         ref="resizableTextarea"
         :threadID="threadID"
         :postID="postID"
+        :id="entry_id"
     >
     </resizable-textarea>
     </template>

@@ -31,10 +31,17 @@ defmodule AobaWeb.ThreadServerChannel do
   end
 
 
-  def handle_in("new_post", %{"thread_id" => thread_id, "entry_id" => entry_id, "type_and_content" => %{"type" => "text", "content" => content} = type_and_content}, socket) do
+  def handle_in("new_post",
+    %{
+      "thread_id" => thread_id,
+      "entry_id" => entry_id,
+      "type_and_content" => %{"type" => "text", "content" => content} = _type_and_content
+    } = params,
+    socket
+    ) do
 
     IO.puts("//////////////////////////////////////////////////////////////////////////////////////////////////////////")
-
+    params = %{params | "thread_id" => Kernel.trunc(params["thread_id"])}
     with post_id <- ThreadServer.add_post(thread_id, entry_id, %{type: "text", content: content})
     do
       IO.puts("HEY KIDS! WANNA DIE!??")
@@ -75,6 +82,7 @@ defmodule AobaWeb.ThreadServerChannel do
 
   def handle_in("close_body_entry", params, socket) do
     #IO.puts("append_to_body_entry")
+    params = %{params | "thread_id" => Kernel.trunc(params["thread_id"])}
     %{"thread_id" => thread_id, "post_id" => post_id, "entry_id" => entry_id, "close_post" => close_post} = params
     case ThreadServer.close_body_entry(thread_id, post_id, entry_id, close_post) do
       :ok -> {:reply, :ok, socket}
@@ -88,6 +96,7 @@ defmodule AobaWeb.ThreadServerChannel do
 
 
   def handle_in("add_media_to_post", params, socket) do
+    params = %{params | "thread_id" => Kernel.trunc(params["thread_id"])}
     %{"thread_id" => thread_id, "post_id" => post_id, "media" => media} = params
     case ThreadServer.add_media_to_post(thread_id, post_id, media) do
       :ok -> {:reply, :ok, socket}

@@ -148,16 +148,10 @@ export default {
 
                 // Hay nuevo contenido
                 if (currentCharCount > this.charCount && !this.isComposing) {
-                    /*
-                    if (this.currentThread.status === NOT_SET){
-                        // Crear nuevo hilo junto con contenido
-                        console.log(this.$el.value)
-                        newPendingThread({"type": "text", "content": this.$el.value}, this.id)
-                    }
-                    else */if (this.currentPost.status === CLOSED){
+                    if (this.currentPost.status === CLOSED){
                         newPost(this.threadID, this.id, {"type": "text", "content": this.$el.value})
                     }
-                    else if (this.$parent.pushes > 0 && this.postID !== null){
+                    else if (this.postID !== null){
                         // Añadir/concatenar a contenido anterior
                         console.log(this.$parent.id)
                         
