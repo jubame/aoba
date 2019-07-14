@@ -34,8 +34,8 @@ defmodule Aoba.ThreadServer do
     GenServer.call(via_tuple(thread_id), {:add_media_to_post, post_id, media})
   end
 
-  def add_post(thread_id, entry_id, type_and_content) do
-    GenServer.call(via_tuple(thread_id), {:add_post, entry_id, type_and_content})
+  def add_post(thread_id) do
+    GenServer.call(via_tuple(thread_id), :add_post)
   end
 
 
@@ -59,12 +59,10 @@ defmodule Aoba.ThreadServer do
   end
 
 
-  def handle_call({:add_post, entry_id, type_and_content}, _from, thread) do
+  def handle_call(:add_post, _from, thread) do
 
-    thread = Thread.add_post(
-      thread,
-      type_and_content,
-      entry_id
+    Thread.add_post(
+      thread
     )
 
 

@@ -149,7 +149,7 @@ export default {
                 // Hay nuevo contenido
                 if (currentCharCount > this.charCount && !this.isComposing) {
                     if (this.currentPost.status === CLOSED){
-                        newPost(this.threadID, this.entryID, {"type": "text", "content": this.$el.value})
+                        newPost(this.threadID)
                     }
                     else if (this.postID !== null){
                         // Añadir/concatenar a contenido anterior

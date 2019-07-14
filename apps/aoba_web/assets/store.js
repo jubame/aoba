@@ -113,7 +113,20 @@ const store = new Vuex.Store({
 
 
         },
-        [SAVE_POST](state, {response, info}) {
+        [SAVE_POST](state, {status, info}) {
+
+            Vue.set(
+                state.threads[info.threadID].posts,
+                info.postID,
+                {
+                    status: OPEN,
+                    type: USER
+                }
+
+            )
+
+
+
             state.currentPost = {status: 'OK', response: 'OK', id: info.post_id}
         },
         [CLOSE_POST] (state) {

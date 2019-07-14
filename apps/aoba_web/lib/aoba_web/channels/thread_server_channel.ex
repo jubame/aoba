@@ -30,27 +30,25 @@ defmodule AobaWeb.ThreadServerChannel do
     end
   end
 
+  def handle_in("new_post", params, socket) do
 
-  def handle_in("new_post",
-    %{
-      "thread_id" => thread_id,
-      "entry_id" => entry_id,
-      "type_and_content" => %{"type" => "text", "content" => content} = _type_and_content
-    } = params,
-    socket
-    ) do
-
-    IO.puts("//////////////////////////////////////////////////////////////////////////////////////////////////////////")
     params = %{params | "thread_id" => Kernel.trunc(params["thread_id"])}
-    with post_id <- ThreadServer.add_post(thread_id, entry_id, %{type: "text", content: content})
+    %{
+      "thread_id" => thread_id
+    } = params
+
+    with post_id <- ThreadServer.add_post(thread_id)
     do
       IO.puts("HEY KIDS! WANNA DIE!??")
       Apex.ap post_id
       {:reply, {:ok, %{post_id: post_id}}, socket}
     end
 
-
   end
+
+
+
+
 
 
 

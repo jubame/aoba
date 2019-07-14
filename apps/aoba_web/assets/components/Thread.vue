@@ -40,7 +40,7 @@ import Post from './Post'
 import {NOT_SET, CLOSED} from '../state'
 import {EventBus} from '../main.js'
 import {SAVE_RECEIVED_THREAD, NEW_PENDING_THREAD} from '../mutation-types'
-import {newThread} from '../js/socket'
+import {newThread, newPost} from '../js/socket'
 
 export default {
     name: 'Thread',
@@ -49,7 +49,7 @@ export default {
         return {
             msg: '今日も一日頑張るぞい！',
             replyPost: false,
-            replyPostID: null
+            threadID: null
             
 
             
@@ -65,6 +65,7 @@ export default {
                 console.log('new_thread recibido')
 
                 this.$store.commit(SAVE_RECEIVED_THREAD, {threadID, postID})
+                this.threadID = threadID
             }
         );
 
@@ -90,11 +91,7 @@ export default {
 
         canReply() {
     
-            return this.$store.state.currentThread.status !== NOT_SET &&
-            (
-                this.$store.state.currentPost.status === CLOSED ||
-                this.$store.state.currentPost.status === NOT_SET
-            )
+            return this.threadID
         },
 
         threads() {
@@ -113,14 +110,14 @@ export default {
 
     methods: {
         reply() {
-            this.replyPost = true
+            newPost(this.threadID)
         },
 
         callbackThreadCreated(response){
             console.log('RECIBIDO!!!!')
-            console.log('response es ' + response.thread_id.toString())
+            console.log('response es ' + response.thread_id)
             console.log('response es ' + response.post_id)
-            this.replyPostID = response.post_id
+            this.threadID = response.thread_id
 
 
         },
