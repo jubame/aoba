@@ -2,15 +2,24 @@ import Vue from 'vue'
 
 import Vuex from 'vuex'
 
-import {SAVE_NEW_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP, SAVE_RECEIVED_THREAD} from './mutation-types'
+import {SAVE_NEW_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP, SAVE_RECEIVED_THREAD, OPERATION_TO_BODY_ENTRY} from './mutation-types'
 import {NOT_SET, OPEN, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from './state'
 import {USER, RECEIVED} from './types'
 
 Vue.use(Vuex)
 
 
-function save(mutation, status, info){
+function save(mutation, response){
+    store.commit(mutation, response)
+}
+
+function saveWithStatus(mutation, status, info){
+
+    
     store.commit(mutation, {status, info})
+    
+    
+    
 }
 
 function saveClosePost(mutation){
@@ -31,7 +40,39 @@ const store = new Vuex.Store({
         threadIDsUser: [],
         replyPostID: null
     },
+
+
     mutations: {
+
+
+        [OPERATION_TO_BODY_ENTRY] (state, response) {
+
+            Vue.set(
+                state.threads[response.threadID].posts[response.postID],
+                response.entryID,
+                response.content
+
+
+
+            )
+
+            /*
+            "action" => action,
+      "thread_id" => thread_id,
+      "post_id" => post_id,
+      "entry_id" => entry_id,
+      "iolist" => iolist,
+      "close_entry" => close_entry,
+      "close_post" => close_post
+        */
+
+
+
+
+        },
+
+
+
         [SAVE_RECEIVED_THREAD] (state, {threadID, postID}) {
             //let entry_id = 
             // https://stackoverflow.com/a/31788802
@@ -147,5 +188,5 @@ const store = new Vuex.Store({
 });
 
 
-export {store, save, saveClosePost};
+export {store, save, saveWithStatus, saveClosePost};
 

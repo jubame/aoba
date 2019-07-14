@@ -7,8 +7,8 @@
 // Pass the token on params as below. Or remove it
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
-import {save, saveClosePost} from '../store'
-import {SAVE_NEW_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST} from '../mutation-types'
+import {save, saveClosePost, saveWithStatus} from '../store'
+import {SAVE_NEW_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, OPERATION_TO_BODY_ENTRY} from '../mutation-types'
 import {encodeMessage, decodeMessage} from './message_pack'
 import {EventBus} from '../main.js'
 
@@ -81,6 +81,16 @@ channel.on("new_thread", response => {
 
 channel.on("operation_to_body_entry", response => {
   console.log("operation_to_body_entry", response)
+  save(OPERATION_TO_BODY_ENTRY,
+    {
+      action: response.action,
+      threadID: response.thread_id,
+      postID: response.post_id,
+      entryID: response.entry_id,
+      content: response.iolist,
+      closeEntry: response.close_entry,
+      closePost: response.close_post}
+    )
   //EventBus.$emit('new_thread', response.thread_id, response.post_id)
 })
 
@@ -89,11 +99,11 @@ function newThread(callbackThreadCreated){
   
   channel.push("new_thread")
   .receive("ok", response => {
-    save(SAVE_NEW_THREAD, "ok", response)
+    saveWithStatus(SAVE_NEW_THREAD, "ok", response)
     callbackThreadCreated(response)
   })
   .receive("error", response => {
-    save(SAVE_NEW_THREAD, "error", response.reason)
+    saveWithStatus(SAVE_NEW_THREAD, "error", response.reason)
   })
 }
 
@@ -102,10 +112,10 @@ function newPost(threadID){
   
   channel.push("new_post", {thread_id: threadID})
   .receive("ok", response => {
-    save(SAVE_POST, "ok", {threadID: threadID, postID: response.post_id})
+    saveWithStatus(SAVE_POST, "ok", {threadID: threadID, postID: response.post_id})
   })
   .receive("error", response => {
-    save(SAVE_POST, "error", response.reason)
+    saveWithStatus(SAVE_POST, "error", response.reason)
   })
 }
 
@@ -113,28 +123,28 @@ function newPost(threadID){
 function operationToBodyEntry(action, thread_id, post_id, entry_id, content, closeEntry, closePost){
   channel.push("operation_to_body_entry", {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost})
   .receive("ok", response => {
-    save(SAVE_LAST_PUSH, "ok", response)
+    saveWithStatus(SAVE_LAST_PUSH, "ok", response)
   })
   .receive("error", response => {
     let info = {
       reason: response.reason,
       entry_id: entry_id
     }
-    save(SAVE_LAST_PUSH, "error", info)
+    saveWithStatus(SAVE_LAST_PUSH, "error", info)
   })
 }
 
 function closeBodyEntry(thread_id, post_id, entry_id, closePost){
   channel.push("close_body_entry", {thread_id: thread_id, post_id: post_id, entry_id: entry_id, close_post: closePost})
   .receive("ok", response => {
-    save(SAVE_LAST_PUSH, "ok", response)
+    saveWithStatus(SAVE_LAST_PUSH, "ok", response)
   })
   .receive("error", response => {
     let info = {
       reason: response.reason,
       entry_id: entry_id
     }
-    save(SAVE_LAST_PUSH, "error", info)
+    saveWithStatus(SAVE_LAST_PUSH, "error", info)
   })
 }
 
