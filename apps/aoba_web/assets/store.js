@@ -48,7 +48,7 @@ const store = new Vuex.Store({
         [OPERATION_TO_BODY_ENTRY] (state, response) {
 
             Vue.set(
-                state.threads[response.threadID].posts[response.postID],
+                state.threads[response.threadID].posts[response.postID].entries,
                 response.entryID,
                 response.content
 
