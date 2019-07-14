@@ -79,6 +79,11 @@ channel.on("new_thread", response => {
     EventBus.$emit('new_thread', response.thread_id, response.post_id)
 })
 
+channel.on("operation_to_body_entry", response => {
+  console.log("operation_to_body_entry", response)
+  //EventBus.$emit('new_thread', response.thread_id, response.post_id)
+})
+
 
 function newThread(callbackThreadCreated){
   

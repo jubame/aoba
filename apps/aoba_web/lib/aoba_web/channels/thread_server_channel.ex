@@ -70,7 +70,9 @@ defmodule AobaWeb.ThreadServerChannel do
     } = params
     Apex.ap params
     case ThreadServer.operation_to_body_entry(String.to_atom(action), thread_id, post_id, entry_id, iolist, close_entry, close_post) do
-      :ok -> {:reply, :ok, socket}
+      :ok ->
+        broadcast_from! socket, "operation_to_body_entry", params
+        {:reply, :ok, socket}
       {:error, reason } ->
         #Apex.ap reason
         {:reply, {:error, %{reason: reason}}, socket}
