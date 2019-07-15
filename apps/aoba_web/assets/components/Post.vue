@@ -22,13 +22,21 @@
         ref="resizableTextarea"
         :threadID="threadID"
         :postID="postID"
-        :entryID="entryID"
+        :entryID="parseInt(entryID)"
     >
     </resizable-textarea>
     </template>
 
     <template v-if="isTypeReceived">
-    <p  v-for="(content, entryID) in currentPost.entries" v-bind:key="`${threadID}_${postID}_${entryID}`">{{content}}</p>
+    <received-entry
+        v-for="(content, entryID) in currentPost.entries"
+        v-bind:key="`${threadID}_${postID}_${entryID}`"
+        :threadID="threadID"
+        :postID="postID"
+        :entryID="parseInt(entryID)"
+        :content="content"
+        >
+    </received-entry>
     </template>
 
   </section>
@@ -37,6 +45,7 @@
 <script>
 import Vue from 'vue'
 import ResizableTextarea from './ResizableTextarea'
+import ReceivedEntry from './ReceivedEntry'
 import {addMediaToPost} from '../js/socket.js'
 import {closeCurrentPost} from '../js/socket.js'
 import {NOT_SET, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from '../state'
@@ -62,6 +71,7 @@ export default {
     
     components: {
         'resizable-textarea': ResizableTextarea,
+        'received-entry': ReceivedEntry
     },
 
     data() {
@@ -405,6 +415,13 @@ export default {
             background-color: #98e;
             margin: (-$header-post-padding) (-$header-post-padding) $header-post-padding (-$header-post-padding);
             padding: 0 $header-post-padding;
+
+        }
+
+        > p {
+            font-family: monospace;
+            font-weight: 400;
+            font-size: 10pt;
 
         }
 
