@@ -47,6 +47,20 @@ const store = new Vuex.Store({
 
         [OPERATION_TO_BODY_ENTRY] (state, response) {
 
+            if (!(response.postID in state.threads[response.threadID].posts)) {
+                Vue.set(
+                    state.threads[response.threadID].posts,
+                    response.postID,
+                    {
+                        status: OPEN,
+                        type: RECEIVED,
+                        entries: {}
+                    }
+
+
+                )
+            }
+
             let content = state.threads[response.threadID].posts[response.postID].entries[response.entryID] || ''
             if (response.action === "append") {
                 content += response.content
