@@ -13,7 +13,7 @@ export default {
 
     computed: {
         entryContent() {
-            return this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID]
+            return this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].content
         }
 
 

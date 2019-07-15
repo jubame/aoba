@@ -61,7 +61,9 @@ const store = new Vuex.Store({
                 )
             }
 
-            let content = state.threads[response.threadID].posts[response.postID].entries[response.entryID] || ''
+            let content = (state.threads[response.threadID].posts[response.postID].entries[response.entryID] &&
+                          state.threads[response.threadID].posts[response.postID].entries[response.entryID].content)
+                          || ''
             if (response.action === "append") {
                 content += response.content
             } else if (response.action === "replace") {
@@ -71,7 +73,12 @@ const store = new Vuex.Store({
             Vue.set(
                 state.threads[response.threadID].posts[response.postID].entries,
                 response.entryID,
-                content
+                {
+                    status: OPEN,
+                    content: content,
+
+                }
+                
 
 
 
