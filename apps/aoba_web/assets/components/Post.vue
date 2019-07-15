@@ -146,10 +146,10 @@ export default {
         },
         postType() {
             let className
-            if (this.newThread) {
+            if (this.isTypeReceived) {
                 className = 'initial-post'
             }
-            else if (this.replyPost && !this.closed){
+            else if (this.isTypeUser && !this.closed){
                 className = 'reply-post'
             }
             else {
