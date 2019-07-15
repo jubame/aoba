@@ -95,7 +95,7 @@ const store = new Vuex.Store({
                 state.threads[response.threadID].posts[response.postID].entries,
                 response.entryID,
                 {
-                    status: response.closeEntry ? CLOSE : OPEN,
+                    status: response.closeEntry ? CLOSED : OPEN,
                     content: content,
 
                 }
