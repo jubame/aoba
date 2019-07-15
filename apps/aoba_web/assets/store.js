@@ -47,10 +47,17 @@ const store = new Vuex.Store({
 
         [OPERATION_TO_BODY_ENTRY] (state, response) {
 
+            let content = state.threads[response.threadID].posts[response.postID].entries[response.entryID] || ''
+            if (response.action === "append") {
+                content += response.content
+            } else if (response.action === "replace") {
+                content = response.content
+            }
+
             Vue.set(
                 state.threads[response.threadID].posts[response.postID].entries,
                 response.entryID,
-                response.content
+                content
 
 
 
