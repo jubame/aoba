@@ -8,7 +8,7 @@
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
 import {save, saveClosePost, saveWithStatus} from '../store'
-import {SAVE_NEW_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, OPERATION_TO_BODY_ENTRY} from '../mutation-types'
+import {SAVE_NEW_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, OPERATION_TO_BODY_ENTRY, CLOSE_BODY_ENTRY} from '../mutation-types'
 import {encodeMessage, decodeMessage} from './message_pack'
 import {EventBus} from '../main.js'
 
@@ -93,6 +93,26 @@ channel.on("operation_to_body_entry", response => {
     )
   //EventBus.$emit('new_thread', response.thread_id, response.post_id)
 })
+
+
+channel.on("close_body_entry", response => {
+  console.log("close_body_entry", response)
+  save(CLOSE_BODY_ENTRY,
+    {
+      
+      threadID: response.thread_id,
+      postID: response.post_id,
+      entryID: response.entry_id,
+      closeEntry: response.close_entry,
+      closePost: response.close_post}
+    )
+
+
+    // %{"thread_id" => thread_id, "post_id" => post_id, "entry_id" => entry_id, "close_post" => close_post} = params
+    
+  //EventBus.$emit('new_thread', response.thread_id, response.post_id)
+})
+
 
 
 function newThread(callbackThreadCreated){

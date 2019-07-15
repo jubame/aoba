@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 import Vuex from 'vuex'
 
-import {SAVE_NEW_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP, SAVE_RECEIVED_THREAD, OPERATION_TO_BODY_ENTRY} from './mutation-types'
+import {SAVE_NEW_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP, SAVE_RECEIVED_THREAD, OPERATION_TO_BODY_ENTRY, CLOSE_BODY_ENTRY} from './mutation-types'
 import {NOT_SET, OPEN, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from './state'
 import {USER, RECEIVED} from './types'
 
@@ -45,6 +45,27 @@ const store = new Vuex.Store({
     mutations: {
 
 
+
+        [CLOSE_BODY_ENTRY] (state, response) {
+
+
+            Vue.set(
+                state.threads[response.threadID].posts[response.postID].entries[response.entryID],
+                'status',
+                CLOSED
+                
+
+
+
+            )
+
+
+            // %{"thread_id" => thread_id, "post_id" => post_id, "entry_id" => entry_id, "close_post" => close_post} = params
+
+
+        },
+
+
         [OPERATION_TO_BODY_ENTRY] (state, response) {
 
             if (!(response.postID in state.threads[response.threadID].posts)) {
@@ -52,7 +73,7 @@ const store = new Vuex.Store({
                     state.threads[response.threadID].posts,
                     response.postID,
                     {
-                        status: OPEN,
+                        status: response.closePost ? CLOSED : OPEN,
                         type: RECEIVED,
                         entries: {}
                     }
@@ -74,7 +95,7 @@ const store = new Vuex.Store({
                 state.threads[response.threadID].posts[response.postID].entries,
                 response.entryID,
                 {
-                    status: OPEN,
+                    status: response.closeEntry ? CLOSE : OPEN,
                     content: content,
 
                 }

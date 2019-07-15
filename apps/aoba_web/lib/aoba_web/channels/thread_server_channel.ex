@@ -85,7 +85,9 @@ defmodule AobaWeb.ThreadServerChannel do
     params = %{params | "thread_id" => Kernel.trunc(params["thread_id"])}
     %{"thread_id" => thread_id, "post_id" => post_id, "entry_id" => entry_id, "close_post" => close_post} = params
     case ThreadServer.close_body_entry(thread_id, post_id, entry_id, close_post) do
-      :ok -> {:reply, :ok, socket}
+      :ok ->
+        broadcast_from! socket, "close_body_entry", params
+        {:reply, :ok, socket}
       {:error, reason } ->
         #Apex.ap reason
         {:reply, {:error, %{reason: reason}}, socket}
