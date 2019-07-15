@@ -168,8 +168,8 @@ function closeBodyEntry(thread_id, post_id, entry_id, closePost){
   })
 }
 
-function closeCurrentPost() {
-  saveClosePost(CLOSE_POST);
+function closeCurrentPost(threadID, postID) {
+  saveClosePost(CLOSE_POST, threadID, postID);
 }
 
 

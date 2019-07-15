@@ -11,7 +11,7 @@
     >
     
 
-    <header v-if="!newThread">{{this.headerText}}</header>
+    
     <img v-if="imgsrc" v-bind:src="imgsrc">
 
     <template v-if="isTypeUser">
@@ -62,11 +62,8 @@ export default {
     //props: ['newThread', 'replyPost', 'threadID', 'postID'],
 
     props: {
-        newThread: Boolean,
-        replyPost: Boolean,
         threadID: Number,
         postID: Number
-
     },
     
     components: {
@@ -79,13 +76,7 @@ export default {
             lastEntryID: initialEntryID,
             pushes: 0,
             imgsrc: null,
-            closed: false,
             drag: this.$Drag(),
-            /*
-            receivedThreadID: null,
-            receivedPostID: null,
-            receivedEntries: null
-            */
 
             
 
@@ -163,7 +154,9 @@ export default {
                 'Post #' + this.postID
         },
         closedClass() {
-            return this.closed ? 'closed' : ''
+
+            return this.$store.state.threads[this.threadID].posts[this.postID].status === CLOSED ? 'closed' : ''
+
         },
 
         imageLoadedClass() {
@@ -179,7 +172,6 @@ export default {
             console.log('newThread es ' + this.newThread)
             console.log('replyPost es ' + this.replyPost)
             console.log('post es ' + this.post)
-            return this.newThread
 
         },
 
@@ -248,7 +240,7 @@ export default {
                 }
             )
 
-            closeCurrentPost();
+            closeCurrentPost(this.threadID, this.postID);
 
             this.closed = true
 

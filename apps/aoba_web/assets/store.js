@@ -22,8 +22,8 @@ function saveWithStatus(mutation, status, info){
     
 }
 
-function saveClosePost(mutation){
-    store.commit(mutation)
+function saveClosePost(mutation, threadID, postID){
+    store.commit(mutation, {threadID, postID})
 }
 
 
@@ -219,7 +219,13 @@ const store = new Vuex.Store({
 
             state.currentPost = {status: 'OK', response: 'OK', id: info.post_id}
         },
-        [CLOSE_POST] (state) {
+        [CLOSE_POST] (state, {threadID, postID}) {
+
+            Vue.set(
+                state.threads[threadID].posts[postID],
+                'state',
+                CLOSED
+            )
             state.currentPost = {status: CLOSED, response: 'OK', id: state.currentPost.id}
         },
         [SAVE_LAST_PUSH] (state, {response, info}) {
