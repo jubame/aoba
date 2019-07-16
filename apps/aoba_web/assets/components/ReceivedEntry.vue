@@ -19,7 +19,13 @@ export default {
             return this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].content
         },
         status() {
-            return this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].status === OPEN ? 'open' : 'closed'
+            if (this.$store.state.threads[this.threadID].posts[this.postID].status === CLOSED){
+                return 'closed'
+            } else if (this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].status === CLOSED) {
+                return 'closed'
+            } else {
+                return 'open'
+            }
         }
 
 

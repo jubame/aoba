@@ -47,7 +47,7 @@ import Vue from 'vue'
 import ResizableTextarea from './ResizableTextarea'
 import ReceivedEntry from './ReceivedEntry'
 import {addMediaToPost} from '../js/socket.js'
-import {closeCurrentPost} from '../js/socket.js'
+import {closeUserPost} from '../js/socket.js'
 import {NOT_SET, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from '../state'
 import {SAVE_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP} from '../mutation-types'
 import {EventBus} from '../main.js'
@@ -243,7 +243,7 @@ export default {
                 }
             )
 
-            closeCurrentPost(this.threadID, this.postID);
+            closeUserPost(this.threadID, this.postID);
 
 
 

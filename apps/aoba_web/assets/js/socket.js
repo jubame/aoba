@@ -114,6 +114,11 @@ channel.on("close_body_entry", response => {
 })
 
 
+channel.on("close_post", response => {
+  console.log("close_post:", response.thread_id)
+  saveClosePost(CLOSE_POST, response.thread_id, response.post_id);
+})
+
 
 function newThread(callbackThreadCreated){
   
@@ -168,7 +173,7 @@ function closeBodyEntry(thread_id, post_id, entry_id, closePost){
   })
 }
 
-function closeCurrentPost(threadID, postID) {
+function closeUserPost(threadID, postID) {
 
   channel.push("close_post", {thread_id: threadID, post_id: postID})
   .receive("ok", response => {
@@ -195,4 +200,4 @@ function addMediaToPost(thread_id, post_id, media) {
 window.appendToBodyEntry = operationToBodyEntry
 
 export default socket
-export {newThread, operationToBodyEntry, closeBodyEntry, addMediaToPost, closeCurrentPost, newPost}
+export {newThread, operationToBodyEntry, closeBodyEntry, addMediaToPost, closeUserPost, newPost}
