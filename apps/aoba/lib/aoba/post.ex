@@ -29,7 +29,7 @@ defmodule Aoba.Post do
   end
 
   def close(post) do
-    %Post{ post | closed: true}
+    {:ok, %Post{ post | closed: true}}
   end
 
   def close(post, body) do

@@ -96,6 +96,22 @@ defmodule AobaWeb.ThreadServerChannel do
   end
 
 
+  def handle_in("close_post", params, socket) do
+    #IO.puts("append_to_body_entry")
+    params = %{params | "thread_id" => Kernel.trunc(params["thread_id"])}
+    %{"thread_id" => thread_id, "post_id" => post_id} = params
+    case ThreadServer.close_post(thread_id, post_id) do
+      :ok ->
+        broadcast_from! socket, "close_post", params
+        {:reply, :ok, socket}
+      {:error, reason } ->
+        #Apex.ap reason
+        {:reply, {:error, %{reason: reason}}, socket}
+    end
+
+  end
+
+
 
   def handle_in("add_media_to_post", params, socket) do
     params = %{params | "thread_id" => Kernel.trunc(params["thread_id"])}
