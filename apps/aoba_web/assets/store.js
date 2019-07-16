@@ -223,7 +223,7 @@ const store = new Vuex.Store({
 
             Vue.set(
                 state.threads[threadID].posts[postID],
-                'state',
+                'status',
                 CLOSED
             )
             state.currentPost = {status: CLOSED, response: 'OK', id: state.currentPost.id}

@@ -11,7 +11,7 @@
     >
     
 
-    
+    <header>{{this.headerText}}</header>
     <img v-if="imgsrc" v-bind:src="imgsrc">
 
     <template v-if="isTypeUser">
@@ -137,7 +137,7 @@ export default {
         },
         postType() {
             let className
-            if (this.isTypeReceived) {
+            if (this.isTypeReceived || (this.isTypeUser && this.closed)) {
                 className = 'initial-post'
             }
             else if (this.isTypeUser && !this.closed){
@@ -148,14 +148,17 @@ export default {
             }
             return className
         },
+        closed() {
+            return this.$store.state.threads[this.threadID].posts[this.postID].status === CLOSED
+        },
         headerText() {
-            return this.replyPost && !this.closed ? 
+            return this.isTypeUser && !this.closed ? 
                 'Reply to thread ' + this.threadID + ' - ' + 'Post #' + this.postID :
                 'Post #' + this.postID
         },
         closedClass() {
 
-            return this.$store.state.threads[this.threadID].posts[this.postID].status === CLOSED ? 'closed' : ''
+            return this.closed ? 'closed' : ''
 
         },
 
@@ -242,7 +245,6 @@ export default {
 
             closeCurrentPost(this.threadID, this.postID);
 
-            this.closed = true
 
 
         },
