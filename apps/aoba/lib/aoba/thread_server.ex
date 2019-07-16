@@ -65,12 +65,15 @@ defmodule Aoba.ThreadServer do
 
   def handle_call(:add_post, _from, thread) do
 
-    Thread.add_post(
+
+    thread = Thread.add_post(
       thread
     )
 
+    #raise Exception
 
-    |> reply_success(thread.post_id)
+
+    reply_success(thread, thread.post_id - 1)
   end
 
 
@@ -129,9 +132,13 @@ defmodule Aoba.ThreadServer do
   def handle_call({:close_post, post_id}, _from, thread) do
     IO.puts('OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO')
 
-    case Post.close(thread.posts[post_id]) do
-      {:ok, post } ->
-        reply_success(post, :ok)
+    Apex.ap thread
+
+    Apex.ap post_id
+
+    case Thread.close_post(thread, post_id) do
+      {:ok, new_thread } ->
+        reply_success(new_thread, :ok)
     end
 
   end

@@ -14,7 +14,7 @@ defmodule AobaWeb.ThreadServerChannel do
          {:ok,  ids=%{thread_id: _thread_id}} <- ThreadServer.get_ids(pid)
     do
 
-      Apex.ap(ids)
+      #Apex.ap(ids)
       '''
       https://www.reddit.com/r/elixir/comments/4t6k6w/phoenix_what_is_the_difference_between_broadcast/d5f1ijm?utm_source=share&utm_medium=web2x
       broadcast sends an event to all clients that are in the channel that you're handling right now
@@ -39,8 +39,8 @@ defmodule AobaWeb.ThreadServerChannel do
 
     with post_id <- ThreadServer.add_post(thread_id)
     do
-      IO.puts("HEY KIDS! WANNA DIE!??")
-      Apex.ap post_id
+      #IO.puts("HEY KIDS! WANNA DIE!??")
+      #Apex.ap post_id
       {:reply, {:ok, %{post_id: post_id}}, socket}
     end
 
@@ -68,7 +68,7 @@ defmodule AobaWeb.ThreadServerChannel do
       "close_entry" => close_entry,
       "close_post" => close_post
     } = params
-    Apex.ap params
+    #Apex.ap params
     case ThreadServer.operation_to_body_entry(String.to_atom(action), thread_id, post_id, entry_id, iolist, close_entry, close_post) do
       :ok ->
         broadcast_from! socket, "operation_to_body_entry", params

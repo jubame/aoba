@@ -11,12 +11,30 @@ defmodule Aoba.Thread do
 
 
   def add_post(thread) do
+    #IO.puts "*************************thread"
+    #Apex.ap thread
+    #IO.puts "*************************thread.post_id"
+    #Apex.ap thread.post_id
     {:ok, new_post} = Post.new(thread.post_id, "anon")
+
     posts = Map.put(thread.posts, thread.post_id, new_post)
+    #raise Exception
 
     %Thread{thread |
       posts: posts,
       post_id: thread.post_id + 1
+    }
+  end
+
+  def close_post(thread, post_id) do
+
+
+    thread = update_in(thread.posts[post_id], fn post -> Post.close(post) end)
+
+
+
+    {:ok,
+      thread
     }
   end
 
