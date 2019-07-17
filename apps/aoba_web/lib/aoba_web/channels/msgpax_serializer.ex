@@ -42,7 +42,7 @@ defmodule AobaWeb.MsgpaxSerializer do
   """
   def decode!(message, _opts) do
     message
-    |> Msgpax.unpack!()
+    |> Msgpax.unpack!(binary: true)
     |> Phoenix.Socket.Message.from_map!()
   end
 

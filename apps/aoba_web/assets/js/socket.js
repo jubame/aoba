@@ -194,8 +194,15 @@ function closeUserPost(threadID, postID) {
 
 
 
-function addMediaToPost(thread_id, post_id, media) {
-  channel.push("add_media_to_post", {thread_id: thread_id, post_id: post_id, media: media})
+function addMediaToPost(threadID, postID, media) {
+
+  save(SAVE_MEDIA, {
+    threadID: threadID,
+    postID: postID,
+    media: media
+  })
+
+  channel.push("add_media_to_post", {thread_id: threadID, post_id: postID, media: media})
   .receive("ok", response => {
     console.log(response)
   })

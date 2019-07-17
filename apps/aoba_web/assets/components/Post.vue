@@ -75,7 +75,6 @@ export default {
         return {
             lastEntryID: initialEntryID,
             pushes: 0,
-            imgsrc: null,
             drag: this.$Drag(),
 
             
@@ -164,6 +163,11 @@ export default {
 
         imageLoadedClass() {
             return this.imgsrc !== null ? 'image-loaded' : ''
+        },
+
+        imgsrc() {
+            // https://stackoverflow.com/a/40321354
+            return this.currentPost.media ? URL.createObjectURL(new Blob([this.currentPost.media])) : null
         }
 
     },
@@ -285,8 +289,6 @@ export default {
             reader.onload = (e) => { // Closure variable as
 
                 let arrayBuffer = e.target.result
-                // https://stackoverflow.com/a/40321354
-                this.imgsrc = URL.createObjectURL(new Blob([arrayBuffer]));
                 
                 this.$emit('imageLoaded')
                 
