@@ -8,7 +8,7 @@
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
 import {save, saveClosePost, saveWithStatus} from '../store'
-import {SAVE_NEW_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, OPERATION_TO_BODY_ENTRY, CLOSE_BODY_ENTRY} from '../mutation-types'
+import {SAVE_NEW_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, OPERATION_TO_BODY_ENTRY, CLOSE_BODY_ENTRY, SAVE_MEDIA} from '../mutation-types'
 import {encodeMessage, decodeMessage} from './message_pack'
 import {EventBus} from '../main.js'
 
@@ -122,7 +122,11 @@ channel.on("close_post", response => {
 
 channel.on("add_media_to_post", response => {
   console.log("add_media_to_post:", response.thread_id)
-  
+  save(SAVE_MEDIA, {
+    threadID: response.thread_id,
+    postID: response.post_id,
+    media: response.media
+  })
 })
 
 

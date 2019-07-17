@@ -2,7 +2,18 @@ import Vue from 'vue'
 
 import Vuex from 'vuex'
 
-import {SAVE_NEW_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP, SAVE_RECEIVED_THREAD, OPERATION_TO_BODY_ENTRY, CLOSE_BODY_ENTRY} from './mutation-types'
+import {
+    SAVE_NEW_THREAD,
+    SAVE_LAST_PUSH,
+    CLOSE_POST,
+    SAVE_POST,
+    DRAG_N_DROP,
+    POST_DRAG_N_DROP,
+    SAVE_RECEIVED_THREAD,
+    OPERATION_TO_BODY_ENTRY,
+    CLOSE_BODY_ENTRY,
+    SAVE_MEDIA
+} from './mutation-types'
 import {NOT_SET, OPEN, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from './state'
 import {USER, RECEIVED} from './types'
 
@@ -148,6 +159,7 @@ const store = new Vuex.Store({
                         [postID]: {
                             status: OPEN,
                             type: RECEIVED,
+                            media: null,
                             entries: {
                                 /*
                                 [ids.entry_id || 1]:
@@ -182,7 +194,8 @@ const store = new Vuex.Store({
                         
                         [response.info.post_id]: {
                             status: OPEN,
-                            type: USER
+                            type: USER,
+                            media: null
                         }
                         
                     },
@@ -210,7 +223,8 @@ const store = new Vuex.Store({
                 info.postID,
                 {
                     status: OPEN,
-                    type: USER
+                    type: USER,
+                    media: null
                 }
 
             )
@@ -219,6 +233,17 @@ const store = new Vuex.Store({
 
             state.currentPost = {status: 'OK', response: 'OK', id: info.post_id}
         },
+
+        [SAVE_MEDIA] (state, response) {
+            Vue.set(
+                state.threads[response.threadID].posts[response.postID],
+                'media',
+                response.media
+
+            )
+        },
+
+
         [CLOSE_POST] (state, {threadID, postID}) {
 
             Vue.set(
