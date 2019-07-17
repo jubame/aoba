@@ -120,6 +120,12 @@ channel.on("close_post", response => {
 })
 
 
+channel.on("add_media_to_post", response => {
+  console.log("add_media_to_post:", response.thread_id)
+  
+})
+
+
 function newThread(callbackThreadCreated){
   
   channel.push("new_thread")

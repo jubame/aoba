@@ -1,5 +1,6 @@
 // https://stackoverflow.com/a/51759426
 import * as  msgpack from 'msgpack-lite';
+import * as pako from 'pako'
 
 
 /*
@@ -45,9 +46,7 @@ let encodeMessage = function (rawdata, callback) {
     let data;
     //check for gzip magic bytes
     if (binary.length > 2 && binary[0] === 0x1F && binary[1] === 0x8B) {
-      // TODO: Esto no lo he probado todavía.
-      let inflate = new Zlib.Gunzip(binary);
-      data = inflate.decompress();
+      data = pako.deflate(binary);
       console.log('compressed:', binary.length, 'bytes | inflated:', data.length, 'bytes');
     } else {
       console.log('plain msgpacked:', binary.length, 'bytes');

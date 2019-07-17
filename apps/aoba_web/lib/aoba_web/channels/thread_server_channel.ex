@@ -117,7 +117,9 @@ defmodule AobaWeb.ThreadServerChannel do
     params = %{params | "thread_id" => Kernel.trunc(params["thread_id"])}
     %{"thread_id" => thread_id, "post_id" => post_id, "media" => media} = params
     case ThreadServer.add_media_to_post(thread_id, post_id, media) do
-      :ok -> {:reply, :ok, socket}
+      :ok ->
+        broadcast_from! socket, "add_media_to_post", params
+        {:reply, :ok, socket}
       {:error, reason } ->
         #Apex.ap reason
         {:reply, {:error, %{reason: reason}}, socket}

@@ -16,7 +16,7 @@ defmodule AobaWeb.MsgpaxSerializer do
   def fastlane!(%Broadcast{} = msg) do
     msg = %Message{topic: msg.topic, event: msg.event, payload: msg.payload}
 
-    {:socket_push, :binary, pack_data(encode_v1_fields_only(msg))}
+    {:socket_push, :binary, encode_v1_fields_only(msg)}
   end
 
   @doc """
@@ -30,11 +30,11 @@ defmodule AobaWeb.MsgpaxSerializer do
       payload: %{status: reply.status, response: reply.payload}
     }
 
-    {:socket_push, :binary, pack_data(encode_v1_fields_only(msg))}
+    {:socket_push, :binary, encode_v1_fields_only(msg)}
   end
 
   def encode!(%Message{} = msg) do
-    {:socket_push, :binary, pack_data(encode_v1_fields_only(msg))}
+    {:socket_push, :binary, encode_v1_fields_only(msg)}
   end
 
   @doc """
