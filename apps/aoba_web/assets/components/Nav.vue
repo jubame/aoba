@@ -61,11 +61,11 @@
 
 
     nav {
+        display: table-cell;
         color: white;
         width: 160px;
         background-color: #1A1A1A;
-        height: 100%;
-        position: relative;
+        
 
 
 

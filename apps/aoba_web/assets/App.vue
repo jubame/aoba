@@ -99,8 +99,7 @@ export default {
 <style lang="scss">
 
 #app {
-  display: flex;
-  height: 100%;
+  
 
   &.dragging :not([data-type="post"]) {
     pointer-events: none;
@@ -110,6 +109,6 @@ export default {
 
 }
 #content {
-  flex: 1;
+  display: table-cell;
 }
 </style>

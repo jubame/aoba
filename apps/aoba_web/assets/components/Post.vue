@@ -329,8 +329,8 @@ export default {
     [data-type="post"]:not(:first-child) {
         &.initial-post {
             /* https://stackoverflow.com/a/5587563
-             * Magia de overflow hidden: que se haga espacio para el float (la
-             * imagen).
+             * Magia de overflow hidden: Block Formatting Context para hacer
+             * espacio al float (la imagen).
              */
             overflow: hidden;
         }
