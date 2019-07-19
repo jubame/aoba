@@ -8,7 +8,7 @@
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
 import {save, saveClosePost, saveWithStatus} from '../store'
-import {SAVE_NEW_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, OPERATION_TO_BODY_ENTRY, CLOSE_BODY_ENTRY, SAVE_MEDIA} from '../mutation-types'
+import {SAVE_USER_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_USER_POST, OPERATION_TO_RECEIVED_BODY_ENTRY, CLOSE_BODY_ENTRY, SAVE_USER_MEDIA, SAVE_RECEIVED_MEDIA} from '../mutation-types'
 import {encodeMessage, decodeMessage} from './message_pack'
 import {EventBus} from '../main.js'
 
@@ -81,7 +81,7 @@ channel.on("new_thread", response => {
 
 channel.on("operation_to_body_entry", response => {
   console.log("operation_to_body_entry", response)
-  save(OPERATION_TO_BODY_ENTRY,
+  save(OPERATION_TO_RECEIVED_BODY_ENTRY,
     {
       action: response.action,
       threadID: response.thread_id,
@@ -97,7 +97,7 @@ channel.on("operation_to_body_entry", response => {
 
 channel.on("close_body_entry", response => {
   console.log("close_body_entry", response)
-  save(CLOSE_BODY_ENTRY,
+  save(RECEIVED_CLOSE_BODY_ENTRY,
     {
       
       threadID: response.thread_id,
@@ -122,7 +122,7 @@ channel.on("close_post", response => {
 
 channel.on("add_media_to_post", response => {
   console.log("add_media_to_post:", response.thread_id)
-  save(SAVE_MEDIA, {
+  save(SAVE_RECEIVED_MEDIA, {
     threadID: response.thread_id,
     postID: response.post_id,
     media: response.media
@@ -134,11 +134,11 @@ function newThread(callbackThreadCreated){
   
   channel.push("new_thread")
   .receive("ok", response => {
-    saveWithStatus(SAVE_NEW_THREAD, "ok", response)
+    saveWithStatus(SAVE_USER_THREAD, "ok", {threadID: response.thread_id, postID: response.post_id})
     callbackThreadCreated(response)
   })
   .receive("error", response => {
-    saveWithStatus(SAVE_NEW_THREAD, "error", response.reason)
+    saveWithStatus(SAVE_USER_THREAD, "error", response.reason)
   })
 }
 
@@ -147,10 +147,10 @@ function newPost(threadID){
   
   channel.push("new_post", {thread_id: threadID})
   .receive("ok", response => {
-    saveWithStatus(SAVE_POST, "ok", {threadID: threadID, postID: response.post_id})
+    saveWithStatus(SAVE_USER_POST, "ok", {threadID: threadID, postID: response.post_id})
   })
   .receive("error", response => {
-    saveWithStatus(SAVE_POST, "error", response.reason)
+    saveWithStatus(SAVE_USER_POST, "error", response.reason)
   })
 }
 
@@ -196,7 +196,7 @@ function closeUserPost(threadID, postID) {
 
 function addMediaToPost(threadID, postID, media) {
 
-  save(SAVE_MEDIA, {
+  save(SAVE_USER_MEDIA, {
     threadID: threadID,
     postID: postID,
     media: media

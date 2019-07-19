@@ -3,16 +3,17 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import {
-    SAVE_NEW_THREAD,
+    SAVE_USER_THREAD,
     SAVE_LAST_PUSH,
     CLOSE_POST,
-    SAVE_POST,
+    SAVE_USER_POST,
     DRAG_N_DROP,
     POST_DRAG_N_DROP,
     SAVE_RECEIVED_THREAD,
-    OPERATION_TO_BODY_ENTRY,
-    CLOSE_BODY_ENTRY,
-    SAVE_MEDIA
+    OPERATION_TO_RECEIVED_BODY_ENTRY,
+    RECEIVED_CLOSE_BODY_ENTRY,
+    SAVE_USER_MEDIA,
+    SAVE_RECEIVED_MEDIA
 } from './mutation-types'
 import {NOT_SET, OPEN, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from './state'
 import {USER, RECEIVED} from './types'
@@ -37,14 +38,14 @@ function saveClosePost(mutation, threadID, postID){
     store.commit(mutation, {threadID, postID})
 }
 
-function newPost(state, response) {
+function newPost(state, type, response) {
     if (!(response.postID in state.threads[response.threadID].posts)) {
         Vue.set(
             state.threads[response.threadID].posts,
             response.postID,
             {
                 status: response.closePost ? CLOSED : OPEN,
-                type: RECEIVED,
+                type: type,
                 media: null,
                 entries: {}
             }
@@ -53,6 +54,41 @@ function newPost(state, response) {
         )
     }
 }
+
+function saveNewThread(state, type, threadID, postID) {
+    Vue.set(
+        state.threads,
+        threadID/*.toString()*/,
+        {
+            status: OPEN,
+            posts: {
+                [postID]: {
+                    status: OPEN,
+                    type: type,
+                    media: null,
+                    entries: {
+                        /*
+                        [ids.entry_id || 1]:
+                        status: OPEN,
+                        content: content
+                        */
+                    }
+                },
+            }
+        }
+
+    )
+}
+
+function saveMedia(state, threadID, postID, media) {
+    Vue.set(
+        state.threads[threadID].posts[postID],
+        'media',
+        media
+
+    )
+}
+
 
 
 const store = new Vuex.Store({
@@ -72,7 +108,7 @@ const store = new Vuex.Store({
 
 
 
-        [CLOSE_BODY_ENTRY] (state, response) {
+        [RECEIVED_CLOSE_BODY_ENTRY] (state, response) {
 
 
             Vue.set(
@@ -92,9 +128,9 @@ const store = new Vuex.Store({
         },
 
 
-        [OPERATION_TO_BODY_ENTRY] (state, response) {
+        [OPERATION_TO_RECEIVED_BODY_ENTRY] (state, response) {
 
-            newPost(state, response)
+            newPost(state, RECEIVED, response)
 
             let content = (state.threads[response.threadID].posts[response.postID].entries[response.entryID] &&
                           state.threads[response.threadID].posts[response.postID].entries[response.entryID].content)
@@ -136,92 +172,15 @@ const store = new Vuex.Store({
 
 
 
-        [SAVE_RECEIVED_THREAD] (state, {threadID, postID}) {
-            //let entry_id = 
-            // https://stackoverflow.com/a/31788802
-            /*
-            state.receivedThreads[ids.thread_id.toString()] =
-                {
-                    [ids.post_id]: {
-                        [entry_id]:
-                        content
-                    },
-                }
-            
-            */
-
-            // https://vuex.vuejs.org/guide/mutations.html#mutations-follow-vue-s-reactivity-rules
-            
-
-            Vue.set(
-                state.threads,
-                threadID/*.toString()*/,
-                {
-                    status: OPEN,
-                    posts: {
-                        [postID]: {
-                            status: OPEN,
-                            type: RECEIVED,
-                            media: null,
-                            entries: {
-                                /*
-                                [ids.entry_id || 1]:
-                                status: OPEN,
-                                content: content
-                                */
-                            }
-                        },
-                    }
-                }
-
-            )
-            
-            state.threadIDs.push(threadID)
-            
-                
-            
-                
-            
-           
-            
-
+        [SAVE_RECEIVED_THREAD] (state, response) {
+            saveNewThread(state, RECEIVED, response.threadID, response.postID)
         },
-        [SAVE_NEW_THREAD] (state, response) {
-
-            Vue.set(
-                state.threads,
-                response.info.thread_id/*.toString()*/,
-                {
-                    status: OPEN,
-                    posts: {
-                        
-                        [response.info.post_id]: {
-                            status: OPEN,
-                            type: USER,
-                            media: null
-                        }
-                        
-                    },
-                    /*
-                    replyPosts: {
-                        [response.info.post_id]: {
-                            status: OPEN
-                        }
-                    }*/
-                }    
-            )
-
-
-
-            state.threadIDs.push(response.info.thread_id/*.toString()*/)
-            state.threadIDsUser.push(response.info.thread_id/*.toString()*/)
-
-
-
+        [SAVE_USER_THREAD] (state, info) {
+            saveNewThread(state, USER, info.info.threadID, info.info.postID)
         },
-        [SAVE_POST](state, {status, info}) {
+        [SAVE_USER_POST](state, {status, info}) {
 
-            newPost(state, info)
+            newPost(state, USER, info)
             
             Vue.set(
                 state.threads[info.threadID].posts,
@@ -240,18 +199,20 @@ const store = new Vuex.Store({
             
         },
 
-        [SAVE_MEDIA] (state, response) {
+        [SAVE_RECEIVED_MEDIA] (state, response) {
 
             
-            newPost(state, response)
+            newPost(state, RECEIVED, response)
+
+            saveMedia(state, response.threadID, response.postID, response.media)
+
+        },
+
+        [SAVE_USER_MEDIA] (state, info) {
 
 
-            Vue.set(
-                state.threads[response.threadID].posts[response.postID],
-                'media',
-                response.media
+            saveMedia(state, info.threadID, info.postID, info.media)
 
-            )
         },
 
 
