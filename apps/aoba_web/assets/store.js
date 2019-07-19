@@ -37,7 +37,22 @@ function saveClosePost(mutation, threadID, postID){
     store.commit(mutation, {threadID, postID})
 }
 
+function newPost(state, response) {
+    if (!(response.postID in state.threads[response.threadID].posts)) {
+        Vue.set(
+            state.threads[response.threadID].posts,
+            response.postID,
+            {
+                status: response.closePost ? CLOSED : OPEN,
+                type: RECEIVED,
+                media: null,
+                entries: {}
+            }
 
+
+        )
+    }
+}
 
 
 const store = new Vuex.Store({
@@ -79,19 +94,7 @@ const store = new Vuex.Store({
 
         [OPERATION_TO_BODY_ENTRY] (state, response) {
 
-            if (!(response.postID in state.threads[response.threadID].posts)) {
-                Vue.set(
-                    state.threads[response.threadID].posts,
-                    response.postID,
-                    {
-                        status: response.closePost ? CLOSED : OPEN,
-                        type: RECEIVED,
-                        entries: {}
-                    }
-
-
-                )
-            }
+            newPost(state, response)
 
             let content = (state.threads[response.threadID].posts[response.postID].entries[response.entryID] &&
                           state.threads[response.threadID].posts[response.postID].entries[response.entryID].content)
@@ -218,6 +221,8 @@ const store = new Vuex.Store({
         },
         [SAVE_POST](state, {status, info}) {
 
+            newPost(state, info)
+            
             Vue.set(
                 state.threads[info.threadID].posts,
                 info.postID,
@@ -232,9 +237,15 @@ const store = new Vuex.Store({
 
 
             state.currentPost = {status: 'OK', response: 'OK', id: info.post_id}
+            
         },
 
         [SAVE_MEDIA] (state, response) {
+
+            
+            newPost(state, response)
+
+
             Vue.set(
                 state.threads[response.threadID].posts[response.postID],
                 'media',
