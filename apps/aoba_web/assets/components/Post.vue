@@ -326,6 +326,18 @@ export default {
     @import "styles/app-no-styles.scss";
 
 
+    [data-type="post"]:not(:first-child) {
+        &.initial-post {
+            /* https://stackoverflow.com/a/5587563
+             * Magia de overflow hidden: que se haga espacio para el float (la
+             * imagen).
+             */
+            overflow: hidden;
+        }
+    }
+
+
+
     [data-type="post"] {
         pointer-events: initial;
         display: inline-block;
