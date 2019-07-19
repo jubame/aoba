@@ -27,8 +27,9 @@ function save(mutation, response){
 
 function saveWithStatus(mutation, status, info){
 
-    
-    store.commit(mutation, {status, info})
+    // https://stackoverflow.com/a/171256
+    // ECMAScript 2018 object spread ...
+    store.commit(mutation, {status: status, ...info})
     
     
     
@@ -176,9 +177,9 @@ const store = new Vuex.Store({
             saveNewThread(state, RECEIVED, response.threadID, response.postID)
         },
         [SAVE_USER_THREAD] (state, info) {
-            saveNewThread(state, USER, info.info.threadID, info.info.postID)
+            saveNewThread(state, USER, info.threadID, info.postID)
         },
-        [SAVE_USER_POST](state, {status, info}) {
+        [SAVE_USER_POST](state, info) {
 
             newPost(state, USER, info)
             

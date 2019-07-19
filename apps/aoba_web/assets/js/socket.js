@@ -8,7 +8,7 @@
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
 import {save, saveClosePost, saveWithStatus} from '../store'
-import {SAVE_USER_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_USER_POST, OPERATION_TO_RECEIVED_BODY_ENTRY, CLOSE_BODY_ENTRY, SAVE_USER_MEDIA, SAVE_RECEIVED_MEDIA} from '../mutation-types'
+import {SAVE_USER_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_USER_POST, OPERATION_TO_RECEIVED_BODY_ENTRY, RECEIVED_CLOSE_BODY_ENTRY, SAVE_USER_MEDIA, SAVE_RECEIVED_MEDIA} from '../mutation-types'
 import {encodeMessage, decodeMessage} from './message_pack'
 import {EventBus} from '../main.js'
 
