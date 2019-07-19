@@ -52,11 +52,11 @@ export default {
 
     dragEnter(event){
       
-      console.log(event.target)
+      
       //if (this.$el === event.target){
       if (this.$store.state.app_dragging !== DRAGENTER){
-        console.log(event.target)
-        console.log('DRAGENTER')
+        //console.log(event.target)
+        //console.log('DRAGENTER')
         this.$store.commit(DRAG_N_DROP, DRAGENTER)
         
       }
@@ -69,15 +69,15 @@ export default {
       console.log(event.target)
       if (this.$el === event.target){
         this.$store.commit(DRAG_N_DROP, DRAGLEAVE)
-        console.log('DRAGLEAVE')
+        //console.log('DRAGLEAVE')
       }
     },
 
     drop() {
       console.log(event.target)
       if (this.$el === event.target){
-        console.log(event.target)
-        console.log('DROP')
+        //console.log(event.target)
+        //console.log('DROP')
         this.$store.commit(DRAG_N_DROP, DROP)
         
       }

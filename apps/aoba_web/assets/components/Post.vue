@@ -131,8 +131,9 @@ export default {
         },
 
         dragging() {
-            return this.$store.state.app_dragging === DRAGENTER ||
-                   this.$store.state.post_dragging === DRAGENTER ? 'dragging' : ''
+            return this.isTypeUser &&
+                   (this.$store.state.app_dragging === DRAGENTER ||
+                   this.$store.state.post_dragging === DRAGENTER) ? 'dragging' : ''
         },
         postType() {
             let className
