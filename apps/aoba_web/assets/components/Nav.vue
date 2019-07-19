@@ -62,6 +62,7 @@
 
     nav {
         display: table-cell;
+        vertical-align: top;
         color: white;
         width: 160px;
         background-color: #1A1A1A;
@@ -70,6 +71,7 @@
 
 
         ul {
+            
             list-style-type: none;
             margin: 0;
             padding: 0;
