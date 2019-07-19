@@ -292,17 +292,14 @@ export default {
                 
                 this.$emit('imageLoaded')
                 
-                if (this.pushes === 0){
-                    newThread({"type": "media", "content": arrayBuffer}, this.postID)
-                }
-                else {
-                    addMediaToPost(
-                        this.threadID,
-                        this.postID,
-                        arrayBuffer
-                    )
+                
+                addMediaToPost(
+                    this.threadID,
+                    this.postID,
+                    arrayBuffer
+                )
 
-                }
+                
 
                 
                 
