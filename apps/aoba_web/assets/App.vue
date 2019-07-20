@@ -3,22 +3,22 @@
         
 
         
-        @drag.stop.prevent=""
-            @dragover.stop.prevent=""
-            @dragstart.stop.prevent=""
-            @dragend.stop.prevent=""
-            @dragenter.stop.prevent="dragEnter"
-            @dragleave.stop.prevent="dragLeave"
-            @drop.stop.prevent="drop"
+        @drag.prevent=""
+            @dragover.prevent=""
+            @dragstart.prevent=""
+            @dragend.prevent=""
+            @dragenter.prevent="dragEnter"
+            @dragleave.prevent="dragLeave"
+            @drop.prevent="drop"
  
 
 
         :class="dragging"
   >
+
     <nav-aoba ></nav-aoba>
     <hello-world v-if="isThis('/')" ></hello-world>
     <board v-if="isThis('/board')" ></board>
-
 
   </div>
 </template>
@@ -53,10 +53,13 @@ export default {
     dragEnter(event){
       
       
+      //console.log('DRAGENTER')
+      //console.log(event.target)
       //if (this.$el === event.target){
+      //console.log('DRAGENTER APP')
       if (this.$store.state.app_dragging !== DRAGENTER){
         //console.log(event.target)
-        //console.log('DRAGENTER')
+        //console.log('DRAGENTER APP')
         this.$store.commit(DRAG_N_DROP, DRAGENTER)
         
       }
@@ -66,21 +69,34 @@ export default {
     },
 
     dragLeave(event) {
-      console.log(event.target)
-      if (this.$el === event.target){
-        this.$store.commit(DRAG_N_DROP, DRAGLEAVE)
-        //console.log('DRAGLEAVE')
-      }
+      //console.log('DRAGLEAVE')
+      //console.log(event.target)
+      //if (this.$el === event.target){
+
+        var pageX = event.pageX || event.clientX;
+        var pageY = event.pageY || event.clientY;
+
+        //console.log(pageX)
+        //console.log(pageY)
+        
+
+        if (pageX <=0 || pageY <=0){
+          this.$store.commit(DRAG_N_DROP, DRAGLEAVE)
+
+        }
+        
+        
+      //}
     },
 
     drop() {
       console.log(event.target)
-      if (this.$el === event.target){
+      //if (this.$el === event.target){
         //console.log(event.target)
         //console.log('DROP')
         this.$store.commit(DRAG_N_DROP, DROP)
         
-      }
+      //}
       
     }
 
@@ -99,11 +115,24 @@ export default {
 <style lang="scss">
 
 #app {
+
+
   
 
-  &.dragging :not([data-type="post"]) {
-    pointer-events: none;
+  
+  
+  &.dragging {
+    #content *, nav * {
+      pointer-events: none;
+    }
   }
+  
+  /*
+  &.dragging :not([data-type="post"]) {
+    //pointer-events: none;
+  }*/
+
+
 
   
 
