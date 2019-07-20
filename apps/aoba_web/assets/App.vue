@@ -104,7 +104,7 @@ export default {
   
   
   &.dragging {
-    #content *, nav * {
+    #content :not([data-type="post"]), nav * {
       pointer-events: none;
     }
   }
