@@ -78,9 +78,11 @@
 
 
             li {
-                // https://stackoverflow.com/a/5166693
-                display: flex;
-                align-items: center;
+                // https://stackoverflow.com/a/14850381
+                $height: 50px;
+                height: $height;
+                line-height: $height;
+                
                 padding-left: 10px;
                 cursor: pointer;
                 
@@ -90,7 +92,7 @@
 
 
                 
-                height: 50px;
+                
 
                 &.seleccionado {
                     border-left: 4px solid teal;
