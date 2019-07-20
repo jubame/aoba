@@ -52,51 +52,33 @@ export default {
 
     dragEnter(event){
       
-      
-      //console.log('DRAGENTER')
-      //console.log(event.target)
-      //if (this.$el === event.target){
-      //console.log('DRAGENTER APP')
+   
+      /* IF para mejorar rendimiento cuando pasa de #content a nav o viceversa
+       * (de DRAGENTER a DRAGENTER)
+       */
       if (this.$store.state.app_dragging !== DRAGENTER){
-        //console.log(event.target)
-        //console.log('DRAGENTER APP')
         this.$store.commit(DRAG_N_DROP, DRAGENTER)
-        
       }
-      //}
+      
       
       
     },
 
     dragLeave(event) {
-      //console.log('DRAGLEAVE')
-      //console.log(event.target)
-      //if (this.$el === event.target){
-
-        var pageX = event.pageX || event.clientX;
-        var pageY = event.pageY || event.clientY;
-
-        //console.log(pageX)
-        //console.log(pageY)
-        
-
-        if (pageX <=0 || pageY <=0){
-          this.$store.commit(DRAG_N_DROP, DRAGLEAVE)
-
-        }
-        
-        
-      //}
+      var pageX = event.pageX || event.clientX;
+      var pageY = event.pageY || event.clientY;
+      if (pageX <=0 || pageY <=0){
+        this.$store.commit(DRAG_N_DROP, DRAGLEAVE)
+      }
+      
     },
 
     drop() {
-      console.log(event.target)
-      //if (this.$el === event.target){
-        //console.log(event.target)
-        //console.log('DROP')
-        this.$store.commit(DRAG_N_DROP, DROP)
+      
+      
+      this.$store.commit(DRAG_N_DROP, DROP)
         
-      //}
+      
       
     }
 
@@ -127,10 +109,7 @@ export default {
     }
   }
   
-  /*
-  &.dragging :not([data-type="post"]) {
-    //pointer-events: none;
-  }*/
+  
 
 
 
