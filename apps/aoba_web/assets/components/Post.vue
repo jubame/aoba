@@ -371,10 +371,27 @@ export default {
             }
         }
 
+        $not-expanded-border: 4px;
+        $expanded-border: 6px;
+
+        img {
+            cursor: pointer;
+            border: $not-expanded-border solid transparent;
+            
+        }
+        img:hover {
+            border: $not-expanded-border solid grey;
+
+        }
 
         img.expanded {
             max-width: 100%;
             max-height: initial;
+            border: $expanded-border solid transparent;
+            &:hover {
+                border: $expanded-border solid grey;
+            }
+           
         }
 
         &.reply-post{
