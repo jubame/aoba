@@ -12,7 +12,7 @@
     
 
     <header>{{this.headerText}}</header>
-    <img v-if="imgsrc" v-bind:src="imgsrc">
+    <img v-if="imgsrc" v-bind:src="imgsrc" @click="toggleExpand" :class="imageClass" >
 
     <template v-if="isTypeUser">
     <resizable-textarea
@@ -76,6 +76,7 @@ export default {
             lastEntryID: initialEntryID,
             pushes: 0,
             drag: this.$Drag(),
+            imageExpanded: false
 
             
 
@@ -110,6 +111,11 @@ export default {
     
 
     computed: {
+
+        imageClass() {
+            return this.imageExpanded ? 'expanded' : ''
+        },
+
         isTypeUser(){
             return this.$store.state.threads[this.threadID].posts[this.postID].type === USER
         },
@@ -309,6 +315,11 @@ export default {
 
         },
 
+        toggleExpand() {
+            
+            return (this.imageExpanded = !this.imageExpanded);
+        }
+
 
         
 
@@ -361,7 +372,10 @@ export default {
         }
 
 
-
+        img.expanded {
+            max-width: 100%;
+            max-height: initial;
+        }
 
         &.reply-post{
             cursor: move;
