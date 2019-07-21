@@ -52,6 +52,8 @@ import {NOT_SET, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from '../state'
 import {SAVE_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP} from '../mutation-types'
 import {EventBus} from '../main.js'
 import {USER, RECEIVED} from '../types'
+import * as fileType from 'file-type'
+
 
 const initialEntryID = 1
 const reader = new FileReader();
@@ -172,9 +174,18 @@ export default {
             return this.imgsrc !== null ? 'image-loaded' : ''
         },
 
-        imgsrc() {
+        imgsrc() {            
             // https://stackoverflow.com/a/40321354
-            return this.currentPost.media ? URL.createObjectURL(new Blob([this.currentPost.media])) : null
+            return this.currentPost.media ?
+            URL.createObjectURL(
+                new Blob(
+                    [this.currentPost.media],
+                    {
+                        type : (fileType(this.currentPost.media)).mime
+                        }
+                )
+            ) :
+            null
         }
 
     },
