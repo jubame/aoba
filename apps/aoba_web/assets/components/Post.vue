@@ -184,7 +184,7 @@ export default {
         },
 
         dragInit(ev) {
-            if (this.replyPost){
+            if (this.isTypeUser){
                 this.drag._drag_init(ev)
             }
         },
