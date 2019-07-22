@@ -106,11 +106,13 @@ export default {
                 console.log(type)
                 console.log(content)
                 console.log(ids)
-
-
-
             }
         );
+
+
+        
+
+
     },
     
 
@@ -197,6 +199,7 @@ export default {
         reply(entryID) {
 
             console.log ('REPLY ' + this.replyPostID )
+            this.$emit('reply-to', this.postID, entryID)
 
         },
 

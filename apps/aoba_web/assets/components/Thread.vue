@@ -15,6 +15,7 @@
                 :threadID="parseInt(threadID)"
                 :postID="parseInt(postID)"
                 :replyPostID="parseInt(replyPostID)"
+                @reply-to="replyTo"
                 >
             </regular-post>
 
@@ -112,6 +113,13 @@ export default {
     },
 
     methods: {
+
+        replyTo(originPostID, originEntryID){
+            console.log('replyTo ' + originPostID + ' ' + originEntryID)
+
+        },
+
+
         reply() {
             newPost(this.threadID, this.callbackPostCreated)
         },
