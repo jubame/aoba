@@ -143,11 +143,12 @@ function newThread(callbackThreadCreated){
 }
 
 
-function newPost(threadID){
+function newPost(threadID, callbackPostCreated){
   
   channel.push("new_post", {thread_id: threadID})
   .receive("ok", response => {
     saveWithStatus(SAVE_USER_POST, "ok", {threadID: threadID, postID: response.post_id})
+    callbackPostCreated({threadID: threadID, postID: response.post_id})
   })
   .receive("error", response => {
     saveWithStatus(SAVE_USER_POST, "error", response.reason)

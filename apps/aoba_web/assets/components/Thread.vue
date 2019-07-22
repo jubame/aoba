@@ -13,7 +13,9 @@
                 v-for="(post, postID) in thread.posts" v-bind:key="`${threadID}_${postID}`"
                 :newThread="true"
                 :threadID="parseInt(threadID)"
-                :postID="parseInt(postID)">
+                :postID="parseInt(postID)"
+                :replyPostID="parseInt(replyPostID)"
+                >
             </regular-post>
 
             <span>{{threadID}}</span>
@@ -49,6 +51,7 @@ export default {
         return {
             msg: '今日も一日頑張るぞい！',
             replyPost: false,
+            replyPostID: null,
             threadID: null
             
 
@@ -110,7 +113,12 @@ export default {
 
     methods: {
         reply() {
-            newPost(this.threadID)
+            newPost(this.threadID, this.callbackPostCreated)
+        },
+
+        callbackPostCreated(response) {
+            this.replyPostID = response.postID
+
         },
 
         callbackThreadCreated(response){

@@ -35,6 +35,7 @@
         :postID="postID"
         :entryID="parseInt(entryID)"
         :content="content"
+        v-on:mousedown.native="reply(entryID)"
         >
     </received-entry>
     </template>
@@ -65,7 +66,8 @@ export default {
 
     props: {
         threadID: Number,
-        postID: Number
+        postID: Number,
+        replyPostID: Number
     },
     
     components: {
@@ -192,6 +194,12 @@ export default {
 
     methods: {
 
+        reply(entryID) {
+
+            console.log ('REPLY ' + this.replyPostID )
+
+        },
+
 
         checkNewThread(){
             console.log('newThread es ' + this.newThread)
@@ -201,6 +209,7 @@ export default {
         },
 
         dragInit(ev) {
+            console.log('dragInit')
             if (this.isTypeUser){
                 this.drag._drag_init(ev)
             }
