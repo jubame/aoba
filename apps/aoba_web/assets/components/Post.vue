@@ -14,6 +14,7 @@
     <header>{{this.headerText}}</header>
     <img v-if="imgsrc" v-bind:src="imgsrc" @click="toggleExpand" :class="imageClass" >
 
+    
     <template v-if="isTypeUser">
     <resizable-textarea
         @newbody="newBody"

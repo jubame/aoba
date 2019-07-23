@@ -116,6 +116,12 @@ export default {
 
         replyTo(originPostID, originEntryID){
             console.log('replyTo ' + originPostID + ' ' + originEntryID)
+            console.log('replyPostID ' + this.replyPostID)
+            if (!this.replyPostID){
+                this.reply()
+            }
+
+
 
         },
 
