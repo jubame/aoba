@@ -1,7 +1,7 @@
 // https://github.com/lorisleiva/vue-lab/tree/master/components/resizable-textarea
 import { appendToBodyEntry } from '../js/socket';
 <template>
-    <textarea rows="1" class="resize-none outline-0 h-full"
+    <textarea ref="textarea" rows="1" class="resize-none outline-0 h-full"
       placeholder="Write something..."
       v-bind:disabled="closed"
       @keydown.ctrl.enter="newBody"
@@ -10,6 +10,10 @@ import { appendToBodyEntry } from '../js/socket';
       @compositionend="compositionEnd"
       @focus="aobaOnFocus"
       @blur="aobaOnBlur"
+      @input="resizeTextarea"
+      :style="textareaStyle"
+      v-model="content"
+      
       
     ></textarea>
 </template>
@@ -38,6 +42,7 @@ export default {
 
     data() {
         return {
+            content: null,
             maxWidth: 0,
             interval: null,
             charCount: 0,
@@ -52,8 +57,13 @@ export default {
     },
 
     computed: {
+
+        textareaStyle() {
+            return this.$refs.textarea ? 'width:' + (this.$refs.textarea.scrollWidth) + 'px' : ''
+
+        },
         previousTextModified() {
-            return this.$el.value.substring(0, this.lastPushText.length) !== this.lastPushText
+            return this.content.substring(0, this.lastPushText.length) !== this.lastPushText
         },
 
         currentThread(){
@@ -133,7 +143,7 @@ export default {
                         this.threadID,
                         this.postID,
                         this.entryID,
-                        this.$el.value,
+                        this.content,
                         closeEntry,
                         closePost
                     )
@@ -144,7 +154,7 @@ export default {
             // No se ha modificado el texto anterior
             else {
             
-                var currentCharCount = this.$el.value.length
+                var currentCharCount = this.content.length
 
                 // Hay nuevo contenido
                 if (currentCharCount > this.charCount && !this.isComposing) {
@@ -160,7 +170,7 @@ export default {
                             this.threadID,
                             this.postID,
                             this.entryID,
-                            this.$el.value.substring(this.charCount, currentCharCount),
+                            this.content.substring(this.charCount, currentCharCount),
                             closeEntry,
                             closePost
                         )
@@ -168,7 +178,7 @@ export default {
                     }
                     
                     this.$emit('push')
-                    this.lastPushText = this.$el.value
+                    this.lastPushText = this.content
                     this.charCount = currentCharCount
                 }
                 /* Si no hay nuevo contenido, sólo queda por comprobar si
@@ -220,16 +230,16 @@ export default {
 
     },
     mounted () {
+        /*
         this.$nextTick(() => {
             this.$el.setAttribute('style', 'width:' + (this.$el.scrollWidth) + 'px;')
             
-        })
+        })*/
         this.maxWidth = Math.min(
             700,
             window.innerWidth-200
         )
 
-        this.$el.addEventListener('input', this.resizeTextarea)
     },
     beforeDestroy () {
         this.$el.removeEventListener('input', this.resizeTextarea)

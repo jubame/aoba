@@ -38,6 +38,7 @@ export default {
 
 <style lang="scss">
     p {
+        white-space: pre-wrap;
         &.open {
             padding: 2px;
             border: 1px solid green;
