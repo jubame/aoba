@@ -1,24 +1,24 @@
 // https://github.com/lorisleiva/vue-lab/tree/master/components/resizable-textarea
 import { appendToBodyEntry } from '../js/socket';
 <template>
-    <div>
-    <span v-if="replyTo">{{replyTo.postID}}.{{replyTo.entryID}}</span>
-    <textarea ref="textarea" rows="1" class="resize-none outline-0 h-full"
-      placeholder="Write something..."
-      v-bind:disabled="closed"
-      @keydown.ctrl.enter="newBody"
-      @keydown.ctrl.190.exact="close"
-      @compositionstart="compositionStart"
-      @compositionend="compositionEnd"
-      @focus="aobaOnFocus"
-      @blur="aobaOnBlur"
-      @input="resizeTextarea"
-      :style="textareaStyle"
-      v-model="content"
-      
-      
-    ></textarea>
-    </div>
+    <section @click="reply">
+        <span v-if="replyTo">{{replyTo.postID}}.{{replyTo.entryID}}</span>
+        <textarea ref="textarea" rows="1" class="resize-none outline-0 h-full"
+        placeholder="Write something..."
+        v-bind:disabled="closed"
+        @keydown.ctrl.enter="newBody"
+        @keydown.ctrl.190.exact="close"
+        @compositionstart="compositionStart"
+        @compositionend="compositionEnd"
+        @focus="aobaOnFocus"
+        @blur="aobaOnBlur"
+        @input="resizeTextarea"
+        :style="textareaStyle"
+        v-model="content"
+        
+        
+        ></textarea>
+    </section>
 </template>
 
 
@@ -61,6 +61,7 @@ export default {
 
     computed: {
 
+    
         replyTo(){
             return this.$store.state.threads[this.threadID].posts[this.postID].entries &&
                    this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID] &&
@@ -89,6 +90,12 @@ export default {
 
 
     methods: {
+
+        reply(){
+            if (this.closed){
+                this.$emit('reply', this.entryID)
+            }
+        },
 
         resizeTextarea (event) {
             
@@ -276,6 +283,7 @@ export default {
         &:disabled {
             // pre-wrap para poder hacer trifuerza sin NBSP
             white-space: pre-wrap;
+            //background-color: grey;
         }
 
         display: block;

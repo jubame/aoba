@@ -24,6 +24,7 @@
         :threadID="threadID"
         :postID="postID"
         :entryID="parseInt(entryID)"
+        @reply="reply"
     >
     </resizable-textarea>
     </template>
@@ -198,6 +199,7 @@ export default {
     methods: {
 
         reply(entryID) {
+            console.log("SHIT")
 
             console.log ('REPLY ' + this.replyPostID )
             this.$emit('reply-to', this.postID, entryID)
