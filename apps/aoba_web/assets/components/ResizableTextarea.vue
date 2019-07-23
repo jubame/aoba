@@ -1,6 +1,8 @@
 // https://github.com/lorisleiva/vue-lab/tree/master/components/resizable-textarea
 import { appendToBodyEntry } from '../js/socket';
 <template>
+    <div>
+    <span v-if="replyTo">{{replyTo.postID}}.{{replyTo.entryID}}</span>
     <textarea ref="textarea" rows="1" class="resize-none outline-0 h-full"
       placeholder="Write something..."
       v-bind:disabled="closed"
@@ -16,6 +18,7 @@ import { appendToBodyEntry } from '../js/socket';
       
       
     ></textarea>
+    </div>
 </template>
 
 
@@ -57,6 +60,13 @@ export default {
     },
 
     computed: {
+
+        replyTo(){
+            return this.$store.state.threads[this.threadID].posts[this.postID].entries &&
+                   this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID] &&
+                   this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].replyTo
+
+        },
 
         textareaStyle() {
             return this.$refs.textarea ? 'width:' + (this.$refs.textarea.scrollWidth) + 'px' : ''
@@ -240,9 +250,6 @@ export default {
             window.innerWidth-200
         )
 
-    },
-    beforeDestroy () {
-        this.$el.removeEventListener('input', this.resizeTextarea)
     },
     render () {
         return this.$slots.default[0]

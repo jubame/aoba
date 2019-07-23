@@ -13,7 +13,8 @@ import {
     OPERATION_TO_RECEIVED_BODY_ENTRY,
     RECEIVED_CLOSE_BODY_ENTRY,
     SAVE_USER_MEDIA,
-    SAVE_RECEIVED_MEDIA
+    SAVE_RECEIVED_MEDIA,
+    SAVE_REPLY_TO
 } from './mutation-types'
 import {NOT_SET, OPEN, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from './state'
 import {USER, RECEIVED} from './types'
@@ -128,6 +129,21 @@ const store = new Vuex.Store({
 
         },
 
+        [SAVE_REPLY_TO] (state, response) {
+
+            Vue.set(
+                state.threads[response.threadID].posts[response.postID].entries[response.entryID],
+                'replyTo',
+                response.replyTo
+                
+
+
+
+            )
+
+
+        },
+
 
         [OPERATION_TO_RECEIVED_BODY_ENTRY] (state, response) {
 
@@ -190,7 +206,10 @@ const store = new Vuex.Store({
                 {
                     status: OPEN,
                     type: USER,
-                    media: null
+                    media: null,
+                    entries: {
+                        1: {}
+                    }
                 }
 
             )

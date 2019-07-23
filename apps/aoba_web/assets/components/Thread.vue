@@ -42,7 +42,7 @@ import NewThreadAccordionPost from './NewThreadAccordionPost'
 import Post from './Post'
 import {NOT_SET, CLOSED} from '../state'
 import {EventBus} from '../main.js'
-import {SAVE_RECEIVED_THREAD, NEW_PENDING_THREAD} from '../mutation-types'
+import {SAVE_RECEIVED_THREAD, NEW_PENDING_THREAD, SAVE_REPLY_TO} from '../mutation-types'
 import {newThread, newPost} from '../js/socket'
 
 export default {
@@ -118,8 +118,10 @@ export default {
             console.log('replyTo ' + originPostID + ' ' + originEntryID)
             console.log('replyPostID ' + this.replyPostID)
             if (!this.replyPostID){
-                this.reply()
+                this.replyTo(originPostID, originEntryID)
             }
+
+            
 
 
 
@@ -130,8 +132,14 @@ export default {
             newPost(this.threadID, this.callbackPostCreated)
         },
 
-        callbackPostCreated(response) {
+        replyTo(originPostID, originEntryID){
+            newPost(this.threadID, this.callbackPostCreated, originPostID, originEntryID)
+            
+        },
+
+        callbackPostCreated(response, originPostID, originEntryID) {
             this.replyPostID = response.postID
+            this.$store.commit(SAVE_REPLY_TO, {threadID: this.threadID, postID: this.replyPostID, entryID: 1, replyTo: {postID: originPostID, entryID: originEntryID}})
 
         },
 

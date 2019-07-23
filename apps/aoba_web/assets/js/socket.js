@@ -8,7 +8,17 @@
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
 import {save, saveClosePost, saveWithStatus} from '../store'
-import {SAVE_USER_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_USER_POST, OPERATION_TO_RECEIVED_BODY_ENTRY, RECEIVED_CLOSE_BODY_ENTRY, SAVE_USER_MEDIA, SAVE_RECEIVED_MEDIA} from '../mutation-types'
+import {
+  SAVE_USER_THREAD,
+  SAVE_LAST_PUSH,
+  CLOSE_POST,
+  SAVE_USER_POST,
+  OPERATION_TO_RECEIVED_BODY_ENTRY,
+  RECEIVED_CLOSE_BODY_ENTRY,
+  SAVE_USER_MEDIA,
+  SAVE_RECEIVED_MEDIA,
+  
+} from '../mutation-types'
 import {encodeMessage, decodeMessage} from './message_pack'
 import {EventBus} from '../main.js'
 
@@ -143,12 +153,12 @@ function newThread(callbackThreadCreated){
 }
 
 
-function newPost(threadID, callbackPostCreated){
+function newPost(threadID, callbackPostCreated, originPostID, originEntryID){
   
   channel.push("new_post", {thread_id: threadID})
   .receive("ok", response => {
     saveWithStatus(SAVE_USER_POST, "ok", {threadID: threadID, postID: response.post_id})
-    callbackPostCreated({threadID: threadID, postID: response.post_id})
+    callbackPostCreated({threadID: threadID, postID: response.post_id}, originPostID, originEntryID)
   })
   .receive("error", response => {
     saveWithStatus(SAVE_USER_POST, "error", response.reason)
