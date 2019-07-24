@@ -15,8 +15,7 @@ import { appendToBodyEntry } from '../js/socket';
         @input="resizeTextarea"
         :style="textareaStyle"
         v-model="content"
-        
-        
+        v-focus
         ></textarea>
     </section>
 </template>
@@ -84,6 +83,7 @@ export default {
         currentPost(){
             return this.$store.state.threads[this.threadID].posts[this.postID]
         },
+
 
 
     },
@@ -247,11 +247,10 @@ export default {
 
     },
     mounted () {
-        /*
-        this.$nextTick(() => {
-            this.$el.setAttribute('style', 'width:' + (this.$el.scrollWidth) + 'px;')
-            
-        })*/
+        
+      
+        
+
         this.maxWidth = Math.min(
             700,
             window.innerWidth-200
