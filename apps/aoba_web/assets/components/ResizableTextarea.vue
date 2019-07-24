@@ -2,7 +2,11 @@
 import { appendToBodyEntry } from '../js/socket';
 <template>
     <section @click="reply">
-        <span v-if="replyTo">{{replyTo.postID}}.{{replyTo.entryID}}</span>
+        <replied-to-header
+        :threadID="this.threadID"
+        :postID="this.postID"
+        :entryID="this.entryID"
+        ></replied-to-header>
         <textarea ref="textarea" rows="1" class="resize-none outline-0 h-full"
         placeholder="Write something..."
         v-bind:disabled="closed"
@@ -25,6 +29,7 @@ import { appendToBodyEntry } from '../js/socket';
 
 import {newPendingThread, operationToBodyEntry, closeBodyEntry, newPost} from '../js/socket.js'
 import {NOT_SET, CLOSED} from '../state'
+import RepliedToHeaderVue from './RepliedToHeader';
 const ENTRY_OPERATION_APPEND = "append"
 const ENTRY_OPERATION_REPLACE = "replace"
 
@@ -39,6 +44,11 @@ export default {
         entryID: Number,
         threadID: Number,
         postID: Number
+    },
+
+    components: {
+        'replied-to-header': RepliedToHeaderVue,
+        
     },
 
 
