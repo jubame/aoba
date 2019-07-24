@@ -1,10 +1,19 @@
 <template>
+    <section>
+    <replied-to-header
+        :threadID="this.threadID"
+        :postID="this.postID"
+        :entryID="this.entryID"
+    ></replied-to-header>
     <p :class="status">{{entryContent}}</p>
+    </section>
 </template>
 
 <script>
 
 import {OPEN, CLOSED} from '../state'
+import RepliedToHeaderVue from './RepliedToHeader';
+
 
 export default {
 
@@ -12,6 +21,11 @@ export default {
         threadID: Number,
         postID: Number,
         entryID: Number,
+    },
+
+    components: {
+        'replied-to-header': RepliedToHeaderVue,
+        
     },
 
     computed: {
