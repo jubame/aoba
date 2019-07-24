@@ -54,7 +54,7 @@ export default {
 
     data() {
         return {
-            content: null,
+            content: '',
             maxWidth: 0,
             interval: null,
             charCount: 0,
