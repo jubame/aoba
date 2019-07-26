@@ -70,14 +70,6 @@ export default {
 
     computed: {
 
-    
-        replyTo(){
-            return this.$store.state.threads[this.threadID].posts[this.postID].entries &&
-                   this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID] &&
-                   this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].replyTo
-
-        },
-
         textareaStyle() {
             return this.$refs.textarea ? 'width:' + (this.$refs.textarea.scrollWidth) + 'px' : ''
 
