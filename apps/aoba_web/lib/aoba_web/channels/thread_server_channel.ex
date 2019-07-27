@@ -59,7 +59,6 @@ defmodule AobaWeb.ThreadServerChannel do
 
 
     params = %{params | "thread_id" => Kernel.trunc(params["thread_id"])}
-    params = Map.put_new(params, "reply_to", nil)
 
     %{
       "action" => action,
@@ -69,8 +68,18 @@ defmodule AobaWeb.ThreadServerChannel do
       "iolist" => iolist,
       "close_entry" => close_entry,
       "close_post" => close_post,
-      "reply_to" => reply_to
     } = params
+
+
+    reply_to = if Map.has_key?(params, "reply_to") do
+      reply_to = params["reply_to"]
+      reply_to = %{post_id: post_id, entry_id: entry_id}
+    else
+      reply_to = nil
+    end
+
+
+
     #Apex.ap params
 
     case ThreadServer.operation_to_body_entry(String.to_atom(action), thread_id, post_id, entry_id, iolist, close_entry, close_post, reply_to) do

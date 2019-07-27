@@ -91,6 +91,15 @@ channel.on("new_thread", response => {
 
 channel.on("operation_to_body_entry", response => {
   console.log("operation_to_body_entry", response)
+  
+  let replyTo
+  if (response.reply_to){
+    replyTo = {postID: response.reply_to.post_id, entryID: response.reply_to.entry_id}
+  }
+  else {
+    replyTo = null
+  }
+
   save(OPERATION_TO_RECEIVED_BODY_ENTRY,
     {
       action: response.action,
@@ -99,7 +108,9 @@ channel.on("operation_to_body_entry", response => {
       entryID: response.entry_id,
       content: response.iolist,
       closeEntry: response.close_entry,
-      closePost: response.close_post}
+      closePost: response.close_post,
+      replyTo: replyTo
+    }
     )
   //EventBus.$emit('new_thread', response.thread_id, response.post_id)
 })
@@ -170,7 +181,7 @@ function operationToBodyEntry(action, thread_id, post_id, entry_id, content, clo
   let pushParams
   if (replyTo){
     pushParams = {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost,
-      reply_to: replyTo}
+      reply_to: {post_id: replyTo.postID, entry_id: replyTo.entryID}}
   }
   else {
     pushParams = {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost}

@@ -158,11 +158,19 @@ const store = new Vuex.Store({
                 content = response.content
             }
 
+            let replyTo
+            if (response.replyTo) {
+                replyTo = {postID: response.replyTo.postID, entryID: response.replyTo.entryID}
+            }
+            else {
+                replyTo = null
+            }
+
             Vue.set(
                 state.threads[response.threadID].posts[response.postID].entries,
                 response.entryID,
                 {
-                    replyTo: {postID: null, entryID: null},
+                    replyTo: replyTo,
                     status: response.closeEntry ? CLOSED : OPEN,
                     content: content,
 
