@@ -163,7 +163,8 @@ const store = new Vuex.Store({
                 replyTo = {postID: response.replyTo.postID, entryID: response.replyTo.entryID}
             }
             else {
-                replyTo = null
+                replyTo = state.threads[response.threadID].posts[response.postID].entries[response.entryID] &&
+                          state.threads[response.threadID].posts[response.postID].entries[response.entryID].replyTo || null
             }
 
             Vue.set(
