@@ -18,7 +18,7 @@ import {
 } from './mutation-types'
 import {NOT_SET, OPEN, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from './state'
 import {USER, RECEIVED} from './types'
-
+import * as fileType from 'file-type'
 Vue.use(Vuex)
 
 
@@ -82,11 +82,14 @@ function saveNewThread(state, type, threadID, postID) {
     )
 }
 
-function saveMedia(state, threadID, postID, media) {
+function saveMedia(state, threadID, postID, buffer) {
     Vue.set(
         state.threads[threadID].posts[postID],
         'media',
-        media
+        {
+            mime: (fileType(buffer)).mime,
+            buffer: buffer
+        }
 
     )
 }

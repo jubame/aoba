@@ -12,8 +12,11 @@
     
 
     <header>{{this.headerText}}</header>
-    <img v-if="imgsrc" v-bind:src="imgsrc" @click="toggleExpand" :class="imageClass" >
 
+    <template v-if="imgsrc">
+        <img v-if="!isVideo" v-bind:src="imgsrc" @click="toggleExpand" :class="imageClass" >
+        <video v-else controls loop autoplay v-bind:src="imgsrc"></video>
+    </template>
     
     <template v-if="isTypeUser">
     <resizable-textarea
@@ -55,7 +58,7 @@ import {NOT_SET, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from '../state'
 import {SAVE_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP} from '../mutation-types'
 import {EventBus} from '../main.js'
 import {USER, RECEIVED} from '../types'
-import * as fileType from 'file-type'
+
 
 
 const initialEntryID = 1
@@ -124,6 +127,11 @@ export default {
             return this.imageExpanded ? 'expanded' : ''
         },
 
+        isVideo() {
+            return this.currentPost.media.mime === 'video/webm'
+
+        },
+
         isTypeUser(){
             return this.$store.state.threads[this.threadID].posts[this.postID].type === USER
         },
@@ -185,9 +193,9 @@ export default {
             return this.currentPost.media ?
             URL.createObjectURL(
                 new Blob(
-                    [this.currentPost.media],
+                    [this.currentPost.media.buffer],
                     {
-                        type : (fileType(this.currentPost.media)).mime
+                        type : this.currentPost.media.mime
                         }
                 )
             ) :
