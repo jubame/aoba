@@ -416,18 +416,26 @@ export default {
            
         }
 
-        &.reply-post{
+        &.reply-post {
             cursor: move;
-            /* https://css-tricks.com/slightly-careful-sub-elements-clickable-things/
-            * Sin pointer-events:none para los hijos, event.target es uno de los hijos
-            * del section (header o post), y drag no funciona.
-            */ 
             * {
                 pointer-events: none;
             }
-
-            textarea {
+            video {
                 pointer-events: auto;
+                cursor: auto;
+            }
+            section {
+                
+                /* https://css-tricks.com/slightly-careful-sub-elements-clickable-things/
+                * Sin pointer-events:none para los hijos, event.target es uno de los hijos
+                * del section (header o post), y drag no funciona.
+                */ 
+                
+                header, textarea {
+                    pointer-events: auto;
+                    cursor: auto;
+                }
             }
             
             position: absolute;
