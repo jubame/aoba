@@ -21,8 +21,8 @@ defmodule Aoba.ThreadServer do
     GenServer.call(thread_server, :get_ids)
   end
 
-  def operation_to_body_entry(action, thread_id, post_id, entry_id, iolist, close_entry, close_post) do
-    GenServer.call(via_tuple(thread_id), {:operation_to_body_entry, action, post_id, entry_id, iolist, close_entry, close_post})
+  def operation_to_body_entry(action, thread_id, post_id, entry_id, iolist, close_entry, close_post, reply_to) do
+    GenServer.call(via_tuple(thread_id), {:operation_to_body_entry, action, post_id, entry_id, iolist, close_entry, close_post, reply_to})
   end
 
   def close_body_entry(thread_id, post_id, entry_id, close_post) do
@@ -80,10 +80,9 @@ defmodule Aoba.ThreadServer do
 
 
 
-  def handle_call({:operation_to_body_entry, action, post_id, entry_id, iolist, close_entry, close_post}, _from, thread) do
+  def handle_call({:operation_to_body_entry, action, post_id, entry_id, iolist, close_entry, close_post, reply_to}, _from, thread) do
 
-
-    case operation_to_body_entry_check_post(thread, action, thread.posts[post_id], entry_id, iolist, close_entry, close_post) do
+    case operation_to_body_entry_check_post(thread, action, thread.posts[post_id], entry_id, iolist, close_entry, close_post, reply_to) do
       {:ok, new_thread} ->
         reply_success(new_thread, :ok)
       {:error, :already_closed_post} ->
@@ -97,12 +96,12 @@ defmodule Aoba.ThreadServer do
 
   end
 
-  defp operation_to_body_entry_check_post(_thread, _action, %Post{closed: true} = _post, _entry_id, _iolist, _close_entry, _close_post) do
+  defp operation_to_body_entry_check_post(_thread, _action, %Post{closed: true} = _post, _entry_id, _iolist, _close_entry, _close_post, _reply_to) do
     {:error, :already_closed_post}
   end
 
-  defp operation_to_body_entry_check_post(thread, action, %Post{closed: false} = post, entry_id, iolist, close_entry, close_post) do
-    case Body.operation_entry(action, post.body, entry_id, iolist, close_entry) do
+  defp operation_to_body_entry_check_post(thread, action, %Post{closed: false} = post, entry_id, iolist, close_entry, close_post, reply_to) do
+    case Body.operation_entry(action, post.body, entry_id, iolist, close_entry, reply_to) do
       {:ok, new_body} ->
         new_thread = if close_post do
           update_in(thread.posts[post.id], fn post -> Post.close(post, new_body) end)

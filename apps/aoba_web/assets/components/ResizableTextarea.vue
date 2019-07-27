@@ -183,16 +183,33 @@ export default {
                     else if (this.postID !== null){
                         // Añadir/concatenar a contenido anterior
                         console.log(this.$parent.id)
+
+                        if (!this.pushes && this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID]) {
+                            operationToBodyEntry(
+                                ENTRY_OPERATION_APPEND,
+                                this.threadID,
+                                this.postID,
+                                this.entryID,
+                                this.content.substring(this.charCount, currentCharCount),
+                                closeEntry,
+                                closePost,
+                                this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].replyTo
+                            )
+
+                        }
+                        else {
+                            operationToBodyEntry(
+                                ENTRY_OPERATION_APPEND,
+                                this.threadID,
+                                this.postID,
+                                this.entryID,
+                                this.content.substring(this.charCount, currentCharCount),
+                                closeEntry,
+                                closePost
+                            )
+                        }
                         
-                        operationToBodyEntry(
-                            ENTRY_OPERATION_APPEND,
-                            this.threadID,
-                            this.postID,
-                            this.entryID,
-                            this.content.substring(this.charCount, currentCharCount),
-                            closeEntry,
-                            closePost
-                        )
+                        
                         this.pushes++
                     }
                     

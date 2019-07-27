@@ -166,8 +166,16 @@ function newPost(threadID, callbackPostCreated, originPostID, originEntryID){
 }
 
 
-function operationToBodyEntry(action, thread_id, post_id, entry_id, content, closeEntry, closePost){
-  channel.push("operation_to_body_entry", {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost})
+function operationToBodyEntry(action, thread_id, post_id, entry_id, content, closeEntry, closePost, replyTo){
+  let pushParams
+  if (replyTo){
+    pushParams = {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost,
+      reply_to: replyTo}
+  }
+  else {
+    pushParams = {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost}
+  }
+  channel.push("operation_to_body_entry", pushParams)
   .receive("ok", response => {
     saveWithStatus(SAVE_LAST_PUSH, "ok", response)
   })
@@ -179,6 +187,8 @@ function operationToBodyEntry(action, thread_id, post_id, entry_id, content, clo
     saveWithStatus(SAVE_LAST_PUSH, "error", info)
   })
 }
+
+
 
 function closeBodyEntry(thread_id, post_id, entry_id, closePost){
   channel.push("close_body_entry", {thread_id: thread_id, post_id: post_id, entry_id: entry_id, close_post: closePost})
