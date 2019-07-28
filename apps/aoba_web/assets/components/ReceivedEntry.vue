@@ -67,6 +67,7 @@ export default {
         $border: 1px;
         border: $border solid transparent;
         &:hover {
+            cursor: pointer;
             border: $border solid red;
         }
     }
