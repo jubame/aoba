@@ -1,5 +1,4 @@
 <template>
-    <!--<span v-if="replyTo">{{'>>' + replyTo.postID + '.' + replyTo.entryID}}</span>-->
     <a v-if="replyTo" :href="`#${this.threadID}_${replyTo.postID}_${replyTo.entryID}`">{{'>>' + replyTo.postID + '.' + replyTo.entryID}}</a>
 </template>
 
