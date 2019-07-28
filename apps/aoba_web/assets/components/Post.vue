@@ -342,7 +342,7 @@ export default {
         },
 
         toggleExpand() {
-            this.$refs.video.pause()
+            this.$refs.video && this.$refs.video.pause()
 
             
             return (this.imageExpanded = !this.imageExpanded);
