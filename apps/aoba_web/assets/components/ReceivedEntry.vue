@@ -58,11 +58,14 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
+    @import "styles/app-no-styles.scss";
     p {
         white-space: pre-wrap;
         font-family: monospace;
         font-size: 10pt;
+        padding: $text-padding;
+        margin: 0;
         &.open {
             padding: 2px;
             border: 1px solid green;

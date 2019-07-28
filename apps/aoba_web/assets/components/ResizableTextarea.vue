@@ -295,7 +295,11 @@ export default {
 
 
 <style scoped lang="scss">
+
+    @import "styles/app-no-styles.scss";
     textarea {
+
+        padding: $text-padding;
 
         // Esto permite crecer a lo ancho el textarea cuando sólo hay una línea
         white-space: nowrap;
