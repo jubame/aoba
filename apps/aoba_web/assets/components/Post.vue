@@ -38,7 +38,7 @@
         :postID="postID"
         :entryID="parseInt(entryID)"
         :content="content"
-        v-on:mousedown.native="reply(entryID)"
+        @reply="reply"
         >
     </received-entry>
     </template>
@@ -411,7 +411,7 @@ export default {
         
 
         &.closed {
-            textarea:disabled {
+            textarea.closed {
                 background-color: transparent;
                 color: black;
                 $border: 1px;

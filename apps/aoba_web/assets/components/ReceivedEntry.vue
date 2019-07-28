@@ -5,7 +5,7 @@
         :postID="this.postID"
         :entryID="this.entryID"
     ></replied-to-header>
-    <p :class="status" :id="`${this.threadID}_${this.postID}_${this.entryID}`">{{entryContent}}</p>
+    <p :class="status" :id="`${this.threadID}_${this.postID}_${this.entryID}`" @click="reply">{{entryContent}}</p>
     </section>
 </template>
 
@@ -43,6 +43,14 @@ export default {
         }
 
 
+    },
+
+    methods: {
+        reply(){
+            
+            this.$emit('reply', this.entryID)
+            
+        },
     }
 
 
