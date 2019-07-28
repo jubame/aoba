@@ -7,9 +7,10 @@ import { appendToBodyEntry } from '../js/socket';
         :postID="this.postID"
         :entryID="this.entryID"
         ></replied-to-header>
+        <div @click="reply">
         <textarea ref="textarea" rows="1" class="resize-none outline-0 h-full"
         placeholder="Write something..."
-        v-bind:class="closedClass"
+        :disabled="closed"
         @keydown.ctrl.enter="newBody"
         @keydown.ctrl.190.exact="close"
         @compositionstart="compositionStart"
@@ -21,8 +22,8 @@ import { appendToBodyEntry } from '../js/socket';
         v-model="content"
         v-focus
         :id="`${this.threadID}_${this.postID}_${this.entryID}`"
-        @click="reply"
         ></textarea>
+        </div>
     </section>
 </template>
 
@@ -71,11 +72,6 @@ export default {
     },
 
     computed: {
-
-        closedClass() {
-            return this.closed ? 'closed' : ''
-
-        },
 
         textareaStyle() {
             return this.$refs.textarea ? 'width:' + (this.$refs.textarea.scrollWidth) + 'px' : ''
@@ -309,7 +305,7 @@ export default {
          * pierde el style.whitespace pre-wrap, tomando efecto el nowrap que
          * hemos puesto arriba en CSS
          */
-        &.closed {
+        &:disabled {
             // pre-wrap para poder hacer trifuerza sin NBSP
             white-space: pre-wrap;
             //background-color: grey;

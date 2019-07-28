@@ -411,7 +411,7 @@ export default {
         
 
         &.closed {
-            textarea.closed {
+            textarea:disabled {
                 background-color: transparent;
                 color: black;
                 $border: 1px;
