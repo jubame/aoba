@@ -139,7 +139,14 @@ export default {
 
         callbackPostCreated(response, originPostID, originEntryID) {
             this.replyPostID = response.postID
-            this.$store.commit(SAVE_REPLY_TO, {threadID: this.threadID, postID: this.replyPostID, entryID: 1, replyTo: {postID: originPostID, entryID: originEntryID}})
+            let replyTo
+            if (originPostID && originEntryID) {
+                replyTo = {postID: originPostID, entryID: originEntryID}
+            }
+            else {
+                replyTo = null
+            }
+            this.$store.commit(SAVE_REPLY_TO, {threadID: this.threadID, postID: this.replyPostID, entryID: 1, replyTo: replyTo})
 
         },
 

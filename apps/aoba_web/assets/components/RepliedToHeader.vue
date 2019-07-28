@@ -1,5 +1,5 @@
 <template>
-    <span v-if="replyTo">{{replyTo.postID}}.{{replyTo.entryID}}</span>
+    <span v-if="replyTo">{{replyTo.postID + '.' + replyTo.entryID}}</span>
 </template>
 
 <script>
