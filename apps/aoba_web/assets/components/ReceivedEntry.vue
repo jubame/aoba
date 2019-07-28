@@ -5,7 +5,7 @@
         :postID="this.postID"
         :entryID="this.entryID"
     ></replied-to-header>
-    <p :class="status">{{entryContent}}</p>
+    <p :class="status" :id="`${this.threadID}_${this.postID}_${this.entryID}`">{{entryContent}}</p>
     </section>
 </template>
 

@@ -20,6 +20,7 @@ import { appendToBodyEntry } from '../js/socket';
         :style="textareaStyle"
         v-model="content"
         v-focus
+        :id="`${this.threadID}_${this.postID}_${this.entryID}`"
         ></textarea>
     </section>
 </template>
