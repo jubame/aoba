@@ -99,7 +99,7 @@ export default {
             
         }
 
-        
+
         .media:hover {
             border: $not-expanded-border solid grey;
 

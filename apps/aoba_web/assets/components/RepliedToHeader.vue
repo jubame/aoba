@@ -1,5 +1,5 @@
 <template>
-    <span v-if="replyTo">{{replyTo.postID + '.' + replyTo.entryID}}</span>
+    <span v-if="replyTo">{{'>>' + replyTo.postID + '.' + replyTo.entryID}}</span>
 </template>
 
 <script>
@@ -33,4 +33,8 @@ export default {
 
 
 <style scoped lang="scss">
+    span {
+        font-size: 10pt;
+        color: red;
+    }
 </style>

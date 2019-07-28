@@ -13,7 +13,7 @@
 
     <header>{{this.headerText}}</header>
 
-    <media :threadID="threadID" :postID="postID"></media>
+    <media v-if="isThereMedia" :threadID="threadID" :postID="postID"></media>
     
     
     <template v-if="isTypeUser">
@@ -179,6 +179,10 @@ export default {
         imageLoadedClass() {
             return this.imgsrc !== null ? 'image-loaded' : ''
         },
+
+        isThereMedia(){
+            return this.currentPost.media
+        }
 
         
 
@@ -410,7 +414,11 @@ export default {
             textarea:disabled {
                 background-color: transparent;
                 color: black;
-                border: none;
+                $border: 1px;
+                border: $border solid transparent;
+                &:hover{
+                    border: $border solid red;
+                }
             }
         }
 

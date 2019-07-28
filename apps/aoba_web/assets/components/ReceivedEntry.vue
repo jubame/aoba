@@ -53,6 +53,8 @@ export default {
 <style lang="scss">
     p {
         white-space: pre-wrap;
+        font-family: monospace;
+        font-size: 10pt;
         &.open {
             padding: 2px;
             border: 1px solid green;
@@ -60,6 +62,12 @@ export default {
         }
         &.closed {
             padding: 3px;
+        }
+
+        $border: 1px;
+        border: $border solid transparent;
+        &:hover {
+            border: $border solid red;
         }
     }
 
