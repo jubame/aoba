@@ -13,10 +13,8 @@
 
     <header>{{this.headerText}}</header>
 
-    <template v-if="imgsrc">
-        <img v-if="!isVideo" v-bind:src="imgsrc" class="media" @click="toggleExpand" :class="imageClass" >
-        <video v-else ref="video" class="media" v-bind="videoAttributes" loop  v-bind:src="imgsrc" @click="toggleExpand" :class="imageClass"></video>
-    </template>
+    <media :threadID="threadID" :postID="postID"></media>
+    
     
     <template v-if="isTypeUser">
     <resizable-textarea
@@ -52,6 +50,7 @@
 import Vue from 'vue'
 import ResizableTextarea from './ResizableTextarea'
 import ReceivedEntry from './ReceivedEntry'
+import Media from './Media'
 import {addMediaToPost} from '../js/socket.js'
 import {closeUserPost} from '../js/socket.js'
 import {NOT_SET, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from '../state'
@@ -77,7 +76,8 @@ export default {
     
     components: {
         'resizable-textarea': ResizableTextarea,
-        'received-entry': ReceivedEntry
+        'received-entry': ReceivedEntry,
+        'media': Media
     },
 
     data() {
@@ -85,7 +85,6 @@ export default {
             lastEntryID: initialEntryID,
             pushes: 0,
             drag: this.$Drag(),
-            imageExpanded: false
 
             
 
@@ -123,18 +122,7 @@ export default {
 
     computed: {
 
-        videoAttributes() {
-            return this.imageExpanded ? {'controls': '', 'autoplay': ''} : {}
-        },
-
-        imageClass() {
-            return this.imageExpanded ? 'expanded' : ''
-        },
-
-        isVideo() {
-            return this.currentPost.media.mime === 'video/webm'
-
-        },
+        
 
         isTypeUser(){
             return this.$store.state.threads[this.threadID].posts[this.postID].type === USER
@@ -192,19 +180,7 @@ export default {
             return this.imgsrc !== null ? 'image-loaded' : ''
         },
 
-        imgsrc() {            
-            // https://stackoverflow.com/a/40321354
-            return this.currentPost.media ?
-            URL.createObjectURL(
-                new Blob(
-                    [this.currentPost.media.buffer],
-                    {
-                        type : this.currentPost.media.mime
-                        }
-                )
-            ) :
-            null
-        }
+        
 
     },
 
@@ -340,13 +316,9 @@ export default {
             
 
         },
+        
 
-        toggleExpand() {
-            this.$refs.video && this.$refs.video.pause()
-
-            
-            return (this.imageExpanded = !this.imageExpanded);
-        }
+        
 
 
         
@@ -399,37 +371,7 @@ export default {
             }
         }
 
-        $not-expanded-border: 4px;
-        $expanded-border: 6px;
-
-        .media {
-            cursor: pointer;
-            border: $not-expanded-border solid transparent;
-            
-        }
-        .media:hover {
-            border: $not-expanded-border solid grey;
-
-        }
-
-        .media.expanded {
-            
-            border: $expanded-border solid transparent;
-            &:hover {
-                border: $expanded-border solid grey;
-            }
-           
-        }
-
-        img.media.expanded {
-            max-width: 100%;
-            max-height: initial;
-        }
-
-        video.media.expanded {
-            max-width: none;
-            max-height: none;
-        }
+        
 
         &.reply-post {
             cursor: move;
@@ -479,15 +421,7 @@ export default {
                 
         overflow: hidden;
         
-        .media {
-
-            max-height: 125px;
-            max-width: 125px;
-            display: block;
-            float: left;
-            margin-right: 20px;
-            
-        }
+        
 
         header {
             $height: 20px;
