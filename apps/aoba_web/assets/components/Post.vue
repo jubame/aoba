@@ -14,8 +14,8 @@
     <header>{{this.headerText}}</header>
 
     <template v-if="imgsrc">
-        <img v-if="!isVideo" v-bind:src="imgsrc" @click="toggleExpand" :class="imageClass" >
-        <video v-else controls loop autoplay v-bind:src="imgsrc"></video>
+        <img v-if="!isVideo" v-bind:src="imgsrc" class="media" @click="toggleExpand" :class="imageClass" >
+        <video v-else ref="video" class="media" v-bind="videoAttributes" loop  v-bind:src="imgsrc" @click="toggleExpand" :class="imageClass"></video>
     </template>
     
     <template v-if="isTypeUser">
@@ -122,6 +122,10 @@ export default {
     
 
     computed: {
+
+        videoAttributes() {
+            return this.imageExpanded ? {'controls': '', 'autoplay': ''} : {}
+        },
 
         imageClass() {
             return this.imageExpanded ? 'expanded' : ''
@@ -338,6 +342,8 @@ export default {
         },
 
         toggleExpand() {
+            this.$refs.video.pause()
+
             
             return (this.imageExpanded = !this.imageExpanded);
         }
@@ -387,7 +393,7 @@ export default {
             }
             overflow: visible;
 
-            img {
+            .media {
                 max-height: 250px;
                 max-width: 250px;
             }
@@ -396,24 +402,33 @@ export default {
         $not-expanded-border: 4px;
         $expanded-border: 6px;
 
-        img {
+        .media {
             cursor: pointer;
             border: $not-expanded-border solid transparent;
             
         }
-        img:hover {
+        .media:hover {
             border: $not-expanded-border solid grey;
 
         }
 
-        img.expanded {
-            max-width: 100%;
-            max-height: initial;
+        .media.expanded {
+            
             border: $expanded-border solid transparent;
             &:hover {
                 border: $expanded-border solid grey;
             }
            
+        }
+
+        img.media.expanded {
+            max-width: 100%;
+            max-height: initial;
+        }
+
+        video.media.expanded {
+            max-width: none;
+            max-height: none;
         }
 
         &.reply-post {
@@ -464,7 +479,7 @@ export default {
                 
         overflow: hidden;
         
-        img {
+        .media {
 
             max-height: 125px;
             max-width: 125px;
