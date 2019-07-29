@@ -363,7 +363,18 @@ export default {
              * Magia de overflow hidden: Block Formatting Context para hacer
              * espacio al float (la imagen).
              */
-            overflow: hidden;
+            //overflow: hidden;
+            &:after {
+                content: ".";
+                display: block;
+                height: 0;
+                clear: both;
+                visibility: hidden;
+            }
+            header {
+                overflow: hidden;
+
+            }
         }
     }
 
@@ -373,7 +384,11 @@ export default {
         pointer-events: initial;
         display: inline-block;
 
+
         $header-post-padding: 20px;
+
+        padding: $header-post-padding;
+        //overflow: hidden; // BFC
 
         background-color: $lavendar;
 
@@ -442,9 +457,8 @@ export default {
 
 
         
-        padding: $header-post-padding;
-                
-        overflow: hidden;
+        
+        
         
         
 

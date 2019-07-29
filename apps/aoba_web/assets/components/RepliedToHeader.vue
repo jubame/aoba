@@ -1,22 +1,24 @@
 <template>
 
-        <div class="entry-container">
+        <div >
 
-        <a
+        <a class="entry-container"
         v-if="replyTo"
         @mouseover="showPreview = true"
         @mouseout="showPreview = false"
         :href="`#${this.threadID}_${replyTo.postID}_${replyTo.entryID}`">
         {{'>>' + replyTo.postID + '.' + replyTo.entryID}}
 
-        
-        </a>
-
         <received-entry v-if="showPreview" class="preview"
         :threadID="this.threadID"
         :postID="replyTo.postID"
         :entryID="replyTo.entryID"
         ></received-entry>
+
+        
+        </a>
+
+        
 
         </div>
 
@@ -86,9 +88,12 @@ export default {
     }
 
     .preview {
+        
         position: absolute;
-        left: 30px;
+        left: 50px;
         top: 0;
+        
+        background-color: antiquewhite; 
     }
 
 
