@@ -6,6 +6,7 @@ import { appendToBodyEntry } from '../js/socket';
         :threadID="this.threadID"
         :postID="this.postID"
         :entryID="this.entryID"
+        @show-preview="showPreview"
         ></replied-to-header>
         <div @click="reply">
         <textarea ref="textarea" rows="1" class="resize-none outline-0 h-full"
@@ -95,6 +96,10 @@ export default {
 
 
     methods: {
+
+        showPreview() {
+            console.log('SHOW-PREVIEW')
+        },
 
         reply(){
             if (this.closed){

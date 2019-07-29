@@ -33,3 +33,7 @@ body.drag * {
 #app {
     display: table-row;
 }
+
+.entry-container {
+    position: absolute;
+}

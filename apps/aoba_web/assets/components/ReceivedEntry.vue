@@ -1,9 +1,10 @@
 <template>
-    <section>
+    <section class="entry-container">
     <replied-to-header
         :threadID="this.threadID"
         :postID="this.postID"
         :entryID="this.entryID"
+        @show-preview="showPreview()"
     ></replied-to-header>
     <p :class="status" :id="`${this.threadID}_${this.postID}_${this.entryID}`" @click="reply">{{entryContent}}</p>
     </section>
@@ -12,10 +13,11 @@
 <script>
 
 import {OPEN, CLOSED} from '../state'
-import RepliedToHeaderVue from './RepliedToHeader';
 
 
 export default {
+
+    name: 'received-entry',
 
     props: {
         threadID: Number,
@@ -24,7 +26,7 @@ export default {
     },
 
     components: {
-        'replied-to-header': RepliedToHeaderVue,
+        'replied-to-header': () => import('./RepliedToHeader'),
         
     },
 
@@ -51,6 +53,10 @@ export default {
             this.$emit('reply', this.entryID)
             
         },
+
+        showPreview() {
+            console.log('SHOW-PREVIEW')
+        }
     }
 
 
@@ -60,6 +66,8 @@ export default {
 
 <style scoped lang="scss">
     @import "styles/app-no-styles.scss";
+
+    
     p {
         white-space: pre-wrap;
         font-family: monospace;
