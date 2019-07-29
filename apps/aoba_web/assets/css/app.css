@@ -35,5 +35,5 @@ body.drag * {
 }
 
 .entry-container {
-    position: absolute;
+    position: relative;
 }

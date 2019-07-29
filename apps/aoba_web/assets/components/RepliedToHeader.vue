@@ -1,6 +1,6 @@
 <template>
 
-        <div>
+        <div class="entry-container">
 
         <a
         v-if="replyTo"
@@ -12,7 +12,7 @@
         
         </a>
 
-        <received-entry v-if="showPreview" id="preview"
+        <received-entry v-if="showPreview" class="preview"
         :threadID="this.threadID"
         :postID="replyTo.postID"
         :entryID="replyTo.entryID"
@@ -85,8 +85,8 @@ export default {
         
     }
 
-    #preview {
-        position: relative;
+    .preview {
+        position: absolute;
         left: 30px;
         top: 0;
     }

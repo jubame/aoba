@@ -1,5 +1,5 @@
 <template>
-    <section class="entry-container">
+    <section>
     <replied-to-header
         :threadID="this.threadID"
         :postID="this.postID"
