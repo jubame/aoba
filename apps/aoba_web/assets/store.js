@@ -251,19 +251,26 @@ const store = new Vuex.Store({
 
         [CLOSE_POST] (state, {threadID, postID, entries}) {
 
-
-            for (var entryID in entries){
-                if (entries.hasOwnProperty(entryID)){
-                    Vue.set(
-                        state.threads[threadID].posts[postID].entries,
-                        entryID,
-                        {
-                            content: entries[entryID].content
-                        }
-
-                    )
+            if(entries && state.threads[threadID].posts[postID].type === 'USER') {
+                for (var entryID in entries){
+                    if (entries.hasOwnProperty(entryID)){
+                        let replyTo = state.threads[threadID].posts[postID].entries[entryID] &&
+                                      state.threads[threadID].posts[postID].entries[entryID].replyTo || null
+                        Vue.set(
+                            state.threads[threadID].posts[postID].entries,
+                            entryID,
+                            {
+                                replyTo: replyTo,
+                                content: entries[entryID]
+                            }
+                            
+    
+                        )
+                    }
                 }
             }
+            
+            
 
           
             Vue.set(
