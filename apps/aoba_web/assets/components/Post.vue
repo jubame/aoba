@@ -253,14 +253,30 @@ export default {
 
             pendingOpenEntry.pushFromPost()
 
-            
+            let entries = {}
             this.$refs.resizableTextarea.forEach(
+                
                 function(entry, index) {
-                    entry.closeFromPost()
+                    let reply = entry.closeFromPost()
+                    entries[reply.entryID] = reply.content
                 }
+
+
+
+
+
+
+
+
+
             )
 
-            closeUserPost(this.threadID, this.postID);
+            console.log(entries)
+
+
+
+
+            closeUserPost(this.threadID, this.postID, entries);
 
 
 

@@ -142,6 +142,7 @@ export default {
 
         closeFromPost(event) {
             this.closed = true
+            return {entryID: this.entryID, content: this.content}
         },
 
 

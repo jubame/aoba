@@ -36,8 +36,8 @@ function saveWithStatus(mutation, status, info){
     
 }
 
-function saveClosePost(mutation, threadID, postID){
-    store.commit(mutation, {threadID, postID})
+function saveClosePost(mutation, threadID, postID, entries){
+    store.commit(mutation, {threadID, postID, entries})
 }
 
 function newPost(state, type, response) {
@@ -249,8 +249,23 @@ const store = new Vuex.Store({
         },
 
 
-        [CLOSE_POST] (state, {threadID, postID}) {
+        [CLOSE_POST] (state, {threadID, postID, entries}) {
 
+
+            for (var entryID in entries){
+                if (entries.hasOwnProperty(entryID)){
+                    Vue.set(
+                        state.threads[threadID].posts[postID].entries,
+                        entryID,
+                        {
+                            content: entries[entryID].content
+                        }
+
+                    )
+                }
+            }
+
+          
             Vue.set(
                 state.threads[threadID].posts[postID],
                 'status',

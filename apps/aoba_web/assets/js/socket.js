@@ -215,11 +215,11 @@ function closeBodyEntry(thread_id, post_id, entry_id, closePost){
   })
 }
 
-function closeUserPost(threadID, postID) {
+function closeUserPost(threadID, postID, entries) {
 
   channel.push("close_post", {thread_id: threadID, post_id: postID})
   .receive("ok", response => {
-    saveClosePost(CLOSE_POST, threadID, postID);
+    saveClosePost(CLOSE_POST, threadID, postID, entries);
   })
   
 }
