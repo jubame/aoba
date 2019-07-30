@@ -373,6 +373,12 @@ export default {
             /* https://stackoverflow.com/a/5587563
              * Magia de overflow hidden: Block Formatting Context para hacer
              * espacio al float (la imagen).
+             *
+             * No puedo poner "overflow: hidden" aquí en el post porque luego al 
+             * mostrar preview del reply en RepliedToHeader se recorta si es
+             * muy alto. Tampoco puedo dejar sólo "overflow-x: hidden" porque
+             * entonces overflow-y se pone automáticamente con scroll, y no
+             * quiero eso.
              */
             header {
                 overflow: hidden;
@@ -391,7 +397,12 @@ export default {
 
 
         
-
+        /* 
+         * No puedo poner padding derecho porque luego necesito margen izquierdo
+         * negativo en el header para cubrir todo el ancho de la pantalla, y es
+         * ignorado al tener también "overflow: hidden", quizá por esto:
+         *     https://bugs.chromium.org/p/chromium/issues/detail?id=350473
+         */
         padding: $header-post-padding 0 $header-post-padding $header-post-padding;
         > section {
             margin-right: $header-post-padding;
