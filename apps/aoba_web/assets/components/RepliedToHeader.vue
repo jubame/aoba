@@ -1,22 +1,29 @@
 <template>
 
-        <div >
+        <div>
 
         <a class="entry-container"
         v-if="replyTo"
-        @mouseover="showPreview = true"
+        @mouseover="showPreviewMethod"
         @mouseout="showPreview = false"
+        
         :href="`#${this.threadID}_${replyTo.postID}_${replyTo.entryID}`">
         {{'>>' + replyTo.postID + '.' + replyTo.entryID}}
 
-        <received-entry v-if="showPreview" class="preview"
-        :threadID="this.threadID"
-        :postID="replyTo.postID"
-        :entryID="replyTo.entryID"
-        ></received-entry>
+        
+            <received-entry v-if="showPreview" class="preview"
+            :threadID="this.threadID"
+            :postID="replyTo.postID"
+            :entryID="replyTo.entryID"
+            
+            ref="preview"
+            ></received-entry>
 
         
         </a>
+
+
+        
 
         
 
@@ -69,6 +76,38 @@ export default {
     },
 
     methods: {
+
+        showPreviewMethod(){
+            if (this.showPreview) {
+                return
+            }
+            this.showPreview = true
+            let moveUp
+            // https://stackoverflow.com/a/7557433
+            this.$nextTick( () => {
+                var rect = this.$refs.preview.$el.getBoundingClientRect();
+                let windowHeight = (window.innerHeight || document.documentElement.clientHeight)
+                console.log(rect)
+                if (rect.bottom > windowHeight) {
+                    moveUp = rect.bottom - windowHeight
+                    this.$refs.preview.$el.style.top = -moveUp + 'px'
+
+                }
+
+                this.$refs.preview.$el.style.visibility = 'visible'
+
+
+
+
+
+
+
+
+
+
+            })
+            
+        }
         
         
     }
@@ -88,7 +127,8 @@ export default {
     }
 
     .preview {
-        
+        color: initial;
+        visibility: hidden;
         position: absolute;
         left: 50px;
         top: 0;
