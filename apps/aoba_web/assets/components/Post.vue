@@ -356,14 +356,12 @@ export default {
 
     @import "styles/app-no-styles.scss";
 
+    $height: 20px;
+
 
     [data-type="post"]:not(:first-child) {
         &.initial-post {
-            /* https://stackoverflow.com/a/5587563
-             * Magia de overflow hidden: Block Formatting Context para hacer
-             * espacio al float (la imagen).
-             */
-            //overflow: hidden;
+
             &:after {
                 content: ".";
                 display: block;
@@ -371,10 +369,16 @@ export default {
                 clear: both;
                 visibility: hidden;
             }
+
+            /* https://stackoverflow.com/a/5587563
+             * Magia de overflow hidden: Block Formatting Context para hacer
+             * espacio al float (la imagen).
+             */
             header {
                 overflow: hidden;
-
+                
             }
+            
         }
     }
 
@@ -383,12 +387,15 @@ export default {
     [data-type="post"] {
         pointer-events: initial;
         display: inline-block;
+        
 
 
-        $header-post-padding: 20px;
+        
 
-        padding: $header-post-padding;
-        //overflow: hidden; // BFC
+        padding: $header-post-padding 0 $header-post-padding $header-post-padding;
+        > section {
+            margin-right: $header-post-padding;
+        }
 
         background-color: $lavendar;
 
@@ -463,12 +470,12 @@ export default {
         
 
         header {
-            $height: 20px;
+            
             font-size: 10pt;
             height: $height;
             line-height: $height;
             background-color: #98e;
-            margin: (-$header-post-padding) (-$header-post-padding) $header-post-padding (-$header-post-padding);
+            margin: (-$header-post-padding) 0 $header-post-padding (-$header-post-padding);
             padding: 0 $header-post-padding;
 
         }
