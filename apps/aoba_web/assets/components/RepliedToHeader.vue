@@ -39,6 +39,7 @@
 
 <script>
 import ReceivedEntry from './ReceivedEntry';
+import {isElementInViewport, putElementInViewport} from '../viewport'
 
 
 export default {
@@ -85,29 +86,17 @@ export default {
             let moveUp
             // https://stackoverflow.com/a/7557433
             this.$nextTick( () => {
-                var rect = this.$refs.preview.$el.getBoundingClientRect();
-                let windowHeight = (window.innerHeight || document.documentElement.clientHeight)
-                console.log(rect)
-                if (rect.bottom > windowHeight) {
-                    moveUp = rect.bottom - windowHeight
-                    this.$refs.preview.$el.style.top = -moveUp + 'px'
 
-                }
+                putElementInViewport(this.$refs.preview.$el)
 
                 this.$refs.preview.$el.style.visibility = 'visible'
-
-
-
-
-
-
-
-
-
-
             })
             
         }
+
+
+
+
         
         
     }
