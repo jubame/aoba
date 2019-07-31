@@ -87,9 +87,12 @@ export default {
             // https://stackoverflow.com/a/7557433
             this.$nextTick( () => {
                 
-
-                this.$refs.preview.$el.style.top = 0
-                this.$refs.preview.$el.style.left = 50 + 'px'
+                /*
+                 * Poner relativo al #content, no al window. Con window
+                 * funciona mal después de draguear el post tipo
+                 * .reply-post fuera de content, aunque después lo vuelva a
+                 * meter dentro de #content
+                 */
                 putElementInViewport(this.$refs.preview.$el, document.getElementById('content'))
 
             })
@@ -119,7 +122,6 @@ export default {
 
     .preview {
         color: initial;
-        //visibility: hidden;
         position: absolute;
         left: 50px;
         top: 0;
