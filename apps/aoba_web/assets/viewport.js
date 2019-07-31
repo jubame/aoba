@@ -9,9 +9,9 @@ function isElementInViewport(el) {
   }
 
 
-function putElementInViewport(el, relativeTo) {
+function putElementInsideAnother(el, container) {
     var rect = el.getBoundingClientRect();
-    var content = relativeTo.getBoundingClientRect();
+    var container = container.getBoundingClientRect();
     //let windowWidth = (window.innerWidth || document.documentElement.clientWidth)
     //let windowHeight = (window.innerHeight || document.documentElement.clientHeight)
     
@@ -19,11 +19,11 @@ function putElementInViewport(el, relativeTo) {
     if (rect.top < content.top){
         el.style.top = 0
     }
-    if (rect.right > content.right) {
-        el.style.left( -(rect.right - content.right) ) + 'px'
+    if (rect.right > container.right) {
+        el.style.left( -(rect.right - container.right) ) + 'px'
     }
-    if (rect.bottom > content.bottom) {
-        el.style.top = -(rect.bottom - content.bottom) + 'px'
+    if (rect.bottom > container.bottom) {
+        el.style.top = -(rect.bottom - container.bottom) + 'px'
     }
     if (rect.left < content.left) {
         el.style.left = -rect.left + 'px'
@@ -32,4 +32,4 @@ function putElementInViewport(el, relativeTo) {
 
 }
 
-export {isElementInViewport, putElementInViewport}
+export {isElementInViewport, putElementInsideAnother}

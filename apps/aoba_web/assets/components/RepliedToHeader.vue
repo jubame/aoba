@@ -39,7 +39,7 @@
 
 <script>
 import ReceivedEntry from './ReceivedEntry';
-import {isElementInViewport, putElementInViewport} from '../viewport'
+import {isElementInViewport, putElementInsideAnother} from '../viewport'
 
 
 export default {
@@ -93,7 +93,7 @@ export default {
                  * .reply-post fuera de content, aunque después lo vuelva a
                  * meter dentro de #content
                  */
-                putElementInViewport(this.$refs.preview.$el, document.getElementById('content'))
+                putElementInsideAnother(this.$refs.preview.$el, document.getElementById('content'))
 
             })
             
