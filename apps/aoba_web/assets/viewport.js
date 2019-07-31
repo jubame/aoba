@@ -9,22 +9,23 @@ function isElementInViewport(el) {
   }
 
 
-function putElementInViewport(el) {
+function putElementInViewport(el, relativeTo) {
     var rect = el.getBoundingClientRect();
-    let windowWidth = (window.innerWidth || document.documentElement.clientWidth)
-    let windowHeight = (window.innerHeight || document.documentElement.clientHeight)
+    var content = relativeTo.getBoundingClientRect();
+    //let windowWidth = (window.innerWidth || document.documentElement.clientWidth)
+    //let windowHeight = (window.innerHeight || document.documentElement.clientHeight)
     
 
-    if (rect.top < 0){
+    if (rect.top < content.top){
         el.style.top = 0
     }
-    if (rect.right > windowWidth) {
-        el.style.left( -(rect.right - windowWidth) ) + 'px'
+    if (rect.right > content.right) {
+        el.style.left( -(rect.right - content.right) ) + 'px'
     }
-    if (rect.bottom > windowHeight) {
-        el.style.top = -(rect.bottom - windowHeight) + 'px'
+    if (rect.bottom > content.bottom) {
+        el.style.top = -(rect.bottom - content.bottom) + 'px'
     }
-    if (rect.left < 0) {
+    if (rect.left < content.left) {
         el.style.left = -rect.left + 'px'
     }
     

@@ -86,10 +86,12 @@ export default {
             let moveUp
             // https://stackoverflow.com/a/7557433
             this.$nextTick( () => {
+                
 
-                putElementInViewport(this.$refs.preview.$el)
+                this.$refs.preview.$el.style.top = 0
+                this.$refs.preview.$el.style.left = 50 + 'px'
+                putElementInViewport(this.$refs.preview.$el, document.getElementById('content'))
 
-                this.$refs.preview.$el.style.visibility = 'visible'
             })
             
         }
@@ -117,7 +119,7 @@ export default {
 
     .preview {
         color: initial;
-        visibility: hidden;
+        //visibility: hidden;
         position: absolute;
         left: 50px;
         top: 0;
