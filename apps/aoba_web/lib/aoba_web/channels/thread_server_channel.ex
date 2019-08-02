@@ -8,6 +8,10 @@ defmodule AobaWeb.ThreadServerChannel do
     {:ok, socket}
   end
 
+  def join("threadserver:" <> thread_id, _message, socket) do
+    {:ok, socket}
+  end
+
 
   def handle_in("new_thread", _params, socket) do
     with {:ok, pid} <- ThreadServerSupervisor.start_thread(),

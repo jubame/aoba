@@ -77,86 +77,72 @@ socket.connect()
 socket.conn.binaryType = 'arraybuffer'
 
 
+/*
+ * https://stackoverflow.com/questions/40414566/phoenix-channels-multiple-channels-per-socket
+ * Utilizo dos subtopics (realmente topics, los dos puntos son sólo una
+ * convención):
+ *   threadserver:lobby          eventos generales (new_thread...)
+ *   threadserver:<thread_id>    eventos de un hilo en particular (nuevo post,
+ *                               nuevo entry, nuevo media...)
+ * De esta manera, reduzco el tráfico a lo realmente necesario para el usuario
+ * en cada momento, evitando escuchar todos los eventos de todos los hilos en
+ * un sólo topic.
+ * Cuando el usuario abandone el hilo, tendré que hacer un leave.
+ * El explorador utiliza un sólo websocket para los dos, a pesar de que aquí
+ * haga socket.channel(...) dos veces:
+ *   channelLobby = socket.channel("threadserver:lobby", {})
+ *   channelThread = socket.channel("threadserver:" + threadID, {})
+ *  En Phoenix se enruta todo a AobaWeb.ThreadServerChannel, porque tengo
+ *  puesto esto en AobaWeb.UserSocket:
+ *    channel "threadserver:*", AobaWeb.ThreadServerChannel
+ *  Parece que al final en el servidor se arrancan dos procesos de ThreadServerChannel:
+ *    https://stackoverflow.com/a/40426617
+ *    It seems to me the Channel module is similar to a GenServer and the join
+ *    is somewhat like start_link, where a new server (process) is spun up
+ *    (however, only if it does not already exist).
+*/
 // Now that you are connected, you can join channels with a topic:
-let channel = socket.channel("threadserver:lobby", {})
-channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
+let channelLobby = socket.channel("threadserver:lobby", {})
+channelLobby.join()
+  .receive("ok", resp => { console.log("lobby Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
+let channelThread
 
 
-channel.on("new_thread", response => {
-    console.log("New thread:", response.thread_id)
-    EventBus.$emit('new_thread', response.thread_id, response.post_id)
-})
-
-channel.on("operation_to_body_entry", response => {
-  console.log("operation_to_body_entry", response)
+channelLobby.on("new_thread", response => {
   
-  let replyTo
-  if (response.reply_to){
-    replyTo = {postID: response.reply_to.post_id, entryID: response.reply_to.entry_id}
-  }
-  else {
-    replyTo = null
-  }
+    initializeThreadChannel(response.thread_id)
 
-  save(OPERATION_TO_RECEIVED_BODY_ENTRY,
-    {
-      action: response.action,
-      threadID: response.thread_id,
-      postID: response.post_id,
-      entryID: response.entry_id,
-      content: response.iolist,
-      closeEntry: response.close_entry,
-      closePost: response.close_post,
-      replyTo: replyTo
+    channelThread.join()
+    .receive("ok", resp => {
+      console.log(response.thread_id + " Joined successfully", resp)
+      
+      console.log("New thread:", response.thread_id)
+      EventBus.$emit('new_thread', response.thread_id, response.post_id)
     }
     )
-  //EventBus.$emit('new_thread', response.thread_id, response.post_id)
-})
+    .receive("error", resp => { console.log("Unable to join", resp) })
 
-
-channel.on("close_body_entry", response => {
-  console.log("close_body_entry", response)
-  save(RECEIVED_CLOSE_BODY_ENTRY,
-    {
-      
-      threadID: response.thread_id,
-      postID: response.post_id,
-      entryID: response.entry_id,
-      closeEntry: response.close_entry,
-      closePost: response.close_post}
-    )
-
-
-    // %{"thread_id" => thread_id, "post_id" => post_id, "entry_id" => entry_id, "close_post" => close_post} = params
     
-  //EventBus.$emit('new_thread', response.thread_id, response.post_id)
 })
-
-
-channel.on("close_post", response => {
-  console.log("close_post:", response.thread_id)
-  saveClosePost(CLOSE_POST, response.thread_id, response.post_id);
-})
-
-
-channel.on("add_media_to_post", response => {
-  console.log("add_media_to_post:", response.thread_id)
-  save(SAVE_RECEIVED_MEDIA, {
-    threadID: response.thread_id,
-    postID: response.post_id,
-    media: response.media
-  })
-})
-
 
 function newThread(callbackThreadCreated){
   
-  channel.push("new_thread")
+  channelLobby.push("new_thread")
   .receive("ok", response => {
-    saveWithStatus(SAVE_USER_THREAD, "ok", {threadID: response.thread_id, postID: response.post_id})
-    callbackThreadCreated(response)
+    initializeThreadChannel(response.thread_id)
+
+    channelThread.join()
+    .receive("ok", resp => {
+      console.log(response.thread_id + " Joined successfully", resp)
+      saveWithStatus(SAVE_USER_THREAD, "ok", {threadID: response.thread_id, postID: response.post_id})
+      callbackThreadCreated(response)
+    }
+    )
+    .receive("error", resp => { console.log("Unable to join", resp) })
+
+
+    
   })
   .receive("error", response => {
     saveWithStatus(SAVE_USER_THREAD, "error", response.reason)
@@ -164,9 +150,86 @@ function newThread(callbackThreadCreated){
 }
 
 
+
+
+function initializeThreadChannel(threadID){
+  channelThread = socket.channel("threadserver:" + threadID, {})
+  initializeThreadCallbacks()
+
+}
+
+function initializeThreadCallbacks(){
+  channelThread.on("operation_to_body_entry", response => {
+    console.log("operation_to_body_entry", response)
+    
+    let replyTo
+    if (response.reply_to){
+      replyTo = {postID: response.reply_to.post_id, entryID: response.reply_to.entry_id}
+    }
+    else {
+      replyTo = null
+    }
+  
+    save(OPERATION_TO_RECEIVED_BODY_ENTRY,
+      {
+        action: response.action,
+        threadID: response.thread_id,
+        postID: response.post_id,
+        entryID: response.entry_id,
+        content: response.iolist,
+        closeEntry: response.close_entry,
+        closePost: response.close_post,
+        replyTo: replyTo
+      }
+      )
+    //EventBus.$emit('new_thread', response.thread_id, response.post_id)
+  })
+  
+  
+  channelThread.on("close_body_entry", response => {
+    console.log("close_body_entry", response)
+    save(RECEIVED_CLOSE_BODY_ENTRY,
+      {
+        
+        threadID: response.thread_id,
+        postID: response.post_id,
+        entryID: response.entry_id,
+        closeEntry: response.close_entry,
+        closePost: response.close_post}
+      )
+  
+  
+      // %{"thread_id" => thread_id, "post_id" => post_id, "entry_id" => entry_id, "close_post" => close_post} = params
+      
+    //EventBus.$emit('new_thread', response.thread_id, response.post_id)
+  })
+  
+  
+  channelThread.on("close_post", response => {
+    console.log("close_post:", response.thread_id)
+    saveClosePost(CLOSE_POST, response.thread_id, response.post_id);
+  })
+  
+  
+  channelThread.on("add_media_to_post", response => {
+    console.log("add_media_to_post:", response.thread_id)
+    save(SAVE_RECEIVED_MEDIA, {
+      threadID: response.thread_id,
+      postID: response.post_id,
+      media: response.media
+    })
+  })
+
+}
+
+
+
+
+
+
 function newPost(threadID, callbackPostCreated, originPostID, originEntryID){
   
-  channel.push("new_post", {thread_id: threadID})
+  channelThread.push("new_post", {thread_id: threadID})
   .receive("ok", response => {
     saveWithStatus(SAVE_USER_POST, "ok", {threadID: threadID, postID: response.post_id})
     callbackPostCreated({threadID: threadID, postID: response.post_id}, originPostID, originEntryID)
@@ -186,7 +249,7 @@ function operationToBodyEntry(action, thread_id, post_id, entry_id, content, clo
   else {
     pushParams = {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost}
   }
-  channel.push("operation_to_body_entry", pushParams)
+  channelThread.push("operation_to_body_entry", pushParams)
   .receive("ok", response => {
     saveWithStatus(SAVE_LAST_PUSH, "ok", response)
   })
@@ -202,7 +265,7 @@ function operationToBodyEntry(action, thread_id, post_id, entry_id, content, clo
 
 
 function closeBodyEntry(thread_id, post_id, entry_id, closePost){
-  channel.push("close_body_entry", {thread_id: thread_id, post_id: post_id, entry_id: entry_id, close_post: closePost})
+  channelThread.push("close_body_entry", {thread_id: thread_id, post_id: post_id, entry_id: entry_id, close_post: closePost})
   .receive("ok", response => {
     saveWithStatus(SAVE_LAST_PUSH, "ok", response)
   })
@@ -217,7 +280,7 @@ function closeBodyEntry(thread_id, post_id, entry_id, closePost){
 
 function closeUserPost(threadID, postID, entries) {
 
-  channel.push("close_post", {thread_id: threadID, post_id: postID})
+  channelThread.push("close_post", {thread_id: threadID, post_id: postID})
   .receive("ok", response => {
     saveClosePost(CLOSE_POST, threadID, postID, entries);
   })
@@ -234,7 +297,7 @@ function addMediaToPost(threadID, postID, media) {
     media: media
   })
 
-  channel.push("add_media_to_post", {thread_id: threadID, post_id: postID, media: media})
+  channelThread.push("add_media_to_post", {thread_id: threadID, post_id: postID, media: media})
   .receive("ok", response => {
     console.log(response)
   })
