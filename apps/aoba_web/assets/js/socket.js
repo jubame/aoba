@@ -156,6 +156,7 @@ function initializeThreadChannel(threadID){
 }
 
 function initializeThreadCallbacks(){
+  // Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
   channelThread.on("operation_to_body_entry", response => {
     console.log("operation_to_body_entry", response)
     
@@ -182,7 +183,7 @@ function initializeThreadCallbacks(){
     //EventBus.$emit('new_thread', response.thread_id, response.post_id)
   })
   
-  
+  // Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
   channelThread.on("close_body_entry", response => {
     console.log("close_body_entry", response)
     save(RECEIVED_CLOSE_BODY_ENTRY,
@@ -224,7 +225,13 @@ function initializeThreadCallbacks(){
 
 
 
-
+/* El envío es push("new_post") pero la recepción llega como
+ * OPERATION_TO_RECEIVED_BODY_ENTRY junto con el postID. Ya creo el Post en el
+ * store si es necesario.
+ * No puedo hacer operationToBodyEntry directamente porque necesito que el
+ * servidor genere un número de Post, pues no permito que lo haga el cliente.
+ * El cliente sólo controla los entryIDs dentro de su Post.
+ */
 function newPost(threadID, callbackPostCreated, originPostID, originEntryID){
   
   channelThread.push("new_post", {thread_id: threadID})
@@ -237,7 +244,7 @@ function newPost(threadID, callbackPostCreated, originPostID, originEntryID){
   })
 }
 
-
+// Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
 function operationToBodyEntry(action, thread_id, post_id, entry_id, content, closeEntry, closePost, replyTo){
   let pushParams
   if (replyTo){
@@ -261,7 +268,7 @@ function operationToBodyEntry(action, thread_id, post_id, entry_id, content, clo
 }
 
 
-
+// Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
 function closeBodyEntry(thread_id, post_id, entry_id, closePost){
   channelThread.push("close_body_entry", {thread_id: thread_id, post_id: post_id, entry_id: entry_id, close_post: closePost})
   .receive("ok", response => {
@@ -276,15 +283,13 @@ function closeBodyEntry(thread_id, post_id, entry_id, closePost){
   })
 }
 
-function closeUserPost(threadID, postID, entries) {
 
+function closeUserPost(threadID, postID, entries) {
   channelThread.push("close_post", {thread_id: threadID, post_id: postID})
   .receive("ok", response => {
     saveClosePost(CLOSE_POST, threadID, postID, entries);
   })
-  
 }
-
 
 
 function addMediaToPost(threadID, postID, media) {
