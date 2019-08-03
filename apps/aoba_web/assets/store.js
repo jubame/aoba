@@ -11,8 +11,7 @@ import {
     POST_DRAG_N_DROP,
     OPERATION_TO_RECEIVED_BODY_ENTRY,
     RECEIVED_CLOSE_BODY_ENTRY,
-    SAVE_USER_MEDIA,
-    SAVE_RECEIVED_MEDIA,
+    SAVE_MEDIA,
     SAVE_REPLY_TO
 } from './mutation-types'
 import {NOT_SET, OPEN, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from './state'
@@ -228,19 +227,16 @@ const store = new Vuex.Store({
             
         },
 
-        [SAVE_RECEIVED_MEDIA] (state, response) {
+        [SAVE_MEDIA] (state, response) {
 
+            /* De momento sólo se permite un media por Post, así que si llega
+             * un nuevo media, eso quiere decir que también es un Post nuevo.
+             */
+            if (response.type === RECEIVED) {
+                newPost(state, RECEIVED, response)
+            }
             
-            newPost(state, RECEIVED, response)
-
             saveMedia(state, response.threadID, response.postID, response.media)
-
-        },
-
-        [SAVE_USER_MEDIA] (state, info) {
-
-
-            saveMedia(state, info.threadID, info.postID, info.media)
 
         },
 

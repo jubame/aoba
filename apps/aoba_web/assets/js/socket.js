@@ -15,8 +15,7 @@ import {
   SAVE_USER_POST,
   OPERATION_TO_RECEIVED_BODY_ENTRY,
   RECEIVED_CLOSE_BODY_ENTRY,
-  SAVE_USER_MEDIA,
-  SAVE_RECEIVED_MEDIA,
+  SAVE_MEDIA,
   
 } from '../mutation-types'
 import {encodeMessage, decodeMessage} from './message_pack'
@@ -211,7 +210,8 @@ function initializeThreadCallbacks(){
   
   channelThread.on("add_media_to_post", response => {
     console.log("add_media_to_post:", response.thread_id)
-    save(SAVE_RECEIVED_MEDIA, {
+    save(SAVE_MEDIA, {
+      type: RECEIVED,
       threadID: response.thread_id,
       postID: response.post_id,
       media: response.media
@@ -289,7 +289,8 @@ function closeUserPost(threadID, postID, entries) {
 
 function addMediaToPost(threadID, postID, media) {
 
-  save(SAVE_USER_MEDIA, {
+  save(SAVE_MEDIA, {
+    type: USER,
     threadID: threadID,
     postID: postID,
     media: media
