@@ -118,8 +118,6 @@ channelLobby.on("new_thread", response => {
     .receive("ok", resp => {
       console.log(response.thread_id + " Joined successfully", resp)
       saveWithStatus(SAVE_THREAD, "ok", {type: RECEIVED, threadID: response.thread_id, postID: response.post_id})
-      //console.log("New thread:", response.thread_id)
-      EventBus.$emit('new_thread', response.thread_id, response.post_id)
     }
     )
     .receive("error", resp => { console.log("Unable to join", resp) })
@@ -137,7 +135,6 @@ function newThread(callbackThreadCreated){
     .receive("ok", resp => {
       console.log(response.thread_id + " Joined successfully", resp)
       saveWithStatus(SAVE_THREAD, "ok", {type: USER, threadID: response.thread_id, postID: response.post_id})
-      callbackThreadCreated(response)
     }
     )
     .receive("error", resp => { console.log("Unable to join", resp) })

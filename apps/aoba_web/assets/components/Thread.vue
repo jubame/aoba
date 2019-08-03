@@ -1,36 +1,21 @@
 <template>
     <div>
-        <button @mousedown="createThread">New Thread</button>
-
-
-
-
-        <article data-type="thread" :id="threadID"
-        v-for="(thread, threadID) in threads" v-bind:key="`${threadID}`"
-        >
-            
-            <regular-post
-                v-for="(post, postID) in thread.posts" v-bind:key="`${threadID}_${postID}`"
-                :newThread="true"
-                :threadID="parseInt(threadID)"
-                :postID="parseInt(postID)"
-                :replyPostID="parseInt(replyPostID)"
-                @reply-to="replyTo"
-                >
-            </regular-post>
-
-            <span>{{threadID}}</span>
-
-            
-            
-            <button v-if="canReply" v-on:click="reply">Reply</button>
-
-            
-            
         
-        </article>
+        <regular-post
+            v-for="(post, postID) in currentThread.posts" v-bind:key="`${threadID}_${postID}`"
+            :newThread="true"
+            :threadID="threadID"
+            :postID="parseInt(postID)"
+            :replyPostID="parseInt(replyPostID)"
+            @reply-to="replyTo"
+            >
+        </regular-post>
 
-        
+        <span>{{threadID}}</span>
+
+        <button v-if="canReply" v-on:click="reply">Reply</button>
+
+       
     </div>
 
 
@@ -43,17 +28,21 @@ import Post from './Post'
 import {NOT_SET, CLOSED} from '../state'
 import {EventBus} from '../main.js'
 import {SAVE_REPLY_TO} from '../mutation-types'
-import {newThread, newPost} from '../js/socket'
+import {newPost} from '../js/socket'
 
 export default {
     name: 'Thread',
+
+    props: {
+        threadID: Number
+
+    },
     
     data () {
         return {
             msg: '今日も一日頑張るぞい！',
             replyPost: false,
             replyPostID: null,
-            threadID: null
             
 
             
@@ -61,23 +50,18 @@ export default {
             
         }
     },
-    created() {
-
-        EventBus.$on('new_thread', 
-            (threadID, postID) => {
-                this.threadID = threadID
-            }
-        );
-
-
-
-    },
+    
 
     components: {
         'new-thread-post': NewThreadAccordionPost,
         'regular-post': Post
     },
     computed: {
+
+        currentThread(){
+            return this.$store.state.threads[this.threadID]
+        },
+
 
 
         post: function () {
@@ -94,10 +78,7 @@ export default {
             return this.threadID
         },
 
-        threads() {
-            return this.$store.state.threads
-        },
-
+        
         
 
         
@@ -145,20 +126,6 @@ export default {
             this.$store.commit(SAVE_REPLY_TO, {threadID: this.threadID, postID: this.replyPostID, entryID: 1, replyTo: replyTo})
 
         },
-
-        callbackThreadCreated(response){
-            console.log('RECIBIDO!!!!')
-            console.log('response es ' + response.thread_id)
-            console.log('response es ' + response.post_id)
-            this.threadID = response.thread_id
-
-
-        },
-
-        createThread(){
-            newThread(this.callbackThreadCreated);
-
-        }
 
 
 

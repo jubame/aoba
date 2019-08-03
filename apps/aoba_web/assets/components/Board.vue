@@ -1,13 +1,20 @@
 <template>
   <div id="content">
     <img src="../static/images/aoba_salute.jpg">
-    <thread></thread>
+    <button @mousedown="createThread">New Thread</button>
+
+    <article data-type="thread" :id="threadID"
+        v-for="(thread, threadID) in threads" v-bind:key="`${threadID}`"
+        >
+        <thread :threadID="parseInt(threadID)"></thread>
+    </article>
   </div>
 </template>
 
 <script>
 
 import Thread from './Thread'
+import {newThread} from '../js/socket'
 
 export default {
     name: 'Board',
@@ -21,6 +28,21 @@ export default {
     components: {
         'thread': Thread
     },
+
+    computed: {
+        threads() {
+            return this.$store.state.threads
+        },
+
+    },
+
+    methods: {
+
+        createThread(){
+            newThread();
+
+        }
+    }
 
 
 }
