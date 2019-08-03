@@ -3,13 +3,12 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import {
-    SAVE_USER_THREAD,
+    SAVE_THREAD,
     SAVE_LAST_PUSH,
     CLOSE_POST,
     SAVE_USER_POST,
     DRAG_N_DROP,
     POST_DRAG_N_DROP,
-    SAVE_RECEIVED_THREAD,
     OPERATION_TO_RECEIVED_BODY_ENTRY,
     RECEIVED_CLOSE_BODY_ENTRY,
     SAVE_USER_MEDIA,
@@ -202,11 +201,8 @@ const store = new Vuex.Store({
 
 
 
-        [SAVE_RECEIVED_THREAD] (state, response) {
-            saveNewThread(state, RECEIVED, response.threadID, response.postID)
-        },
-        [SAVE_USER_THREAD] (state, info) {
-            saveNewThread(state, USER, info.threadID, info.postID)
+        [SAVE_THREAD] (state, response) {
+            saveNewThread(state, response.type, response.threadID, response.postID)
         },
         [SAVE_USER_POST](state, info) {
 

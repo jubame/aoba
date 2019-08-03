@@ -9,7 +9,7 @@
 import {Socket} from "phoenix"
 import {save, saveClosePost, saveWithStatus} from '../store'
 import {
-  SAVE_USER_THREAD,
+  SAVE_THREAD,
   SAVE_LAST_PUSH,
   CLOSE_POST,
   SAVE_USER_POST,
@@ -21,6 +21,7 @@ import {
 } from '../mutation-types'
 import {encodeMessage, decodeMessage} from './message_pack'
 import {EventBus} from '../main.js'
+import {USER, RECEIVED} from '../types'
 
 let socket = new Socket(
   "/socket",
@@ -116,8 +117,8 @@ channelLobby.on("new_thread", response => {
     channelThread.join()
     .receive("ok", resp => {
       console.log(response.thread_id + " Joined successfully", resp)
-      
-      console.log("New thread:", response.thread_id)
+      saveWithStatus(SAVE_THREAD, "ok", {type: RECEIVED, threadID: response.thread_id, postID: response.post_id})
+      //console.log("New thread:", response.thread_id)
       EventBus.$emit('new_thread', response.thread_id, response.post_id)
     }
     )
@@ -135,7 +136,7 @@ function newThread(callbackThreadCreated){
     channelThread.join()
     .receive("ok", resp => {
       console.log(response.thread_id + " Joined successfully", resp)
-      saveWithStatus(SAVE_USER_THREAD, "ok", {threadID: response.thread_id, postID: response.post_id})
+      saveWithStatus(SAVE_THREAD, "ok", {type: USER, threadID: response.thread_id, postID: response.post_id})
       callbackThreadCreated(response)
     }
     )

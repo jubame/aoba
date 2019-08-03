@@ -42,7 +42,7 @@ import NewThreadAccordionPost from './NewThreadAccordionPost'
 import Post from './Post'
 import {NOT_SET, CLOSED} from '../state'
 import {EventBus} from '../main.js'
-import {SAVE_RECEIVED_THREAD, NEW_PENDING_THREAD, SAVE_REPLY_TO} from '../mutation-types'
+import {SAVE_REPLY_TO} from '../mutation-types'
 import {newThread, newPost} from '../js/socket'
 
 export default {
@@ -65,10 +65,6 @@ export default {
 
         EventBus.$on('new_thread', 
             (threadID, postID) => {
-
-                console.log('new_thread recibido')
-
-                this.$store.commit(SAVE_RECEIVED_THREAD, {threadID, postID})
                 this.threadID = threadID
             }
         );
