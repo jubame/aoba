@@ -1,8 +1,13 @@
 defmodule AobaWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :aoba_web
 
+  # https://elixirforum.com/t/phoenix-socket-channels-security-ip-identification/1463/4
   socket "/socket", AobaWeb.UserSocket,
-    websocket: [serializer: [{AobaWeb.MsgpaxSerializer, "~> 2.0.0"}]],
+    websocket: [
+      serializer: [{AobaWeb.MsgpaxSerializer, "~> 2.0.0"}],
+      # https://elixirforum.com/t/phoenix-socket-channels-security-ip-identification/1463/4
+      connect_info: [:peer_data, :x_headers]
+    ],
     longpoll: false
 
   # Serve at "/" the static files from "priv/static" directory.

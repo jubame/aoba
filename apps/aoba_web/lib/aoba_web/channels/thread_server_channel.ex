@@ -4,12 +4,16 @@ defmodule AobaWeb.ThreadServerChannel do
   alias Aoba.ThreadServer
 
 
+  # each user’s conversation on a topic has its own isolated, dedicated process.
   def join("threadserver:lobby", _message, socket) do
+    IO.puts(socket.id)
     {:ok, socket}
   end
 
+  # each user’s conversation on a topic has its own isolated, dedicated process.
   def join("threadserver:" <> thread_id, _message, socket) do
-    {:ok, socket}
+    IO.puts(socket.id)
+    {:ok, assign(socket, :thread_id, String.to_integer(thread_id))}
   end
 
 
