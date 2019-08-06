@@ -111,18 +111,208 @@ channelLobby.join()
     console.log("lobby Joined successfully", token)
   })
   .receive("error", resp => { console.log("Unable to join", resp) })
-let channelThread
+let aobaThread
+
+
+function AobaThread(spec) {
+
+  let {threadID, token} = spec
+
+  let channelThread = initializeThreadChannel(threadID, token)
+
+  function initializeThreadChannel(threadID, token){
+    console.log('TOKEN ES ' + token)
+    channelThread = socket.channel("threadserver:" + threadID, {token: token})
+    initializeThreadCallbacks(channelThread)
+    return channelThread
+  
+  }
+  
+  function initializeThreadCallbacks(chan){
+    // Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
+    chan.on("operation_to_body_entry", response => {
+      console.log("operation_to_body_entry", response)
+      
+      let replyTo
+      if (response.reply_to){
+        replyTo = {postID: response.reply_to.post_id, entryID: response.reply_to.entry_id}
+      }
+      else {
+        replyTo = null
+      }
+    
+      save(OPERATION_TO_RECEIVED_BODY_ENTRY,
+        {
+          action: response.action,
+          threadID: response.thread_id,
+          postID: response.post_id,
+          entryID: response.entry_id,
+          content: response.iolist,
+          closeEntry: response.close_entry,
+          closePost: response.close_post,
+          replyTo: replyTo
+        }
+        )
+      //EventBus.$emit('new_thread', response.thread_id, response.post_id)
+    })
+    
+    // Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
+    chan.on("close_body_entry", response => {
+      console.log("close_body_entry", response)
+      save(RECEIVED_CLOSE_BODY_ENTRY,
+        {
+          
+          threadID: response.thread_id,
+          postID: response.post_id,
+          entryID: response.entry_id,
+          closeEntry: response.close_entry,
+          closePost: response.close_post}
+        )
+    
+    
+        // %{"thread_id" => thread_id, "post_id" => post_id, "entry_id" => entry_id, "close_post" => close_post} = params
+        
+      //EventBus.$emit('new_thread', response.thread_id, response.post_id)
+    })
+    
+    
+    chan.on("close_post", response => {
+      console.log("close_post:", response.thread_id)
+      saveClosePost(CLOSE_POST, response.thread_id, response.post_id);
+    })
+    
+    
+    chan.on("add_media_to_post", response => {
+      console.log("add_media_to_post:", response.thread_id)
+      save(SAVE_MEDIA, {
+        type: RECEIVED,
+        threadID: response.thread_id,
+        postID: response.post_id,
+        media: response.media
+      })
+    })
+  
+  }
 
 
 
+  /* El envío es push("new_post") pero la recepción llega como
+  * OPERATION_TO_RECEIVED_BODY_ENTRY junto con el postID. Ya creo el Post en el
+  * store si es necesario.
+  * No puedo hacer operationToBodyEntry directamente porque necesito que el
+  * servidor genere un número de Post, pues no permito que lo haga el cliente.
+  * El cliente sólo controla los entryIDs dentro de su Post.
+  */
+  function newPost(threadID, callbackPostCreated, originPostID, originEntryID){
+    
+    channelThread.push("new_post", {thread_id: threadID})
+    .receive("ok", response => {
+      saveWithStatus(SAVE_USER_POST, "ok", {threadID: threadID, postID: response.post_id})
+      callbackPostCreated({threadID: threadID, postID: response.post_id}, originPostID, originEntryID)
+    })
+    .receive("error", response => {
+      saveWithStatus(SAVE_USER_POST, "error", response.reason)
+    })
+  }
+
+  // Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
+  function operationToBodyEntry(action, thread_id, post_id, entry_id, content, closeEntry, closePost, replyTo){
+    let pushParams
+    if (replyTo){
+      pushParams = {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost,
+        reply_to: {post_id: replyTo.postID, entry_id: replyTo.entryID}}
+    }
+    else {
+      pushParams = {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost}
+    }
+    channelThread.push("operation_to_body_entry", pushParams)
+    .receive("ok", response => {
+      saveWithStatus(SAVE_LAST_PUSH, "ok", response)
+    })
+    .receive("error", response => {
+      let info = {
+        reason: response.reason,
+        entry_id: entry_id
+      }
+      saveWithStatus(SAVE_LAST_PUSH, "error", info)
+    })
+  }
+
+
+  // Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
+  function closeBodyEntry(thread_id, post_id, entry_id, closePost){
+    channelThread.push("close_body_entry", {thread_id: thread_id, post_id: post_id, entry_id: entry_id, close_post: closePost})
+    .receive("ok", response => {
+      saveWithStatus(SAVE_LAST_PUSH, "ok", response)
+    })
+    .receive("error", response => {
+      let info = {
+        reason: response.reason,
+        entry_id: entry_id
+      }
+      saveWithStatus(SAVE_LAST_PUSH, "error", info)
+    })
+  }
+
+
+  function closeUserPost(threadID, postID, entries) {
+    channelThread.push("close_post", {thread_id: threadID, post_id: postID})
+    .receive("ok", response => {
+      saveClosePost(CLOSE_POST, threadID, postID, entries);
+    })
+  }
+
+
+  function addMediaToPost(threadID, postID, media) {
+    console.log('ADDMEDIATOPOST')
+
+    save(SAVE_MEDIA, {
+      type: USER,
+      threadID: threadID,
+      postID: postID,
+      media: media
+    })
+
+    channelThread.push("add_media_to_post", {thread_id: threadID, post_id: postID, media: media})
+    .receive("ok", response => {
+      console.log(response)
+    })
+    .receive("error", response => {
+      console.log(response)
+    })
+  }
+
+  function join() {
+    return channelThread.join()
+  }
+
+  return Object.freeze({
+    newPost : newPost,
+    operationToBodyEntry : operationToBodyEntry,
+    closeBodyEntry: closeBodyEntry,
+    closeUserPost: closeUserPost,
+    addMediaToPost: addMediaToPost,
+    join: join
+   });
+
+
+
+}
 
 
 
 channelLobby.on("new_thread", response => {
   
-    channelThread = initializeThreadChannel(response.thread_id)
+    //channelThread = initializeThreadChannel(response.thread_id)
+    aobaThread = AobaThread({threadID: response.thread_id, token: token})
 
-    channelThread.join()
+    operationToBodyEntry = aobaThread.operationToBodyEntry
+    closeBodyEntry = aobaThread.closeBodyEntry
+    addMediaToPost = aobaThread.addMediaToPost
+    closeUserPost = aobaThread.closeUserPost
+    newPost = aobaThread.newPost
+
+    aobaThread.join()
     .receive("ok", resp => {
       console.log(response.thread_id + " Joined successfully", resp)
       saveWithStatus(SAVE_THREAD, "ok", {type: RECEIVED, threadID: response.thread_id, postID: response.post_id})
@@ -137,9 +327,16 @@ function newThread(callbackThreadCreated){
   
   channelLobby.push("new_thread")
   .receive("ok", response => {
-    channelThread = initializeThreadChannel(response.thread_id)
+    //channelThread = initializeThreadChannel(response.thread_id)
+    aobaThread = AobaThread({threadID: response.thread_id, token: token})
 
-    channelThread.join()
+    operationToBodyEntry = aobaThread.operationToBodyEntry
+    closeBodyEntry = aobaThread.closeBodyEntry
+    addMediaToPost = aobaThread.addMediaToPost
+    closeUserPost = aobaThread.closeUserPost
+    newPost = aobaThread.newPost
+
+    aobaThread.join()
     .receive("ok", resp => {
       console.log(response.thread_id + " Joined successfully", resp)
       saveWithStatus(SAVE_THREAD, "ok", {type: USER, threadID: response.thread_id, postID: response.post_id})
@@ -156,174 +353,21 @@ function newThread(callbackThreadCreated){
 }
 
 
+let operationToBodyEntry
 
-function initializeThreadChannel(threadID){
-  console.log('TOKEN ES ' + token)
-  let channelThread = socket.channel("threadserver:" + threadID, {token: token})
-  initializeThreadCallbacks(channelThread)
-  return channelThread
+let closeBodyEntry
 
-}
-
-function initializeThreadCallbacks(chan){
-  // Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
-  chan.on("operation_to_body_entry", response => {
-    console.log("operation_to_body_entry", response)
-    
-    let replyTo
-    if (response.reply_to){
-      replyTo = {postID: response.reply_to.post_id, entryID: response.reply_to.entry_id}
-    }
-    else {
-      replyTo = null
-    }
-  
-    save(OPERATION_TO_RECEIVED_BODY_ENTRY,
-      {
-        action: response.action,
-        threadID: response.thread_id,
-        postID: response.post_id,
-        entryID: response.entry_id,
-        content: response.iolist,
-        closeEntry: response.close_entry,
-        closePost: response.close_post,
-        replyTo: replyTo
-      }
-      )
-    //EventBus.$emit('new_thread', response.thread_id, response.post_id)
-  })
-  
-  // Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
-  chan.on("close_body_entry", response => {
-    console.log("close_body_entry", response)
-    save(RECEIVED_CLOSE_BODY_ENTRY,
-      {
-        
-        threadID: response.thread_id,
-        postID: response.post_id,
-        entryID: response.entry_id,
-        closeEntry: response.close_entry,
-        closePost: response.close_post}
-      )
-  
-  
-      // %{"thread_id" => thread_id, "post_id" => post_id, "entry_id" => entry_id, "close_post" => close_post} = params
-      
-    //EventBus.$emit('new_thread', response.thread_id, response.post_id)
-  })
-  
-  
-  chan.on("close_post", response => {
-    console.log("close_post:", response.thread_id)
-    saveClosePost(CLOSE_POST, response.thread_id, response.post_id);
-  })
-  
-  
-  chan.on("add_media_to_post", response => {
-    console.log("add_media_to_post:", response.thread_id)
-    save(SAVE_MEDIA, {
-      type: RECEIVED,
-      threadID: response.thread_id,
-      postID: response.post_id,
-      media: response.media
-    })
-  })
-
-}
+let addMediaToPost
 
 
+let closeUserPost
 
-
-
-/* El envío es push("new_post") pero la recepción llega como
- * OPERATION_TO_RECEIVED_BODY_ENTRY junto con el postID. Ya creo el Post en el
- * store si es necesario.
- * No puedo hacer operationToBodyEntry directamente porque necesito que el
- * servidor genere un número de Post, pues no permito que lo haga el cliente.
- * El cliente sólo controla los entryIDs dentro de su Post.
- */
-function newPost(threadID, callbackPostCreated, originPostID, originEntryID){
-  
-  channelThread.push("new_post", {thread_id: threadID})
-  .receive("ok", response => {
-    saveWithStatus(SAVE_USER_POST, "ok", {threadID: threadID, postID: response.post_id})
-    callbackPostCreated({threadID: threadID, postID: response.post_id}, originPostID, originEntryID)
-  })
-  .receive("error", response => {
-    saveWithStatus(SAVE_USER_POST, "error", response.reason)
-  })
-}
-
-// Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
-function operationToBodyEntry(action, thread_id, post_id, entry_id, content, closeEntry, closePost, replyTo){
-  let pushParams
-  if (replyTo){
-    pushParams = {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost,
-      reply_to: {post_id: replyTo.postID, entry_id: replyTo.entryID}}
-  }
-  else {
-    pushParams = {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost}
-  }
-  channelThread.push("operation_to_body_entry", pushParams)
-  .receive("ok", response => {
-    saveWithStatus(SAVE_LAST_PUSH, "ok", response)
-  })
-  .receive("error", response => {
-    let info = {
-      reason: response.reason,
-      entry_id: entry_id
-    }
-    saveWithStatus(SAVE_LAST_PUSH, "error", info)
-  })
-}
-
-
-// Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
-function closeBodyEntry(thread_id, post_id, entry_id, closePost){
-  channelThread.push("close_body_entry", {thread_id: thread_id, post_id: post_id, entry_id: entry_id, close_post: closePost})
-  .receive("ok", response => {
-    saveWithStatus(SAVE_LAST_PUSH, "ok", response)
-  })
-  .receive("error", response => {
-    let info = {
-      reason: response.reason,
-      entry_id: entry_id
-    }
-    saveWithStatus(SAVE_LAST_PUSH, "error", info)
-  })
-}
-
-
-function closeUserPost(threadID, postID, entries) {
-  channelThread.push("close_post", {thread_id: threadID, post_id: postID})
-  .receive("ok", response => {
-    saveClosePost(CLOSE_POST, threadID, postID, entries);
-  })
-}
-
-
-function addMediaToPost(threadID, postID, media) {
-
-  save(SAVE_MEDIA, {
-    type: USER,
-    threadID: threadID,
-    postID: postID,
-    media: media
-  })
-
-  channelThread.push("add_media_to_post", {thread_id: threadID, post_id: postID, media: media})
-  .receive("ok", response => {
-    console.log(response)
-  })
-  .receive("error", response => {
-    console.log(response)
-  })
-}
-
+let newPost
 
 
 //window.newThread = newThread
-window.appendToBodyEntry = operationToBodyEntry
+//window.appendToBodyEntry = operationToBodyEntry
 
 export default socket
 export {newThread, operationToBodyEntry, closeBodyEntry, addMediaToPost, closeUserPost, newPost}
+
