@@ -115,9 +115,12 @@ let channelThread
 
 
 
+
+
+
 channelLobby.on("new_thread", response => {
   
-    initializeThreadChannel(response.thread_id)
+    channelThread = initializeThreadChannel(response.thread_id)
 
     channelThread.join()
     .receive("ok", resp => {
@@ -134,7 +137,7 @@ function newThread(callbackThreadCreated){
   
   channelLobby.push("new_thread")
   .receive("ok", response => {
-    initializeThreadChannel(response.thread_id)
+    channelThread = initializeThreadChannel(response.thread_id)
 
     channelThread.join()
     .receive("ok", resp => {
@@ -154,17 +157,17 @@ function newThread(callbackThreadCreated){
 
 
 
-
 function initializeThreadChannel(threadID){
   console.log('TOKEN ES ' + token)
-  channelThread = socket.channel("threadserver:" + threadID, {token: token})
-  initializeThreadCallbacks()
+  let channelThread = socket.channel("threadserver:" + threadID, {token: token})
+  initializeThreadCallbacks(channelThread)
+  return channelThread
 
 }
 
-function initializeThreadCallbacks(){
+function initializeThreadCallbacks(chan){
   // Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
-  channelThread.on("operation_to_body_entry", response => {
+  chan.on("operation_to_body_entry", response => {
     console.log("operation_to_body_entry", response)
     
     let replyTo
@@ -191,7 +194,7 @@ function initializeThreadCallbacks(){
   })
   
   // Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
-  channelThread.on("close_body_entry", response => {
+  chan.on("close_body_entry", response => {
     console.log("close_body_entry", response)
     save(RECEIVED_CLOSE_BODY_ENTRY,
       {
@@ -210,13 +213,13 @@ function initializeThreadCallbacks(){
   })
   
   
-  channelThread.on("close_post", response => {
+  chan.on("close_post", response => {
     console.log("close_post:", response.thread_id)
     saveClosePost(CLOSE_POST, response.thread_id, response.post_id);
   })
   
   
-  channelThread.on("add_media_to_post", response => {
+  chan.on("add_media_to_post", response => {
     console.log("add_media_to_post:", response.thread_id)
     save(SAVE_MEDIA, {
       type: RECEIVED,
