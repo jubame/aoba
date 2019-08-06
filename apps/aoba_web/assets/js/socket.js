@@ -25,7 +25,7 @@ import {USER, RECEIVED} from '../types'
 let socket = new Socket(
   "/socket",
   {params:
-    {token: window.userToken},
+    {/*token: window.userToken*/},
     encode: encodeMessage,
     decode: decodeMessage
   }
@@ -102,11 +102,17 @@ socket.conn.binaryType = 'arraybuffer'
  *    (however, only if it does not already exist).
 */
 // Now that you are connected, you can join channels with a topic:
-let channelLobby = socket.channel("threadserver:lobby", {})
+let channelLobby = socket.channel("lobby", {})
+let token
 channelLobby.join()
-  .receive("ok", resp => { console.log("lobby Joined successfully", resp) })
+  .receive("ok", tok => {
+    token = tok
+    console.log('TOKEN ES ' + token)
+    console.log("lobby Joined successfully", token)
+  })
   .receive("error", resp => { console.log("Unable to join", resp) })
 let channelThread
+
 
 
 channelLobby.on("new_thread", response => {
@@ -150,7 +156,8 @@ function newThread(callbackThreadCreated){
 
 
 function initializeThreadChannel(threadID){
-  channelThread = socket.channel("threadserver:" + threadID, {})
+  console.log('TOKEN ES ' + token)
+  channelThread = socket.channel("threadserver:" + threadID, {token: token})
   initializeThreadCallbacks()
 
 }

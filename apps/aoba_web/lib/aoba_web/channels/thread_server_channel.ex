@@ -2,41 +2,30 @@ defmodule AobaWeb.ThreadServerChannel do
   use AobaWeb, :channel
   alias Aoba.ThreadServerSupervisor
   alias Aoba.ThreadServer
+  @max_age 2 * 7 * 24 * 60 * 60
+
+
 
 
   # each user’s conversation on a topic has its own isolated, dedicated process.
-  def join("threadserver:lobby", _message, socket) do
+  '''
+  Recuerda: no confundir:
+    %{"token" => token}
+    %{token: token}
+  '''
+  def join("threadserver:" <> thread_id, %{"token" => token}, socket) do
     IO.puts(socket.id)
-    {:ok, socket}
-  end
 
-  # each user’s conversation on a topic has its own isolated, dedicated process.
-  def join("threadserver:" <> thread_id, _message, socket) do
-    IO.puts(socket.id)
-    {:ok, assign(socket, :thread_id, String.to_integer(thread_id))}
-  end
-
-
-  def handle_in("new_thread", _params, socket) do
-    with {:ok, pid} <- ThreadServerSupervisor.start_thread(),
-         {:ok,  ids=%{thread_id: _thread_id}} <- ThreadServer.get_ids(pid)
-    do
-
-      #Apex.ap(ids)
-      '''
-      https://www.reddit.com/r/elixir/comments/4t6k6w/phoenix_what_is_the_difference_between_broadcast/d5f1ijm?utm_source=share&utm_medium=web2x
-      broadcast sends an event to all clients that are in the channel that you're handling right now
-      broadcast_from does the same as broadcast but does not send to the client that sent you the message you're handling right now
-      push only sends the message to the client you pass it
-      '''
-
-      broadcast_from! socket, "new_thread", ids
-      {:reply, {:ok, ids}, socket}
-    else
-      {:error, reason} ->
-        {:reply, {:error, %{reason: inspect(reason)}}, socket}
+    case Phoenix.Token.verify(socket, "aoba_namespace", token, max_age: @max_age) do
+      {:ok, tracking_id} ->
+        {:ok, assign(socket, :tracking_id, tracking_id)}
+      {:error, _reason} ->
+        {:error, %{reason: "unauthorized"}}
     end
+
   end
+
+
 
   def handle_in("new_post", params, socket) do
 

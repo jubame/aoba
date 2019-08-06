@@ -3,6 +3,7 @@ defmodule AobaWeb.UserSocket do
 
   ## Channels
   # channel "room:*", AobaWeb.RoomChannel
+  channel "lobby", AobaWeb.LobbyChannel
   channel "threadserver:*", AobaWeb.ThreadServerChannel
 
   @docp"""
@@ -42,8 +43,12 @@ will be ignored.
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
+
+
   def connect(_params, socket, connect_info) do
-    {:ok, assign(socket, :peer_data, connect_info.peer_data)}
+    IO.puts("Connect #{socket.topic}")
+    socket = assign(socket, :user_id, nil) |> assign(:peer_data, connect_info.peer_data)
+    {:ok, socket}
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
