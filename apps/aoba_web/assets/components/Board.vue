@@ -3,7 +3,7 @@
     <img src="../static/images/aoba_salute.jpg">
     <button @mousedown="createThread">New Thread</button>
 
-    <article data-type="thread" :id="threadID"
+    <article data-type="thread" :id="threadID" :isCatalog="isCatalog"
         v-for="(thread, threadID) in threads" v-bind:key="`${threadID}`"
         >
         <thread :threadID="parseInt(threadID)"></thread>
@@ -18,6 +18,8 @@ import {newThread} from '../js/socket'
 
 export default {
     name: 'Board',
+
+    
     
     data () {
         return {
@@ -33,6 +35,10 @@ export default {
         threads() {
             return this.$store.state.threads
         },
+
+        isCatalog(){
+            return this.$route.params.view === 'catalog'
+        }
 
     },
 
