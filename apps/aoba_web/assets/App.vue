@@ -17,8 +17,8 @@
   >
 
     <nav-aoba ></nav-aoba>
-    <hello-world v-if="isThis('/')" ></hello-world>
-    <board v-if="isThis('/board')" ></board>
+    <router-view></router-view>
+  
 
   </div>
 </template>
@@ -46,9 +46,6 @@ export default {
   },
 
   methods: {
-    isThis(url){
-      return this.$route.path === url
-    },
 
     dragEnter(event){
       
