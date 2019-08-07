@@ -328,6 +328,7 @@ function newThread(callbackThreadCreated){
     .receive("ok", resp => {
       console.log(response.thread_id + " Joined successfully", resp)
       saveWithStatus(SAVE_THREAD, "ok", {type: USER, threadID: response.thread_id, postID: response.post_id})
+      callbackThreadCreated(response.thread_id)
     }
     )
     .receive("error", resp => { console.log("Unable to join", resp) })

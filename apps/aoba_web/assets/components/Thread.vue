@@ -2,7 +2,7 @@
     <div>
         
         <regular-post
-            v-for="(post, postID) in currentThread.posts" v-bind:key="`${threadID}_${postID}`"
+            v-for="(post, postID) in currentThreadPosts" v-bind:key="`${threadID}_${postID}`"
             :newThread="true"
             :threadID="threadID"
             :postID="parseInt(postID)"
@@ -11,7 +11,7 @@
             >
         </regular-post>
 
-        <span>{{threadID}}</span>
+        <span>SHIT{{threadID}}</span>
 
         <button v-if="canReply" v-on:click="reply">Reply</button>
 
@@ -34,7 +34,7 @@ export default {
     name: 'Thread',
 
     props: {
-        threadID: Number
+        threadIDProp: Number
 
     },
     
@@ -58,8 +58,14 @@ export default {
     },
     computed: {
 
-        currentThread(){
-            return this.$store.state.threads[this.threadID]
+    
+        currentThreadPosts(){
+            return this.threadID && this.$store.state.threads[this.threadID] && this.$store.state.threads[this.threadID].posts
+        },
+
+        threadID(){
+            return this.threadIDProp || this.$route.params.id
+
         },
 
 
