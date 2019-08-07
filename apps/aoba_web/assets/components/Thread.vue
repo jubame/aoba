@@ -28,7 +28,7 @@ import Post from './Post'
 import {NOT_SET, CLOSED} from '../state'
 import {EventBus} from '../main.js'
 import {SAVE_REPLY_TO} from '../mutation-types'
-import {newPost} from '../js/socket'
+import {currThread} from '../js/socket'
 
 export default {
     name: 'Thread',
@@ -106,11 +106,11 @@ export default {
 
 
         reply() {
-            newPost(this.threadID, this.callbackPostCreated)
+            currThread.newPost(this.threadID, this.callbackPostCreated)
         },
 
         replyTo(originPostID, originEntryID){
-            newPost(this.threadID, this.callbackPostCreated, originPostID, originEntryID)
+            currThread.newPost(this.threadID, this.callbackPostCreated, originPostID, originEntryID)
             
         },
 

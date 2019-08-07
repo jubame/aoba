@@ -111,7 +111,7 @@ channelLobby.join()
     console.log("lobby Joined successfully", token)
   })
   .receive("error", resp => { console.log("Unable to join", resp) })
-let aobaThread
+let currThread
 
 
 function AobaThread(spec) {
@@ -303,16 +303,10 @@ function AobaThread(spec) {
 
 channelLobby.on("new_thread", response => {
   
-    //channelThread = initializeThreadChannel(response.thread_id)
-    aobaThread = AobaThread({threadID: response.thread_id, token: token})
+    currThread = AobaThread({threadID: response.thread_id, token: token})
 
-    operationToBodyEntry = aobaThread.operationToBodyEntry
-    closeBodyEntry = aobaThread.closeBodyEntry
-    addMediaToPost = aobaThread.addMediaToPost
-    closeUserPost = aobaThread.closeUserPost
-    newPost = aobaThread.newPost
 
-    aobaThread.join()
+    currThread.join()
     .receive("ok", resp => {
       console.log(response.thread_id + " Joined successfully", resp)
       saveWithStatus(SAVE_THREAD, "ok", {type: RECEIVED, threadID: response.thread_id, postID: response.post_id})
@@ -327,16 +321,10 @@ function newThread(callbackThreadCreated){
   
   channelLobby.push("new_thread")
   .receive("ok", response => {
-    //channelThread = initializeThreadChannel(response.thread_id)
-    aobaThread = AobaThread({threadID: response.thread_id, token: token})
+    currThread = AobaThread({threadID: response.thread_id, token: token})
 
-    operationToBodyEntry = aobaThread.operationToBodyEntry
-    closeBodyEntry = aobaThread.closeBodyEntry
-    addMediaToPost = aobaThread.addMediaToPost
-    closeUserPost = aobaThread.closeUserPost
-    newPost = aobaThread.newPost
 
-    aobaThread.join()
+    currThread.join()
     .receive("ok", resp => {
       console.log(response.thread_id + " Joined successfully", resp)
       saveWithStatus(SAVE_THREAD, "ok", {type: USER, threadID: response.thread_id, postID: response.post_id})
@@ -353,21 +341,6 @@ function newThread(callbackThreadCreated){
 }
 
 
-let operationToBodyEntry
 
-let closeBodyEntry
-
-let addMediaToPost
-
-
-let closeUserPost
-
-let newPost
-
-
-//window.newThread = newThread
-//window.appendToBodyEntry = operationToBodyEntry
-
-export default socket
-export {newThread, operationToBodyEntry, closeBodyEntry, addMediaToPost, closeUserPost, newPost}
+export {newThread, currThread}
 

@@ -31,7 +31,8 @@ import { appendToBodyEntry } from '../js/socket';
 
 <script>
 
-import {newPendingThread, operationToBodyEntry, closeBodyEntry, newPost} from '../js/socket.js'
+//import {newPendingThread, operationToBodyEntry, closeBodyEntry, newPost} from '../js/socket.js'
+import {currThread} from '../js/socket.js'
 import {NOT_SET, CLOSED} from '../state'
 import RepliedToHeaderVue from './RepliedToHeader';
 const ENTRY_OPERATION_APPEND = "append"
@@ -166,7 +167,7 @@ export default {
                     return
                 }
                 else {
-                    operationToBodyEntry(
+                    currThread.operationToBodyEntry(
                         ENTRY_OPERATION_REPLACE,
                         this.threadID,
                         this.postID,
@@ -187,14 +188,14 @@ export default {
                 // Hay nuevo contenido
                 if (currentCharCount > this.charCount && !this.isComposing) {
                     if (this.currentPost.status === CLOSED){
-                        newPost(this.threadID)
+                        currThread.newPost(this.threadID)
                     }
                     else if (this.postID !== null){
                         // Añadir/concatenar a contenido anterior
                         console.log(this.$parent.id)
 
                         if (!this.pushes && this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID]) {
-                            operationToBodyEntry(
+                            currThread.operationToBodyEntry(
                                 ENTRY_OPERATION_APPEND,
                                 this.threadID,
                                 this.postID,
@@ -207,7 +208,7 @@ export default {
 
                         }
                         else {
-                            operationToBodyEntry(
+                            currThread.operationToBodyEntry(
                                 ENTRY_OPERATION_APPEND,
                                 this.threadID,
                                 this.postID,
@@ -234,7 +235,7 @@ export default {
                  */
                 else if ((closeEntry || closePost) && currentCharCount) {
                     // Cierre a secas, sin contenido.
-                    closeBodyEntry(
+                    currThread.closeBodyEntry(
                             this.threadID,
                             this.postID,
                             this.entryID,
