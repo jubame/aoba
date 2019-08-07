@@ -203,7 +203,7 @@ function AobaThread(spec) {
   * servidor genere un número de Post, pues no permito que lo haga el cliente.
   * El cliente sólo controla los entryIDs dentro de su Post.
   */
-  function newPost(threadID, callbackPostCreated, originPostID, originEntryID){
+  function newPost(callbackPostCreated, originPostID, originEntryID){
     
     channelThread.push("new_post", {thread_id: threadID})
     .receive("ok", response => {
@@ -216,14 +216,14 @@ function AobaThread(spec) {
   }
 
   // Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
-  function operationToBodyEntry(action, thread_id, post_id, entry_id, content, closeEntry, closePost, replyTo){
+  function operationToBodyEntry(action, post_id, entry_id, content, closeEntry, closePost, replyTo){
     let pushParams
     if (replyTo){
-      pushParams = {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost,
+      pushParams = {action: action, thread_id: threadID, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost,
         reply_to: {post_id: replyTo.postID, entry_id: replyTo.entryID}}
     }
     else {
-      pushParams = {action: action, thread_id: thread_id, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost}
+      pushParams = {action: action, thread_id: threadID, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost}
     }
     channelThread.push("operation_to_body_entry", pushParams)
     .receive("ok", response => {
@@ -240,8 +240,8 @@ function AobaThread(spec) {
 
 
   // Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
-  function closeBodyEntry(thread_id, post_id, entry_id, closePost){
-    channelThread.push("close_body_entry", {thread_id: thread_id, post_id: post_id, entry_id: entry_id, close_post: closePost})
+  function closeBodyEntry(post_id, entry_id, closePost){
+    channelThread.push("close_body_entry", {thread_id: threadID, post_id: post_id, entry_id: entry_id, close_post: closePost})
     .receive("ok", response => {
       saveWithStatus(SAVE_LAST_PUSH, "ok", response)
     })
@@ -255,7 +255,7 @@ function AobaThread(spec) {
   }
 
 
-  function closeUserPost(threadID, postID, entries) {
+  function closeUserPost(postID, entries) {
     channelThread.push("close_post", {thread_id: threadID, post_id: postID})
     .receive("ok", response => {
       saveClosePost(CLOSE_POST, threadID, postID, entries);
@@ -263,7 +263,7 @@ function AobaThread(spec) {
   }
 
 
-  function addMediaToPost(threadID, postID, media) {
+  function addMediaToPost(postID, media) {
     console.log('ADDMEDIATOPOST')
 
     save(SAVE_MEDIA, {

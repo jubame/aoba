@@ -106,11 +106,11 @@ export default {
 
 
         reply() {
-            currThread.newPost(this.threadID, this.callbackPostCreated)
+            currThread.newPost(this.callbackPostCreated)
         },
 
         replyTo(originPostID, originEntryID){
-            currThread.newPost(this.threadID, this.callbackPostCreated, originPostID, originEntryID)
+            currThread.newPost(this.callbackPostCreated, originPostID, originEntryID)
             
         },
 

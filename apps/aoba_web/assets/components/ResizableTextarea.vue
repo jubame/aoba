@@ -169,7 +169,6 @@ export default {
                 else {
                     currThread.operationToBodyEntry(
                         ENTRY_OPERATION_REPLACE,
-                        this.threadID,
                         this.postID,
                         this.entryID,
                         this.content,
@@ -188,7 +187,7 @@ export default {
                 // Hay nuevo contenido
                 if (currentCharCount > this.charCount && !this.isComposing) {
                     if (this.currentPost.status === CLOSED){
-                        currThread.newPost(this.threadID)
+                        currThread.newPost()
                     }
                     else if (this.postID !== null){
                         // Añadir/concatenar a contenido anterior
@@ -197,7 +196,6 @@ export default {
                         if (!this.pushes && this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID]) {
                             currThread.operationToBodyEntry(
                                 ENTRY_OPERATION_APPEND,
-                                this.threadID,
                                 this.postID,
                                 this.entryID,
                                 this.content.substring(this.charCount, currentCharCount),
@@ -210,7 +208,6 @@ export default {
                         else {
                             currThread.operationToBodyEntry(
                                 ENTRY_OPERATION_APPEND,
-                                this.threadID,
                                 this.postID,
                                 this.entryID,
                                 this.content.substring(this.charCount, currentCharCount),
@@ -236,7 +233,6 @@ export default {
                 else if ((closeEntry || closePost) && currentCharCount) {
                     // Cierre a secas, sin contenido.
                     currThread.closeBodyEntry(
-                            this.threadID,
                             this.postID,
                             this.entryID,
                             closePost

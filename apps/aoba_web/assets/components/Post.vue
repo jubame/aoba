@@ -275,7 +275,7 @@ export default {
 
 
 
-            currThread.closeUserPost(this.threadID, this.postID, entries);
+            currThread.closeUserPost(this.postID, entries);
 
 
 
@@ -322,7 +322,6 @@ export default {
                 
                 
                 currThread.addMediaToPost(
-                    this.threadID,
                     this.postID,
                     arrayBuffer
                 )
