@@ -70,7 +70,8 @@ export default {
     props: {
         threadID: Number,
         postID: Number,
-        replyPostID: Number
+        replyPostID: Number,
+        isCatalog: Boolean
     },
     
     components: {
@@ -150,7 +151,10 @@ export default {
         },
         postType() {
             let className
-            if (this.isTypeReceived || (this.isTypeUser && this.closed)) {
+            if (this.isCatalog) {
+                className = ''
+            }
+            else if (this.isTypeReceived || (this.isTypeUser && this.closed)) {
                 className = 'initial-post'
             }
             else if (this.isTypeUser && !this.closed){
@@ -391,6 +395,8 @@ export default {
     [data-type="post"] {
         pointer-events: initial;
         display: inline-block;
+
+
         
 
 

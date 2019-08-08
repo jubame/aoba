@@ -3,6 +3,7 @@
     
     <article data-type="thread" :id="threadID" 
         v-for="(thread, threadID) in threads" v-bind:key="`${threadID}`"
+        :class="catalogClass"
         >
         <span>EHEHEEHE {{parseInt(threadID)}}</span>
         <thread :threadIDProp="parseInt(threadID)" :isCatalog="isCatalog"></thread>
@@ -31,8 +32,15 @@ export default {
     },
 
     computed: {
+
+
         threads() {
             return this.$store.state.threads
+        },
+
+        catalogClass(){
+            return this.isCatalog ? 'catalog' : ''
+
         },
 
         isCatalog(){

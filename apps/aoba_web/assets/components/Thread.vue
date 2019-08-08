@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="catalogClass">
         
         <regular-post
             v-for="(post, postID) in currentThreadPosts" v-bind:key="`${threadID}_${postID}`"
@@ -8,6 +8,7 @@
             :postID="parseInt(postID)"
             :replyPostID="parseInt(replyPostID)"
             @reply-to="replyTo"
+            :isCatalog="isCatalog"
             >
         </regular-post>
 
@@ -58,6 +59,11 @@ export default {
         'regular-post': Post
     },
     computed: {
+
+        catalogClass(){
+            return this.isCatalog ? 'catalog' : ''
+
+        },
 
     
         currentThreadPosts(){
@@ -147,13 +153,24 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss">
 @import "styles/app-no-styles.scss";
 
-#content {
-
-    background-color: #eef2ff;
+.catalog {
+    display: inline-block;
+    span {
+        display: block;
+    }
 }
+
+[data-type="thread"] {
+    &.catalog {
+        vertical-align: top;
+        
+
+    }
+}
+
 
 
 </style>
