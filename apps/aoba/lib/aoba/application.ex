@@ -3,11 +3,13 @@ defmodule Aoba.Application do
   # for more information on OTP Applications
   @moduledoc false
 
+
   use Application
 
   def start(_type, _args) do
     children = [
       {Registry, keys: :unique, name: Registry.ThreadServer},
+      Aoba.Stash,
       Aoba.ThreadServerSupervisor,
       Aoba.Repo
     ]
