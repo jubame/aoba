@@ -13,8 +13,15 @@
 
     <header>{{this.headerText}}</header>
 
-    <media v-if="isThereMedia" :threadID="threadID" :postID="postID"></media>
-    
+    <template v-if="isCatalog">
+        <a :href="threadLink">
+            <media v-if="isThereMedia" :threadID="threadID" :postID="postID"></media>
+        </a>
+    </template>
+    <template v-else>
+        <media v-if="isThereMedia" :threadID="threadID" :postID="postID"></media>
+    </template>
+
     
     <template v-if="isTypeUser">
     <resizable-textarea
@@ -121,7 +128,11 @@ export default {
     
 
     computed: {
+        
 
+        threadLink(){
+            return '/#/board/thread/' + this.threadID
+        },
         
 
         isTypeUser(){

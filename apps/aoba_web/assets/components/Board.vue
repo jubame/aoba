@@ -2,6 +2,7 @@
   <div id="content">
     <img src="../static/images/aoba_salute.jpg">
     <button @mousedown="createThread">New Thread</button>
+    <a href="/#/board/threads?view=catalog">Catalog</a>
 
     <router-view></router-view>
   </div>

@@ -7,7 +7,7 @@ export const Destinations = Object.freeze({
     },
     BOARD: {
         'name': 'board',
-        'path': '/board'
+        'path': '/board/threads'
     }
 })
 

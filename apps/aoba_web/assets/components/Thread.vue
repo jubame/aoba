@@ -75,7 +75,7 @@ export default {
         },
 
         threadID(){
-            return this.threadIDProp || this.$route.params.id
+            return this.threadIDProp || parseInt(this.$route.params.id)
 
         },
 
