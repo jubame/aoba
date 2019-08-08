@@ -19,6 +19,17 @@ defmodule AobaWeb.LobbyChannel do
     {:ok, token, socket}
   end
 
+  def handle_in("list_thread_ids", %{"last_seen_thread_id" => last_seen_thread_id}, socket) do
+    {
+      :reply,
+      {
+        :ok,
+        %{thread_ids: Aoba.Stash.greater_than(last_seen_thread_id)}
+      },
+      socket
+    }
+  end
+
   def handle_in("new_thread", _params, socket) do
     with {:ok, pid} <- ThreadServerSupervisor.start_thread(),
          {:ok,  ids=%{thread_id: _thread_id}} <- ThreadServer.get_ids(pid)
