@@ -1,11 +1,11 @@
 <template>
     <div>
     
-    <article data-type="thread" :id="threadID" :isCatalog="isCatalog"
+    <article data-type="thread" :id="threadID" 
         v-for="(thread, threadID) in threads" v-bind:key="`${threadID}`"
         >
         <span>EHEHEEHE {{parseInt(threadID)}}</span>
-        <thread :threadIDProp="parseInt(threadID)"></thread>
+        <thread :threadIDProp="parseInt(threadID)" :isCatalog="isCatalog"></thread>
     </article>
     </div>
 </template>
@@ -36,7 +36,7 @@ export default {
         },
 
         isCatalog(){
-            return this.$route.params.view === 'catalog'
+            return this.$route.query.view === 'catalog'
         }
 
     },

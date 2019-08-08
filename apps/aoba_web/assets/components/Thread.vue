@@ -34,7 +34,8 @@ export default {
     name: 'Thread',
 
     props: {
-        threadIDProp: Number
+        threadIDProp: Number,
+        isCatalog: Boolean
 
     },
     
@@ -60,7 +61,11 @@ export default {
 
     
         currentThreadPosts(){
-            return this.threadID && this.$store.state.threads[this.threadID] && this.$store.state.threads[this.threadID].posts
+            let posts = this.threadID && this.$store.state.threads[this.threadID] && this.$store.state.threads[this.threadID].posts
+            if (this.isCatalog)
+                return {'1': posts['1']}
+            else
+                return posts
         },
 
         threadID(){
