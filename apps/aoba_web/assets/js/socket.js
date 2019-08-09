@@ -109,7 +109,8 @@ channelLobby.join()
     token = tok
     console.log('TOKEN ES ' + token)
     console.log("lobby Joined successfully", token)
-    listNewThreads()
+    //listNewThreads()
+    catalog()
   })
   .receive("error", resp => { console.log("Unable to join", resp) })
 let currThread
@@ -119,6 +120,17 @@ function listNewThreads(){
   channelLobby.push("list_thread_ids", {last_seen_thread_id: 0})
   .receive("ok", response => {
     console.log('Nuevos hilos: ' + response.thread_ids)
+
+  })
+  .receive("error", response => {
+    saveWithStatus(SAVE_USER_THREAD, "error", response.reason)
+  })
+}
+
+function catalog(){
+  channelLobby.push("catalog", {last_seen_thread_id: 0})
+  .receive("ok", response => {
+    console.log('CATALOG: ' + response.catalog)
 
   })
   .receive("error", response => {

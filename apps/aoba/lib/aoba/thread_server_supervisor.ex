@@ -27,27 +27,27 @@ defmodule Aoba.ThreadServerSupervisor do
   end
 
 
-  def get_children_thread_ids_gt(last_seen_thread_id) do
+  def get_children_gt(last_seen_thread_id) do
     children_info = DynamicSupervisor.which_children(Aoba.ThreadServerSupervisor)
     Enum.reduce(
       children_info,
       [],
       fn child_info, acc ->
         {:undefined, child_pid, :worker, _module} = child_info
-        accumulate_child_pids(acc, child_pid, last_seen_thread_id)
+        accumulate_children(acc, child_pid, last_seen_thread_id)
       end
     )
   end
 
-  defp accumulate_child_pids(acc, child_pid, _last_seen_thread_id) when child_pid == :restarting do
+  defp accumulate_children(acc, child_pid, _last_seen_thread_id) when child_pid == :restarting do
     acc
   end
 
-  defp accumulate_child_pids(acc, child_pid, last_seen_thread_id) do
+  defp accumulate_children(acc, child_pid, last_seen_thread_id) do
     {:ok, ids} = Aoba.ThreadServer.get_ids(child_pid)
     if ids.thread_id > last_seen_thread_id do
       [
-        ids.thread_id
+        %{thread_id: ids.thread_id, pid: child_pid}
         | acc
       ]
     else

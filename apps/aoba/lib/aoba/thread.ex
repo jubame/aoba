@@ -1,6 +1,7 @@
 defmodule Aoba.Thread do
 
   alias Aoba.{Thread, Post}
+  @derive [{Msgpax.Packer, fields: [:thread_id, :post_id, :posts]}]
   defstruct thread_id: nil, post_id: 1, posts: %{}
 
   def new(thread_id) do
@@ -23,6 +24,12 @@ defmodule Aoba.Thread do
     %Thread{thread |
       posts: posts,
       post_id: thread.post_id + 1
+    }
+  end
+
+  def trim_to_first_post(thread) do
+    %Thread{thread |
+      posts: %{1 => thread.posts[1]},
     }
   end
 

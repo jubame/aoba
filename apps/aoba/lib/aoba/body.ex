@@ -1,14 +1,20 @@
 defmodule Aoba.Body do
   alias __MODULE__
 
-  defstruct closed_entries: MapSet.new(), entries: %{}
+  @derive [{Msgpax.Packer, fields: [:closed_entries, :entries]}]
+  defstruct closed_entries: [], entries: %{}
 
 
   def close_entry(%Body{closed_entries: closed_entries} = body, entry_id) do
-    new_body = %Body{ body |
-      closed_entries: MapSet.put(closed_entries, entry_id)
-    }
-    {:ok, new_body}
+    if entry_id in closed_entries do
+      {:error, :already_closed_entry}
+    else
+      new_body = %Body{ body |
+      closed_entries: [entry_id | closed_entries]
+      }
+      {:ok, new_body}
+    end
+
   end
 
 

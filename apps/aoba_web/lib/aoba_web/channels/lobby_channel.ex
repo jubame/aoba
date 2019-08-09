@@ -24,11 +24,39 @@ defmodule AobaWeb.LobbyChannel do
       :reply,
       {
         :ok,
-        %{thread_ids: ThreadServerSupervisor.get_children_thread_ids_gt(last_seen_thread_id)}
+        %{thread_ids: ThreadServerSupervisor.get_children_gt(last_seen_thread_id)}
       },
       socket
     }
   end
+
+  def handle_in("catalog", %{"last_seen_thread_id" => last_seen_thread_id}, socket) do
+    thread_ids_pids = ThreadServerSupervisor.get_children_gt(last_seen_thread_id)
+    catalog = Enum.reduce(
+      thread_ids_pids,
+      [],
+      fn thread_id_pid, acc ->
+        [
+          ThreadServer.trim_to_first_post(thread_id_pid.pid)
+          | acc
+        ]
+      end
+    )
+
+    {
+      :reply,
+      {
+        :ok,
+        %{catalog: catalog}
+      },
+      socket
+    }
+
+
+
+  end
+
+
 
   def handle_in("new_thread", _params, socket) do
     with {:ok, pid} <- ThreadServerSupervisor.start_thread(),

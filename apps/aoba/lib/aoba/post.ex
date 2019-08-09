@@ -2,6 +2,7 @@ defmodule Aoba.Post do
   alias Aoba.{Post, Body}
 
   @enforce_keys [:id, :username, :date, :body, :media, :closed]
+  @derive [{Msgpax.Packer, fields: [:id, :username, :date, :body, :media, :closed]}]
   defstruct [:id, :username, :date, :body, :media, :closed]
 
   def new(id, username) do
