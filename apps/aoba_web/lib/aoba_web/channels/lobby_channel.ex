@@ -24,7 +24,7 @@ defmodule AobaWeb.LobbyChannel do
       :reply,
       {
         :ok,
-        %{thread_ids: Aoba.Stash.greater_than(last_seen_thread_id)}
+        %{thread_ids: ThreadServerSupervisor.get_children_thread_ids_gt(last_seen_thread_id)}
       },
       socket
     }

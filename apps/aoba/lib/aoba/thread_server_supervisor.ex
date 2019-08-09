@@ -17,23 +17,36 @@ defmodule Aoba.ThreadServerSupervisor do
 
   def start_thread do
     # Por lo tanto, esto llamará a ThreadServer.start_link(name)
-    id = DateTime.to_unix(DateTime.utc_now())*10 + node_to_number()
     child = {
       Aoba.ThreadServer,
       # varios parámetros como keyword list
       # https://elixirforum.com/t/dynamicsupervisor-starting-child-with-more-than-one-argument/12998/2
-      id: id
+      id: DateTime.to_unix(DateTime.utc_now())*10 + node_to_number()
     }
-    case DynamicSupervisor.start_child(__MODULE__, child) do
-      {:ok, pid} ->
-        Aoba.Stash.add_thread_id(id)
-        {:ok, pid}
-      {:error, error} ->
-        {:error, error}
-    end
+    DynamicSupervisor.start_child(__MODULE__, child)
+  end
 
 
+  def get_children_thread_ids_gt(last_seen_thread_id) do
+    children_info = DynamicSupervisor.which_children(Aoba.ThreadServerSupervisor)
+    Enum.reduce(
+      children_info,
+      [],
+      fn child_info, acc ->
+        {:undefined, child_pid, :worker, _module} = child_info
+        {:ok, ids} = Aoba.ThreadServer.get_ids(child_pid)
+        if ids.thread_id > last_seen_thread_id do
+          [
+            ids.thread_id
+            | acc
+          ]
+        else
+          acc
+        end
 
+
+      end
+    )
   end
 
 
