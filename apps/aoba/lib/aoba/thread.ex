@@ -1,6 +1,12 @@
 defmodule Aoba.Thread do
 
   alias Aoba.{Thread, Post}
+  '''
+  https://stackoverflow.com/a/47616410
+  Finally, if you are encoding structs, you may have to add @derive
+  Msgpax.Packer attribute to the modules containing the structs as detailed in
+  Msgpax's documentation.
+  '''
   @derive [{Msgpax.Packer, fields: [:thread_id, :post_id, :posts]}]
   defstruct thread_id: nil, post_id: 1, posts: %{}
 
