@@ -22,7 +22,7 @@ import {encodeMessage, decodeMessage} from './message_pack'
 import {EventBus} from '../main.js'
 import {USER, RECEIVED} from '../types'
 
-let socket = new Socket(
+let sock = new Socket(
   "/socket",
   {params:
     {/*token: window.userToken*/},
@@ -73,8 +73,8 @@ let socket = new Socket(
 //     end
 //
 // Finally, connect to the socket:
-socket.connect()
-socket.conn.binaryType = 'arraybuffer'
+sock.connect()
+sock.conn.binaryType = 'arraybuffer'
 
 
 /*
@@ -102,50 +102,129 @@ socket.conn.binaryType = 'arraybuffer'
  *    (however, only if it does not already exist).
 */
 // Now that you are connected, you can join channels with a topic:
-let channelLobby = socket.channel("lobby", {})
-let token
-channelLobby.join()
-  .receive("ok", tok => {
-    token = tok
-    console.log('TOKEN ES ' + token)
-    console.log("lobby Joined successfully", token)
-    //listNewThreads()
-    catalog()
-  })
-  .receive("error", resp => { console.log("Unable to join", resp) })
+
+
 let currThread
-
-
-function listNewThreads(){
-  channelLobby.push("list_thread_ids", {last_seen_thread_id: 0})
-  .receive("ok", response => {
-    console.log('Nuevos hilos: ' + response.thread_ids)
-
-  })
-  .receive("error", response => {
-    saveWithStatus(SAVE_USER_THREAD, "error", response.reason)
-  })
+function newThreadCallback(currentThread){
+  console.log('currThread is now available')
+  currThread = currentThread
 }
 
-function catalog(){
-  channelLobby.push("catalog", {last_seen_thread_id: 0})
-  .receive("ok", response => {
-    console.log('CATALOG: ' + response.catalog)
+let lobby = AobaLobby({socket: sock, topic: "lobby", newThreadCallback: newThreadCallback})
+lobby.join()
 
+function AobaLobby(spec) {
+
+  let {socket, topic, newThreadCallback} = spec
+  let channelLobby = socket.channel(topic, {})
+  let token
+  let currThread
+
+
+  channelLobby.on("new_thread", response => {
+  
+    currThread = AobaThread({socket: socket, threadID: response.thread_id, token: token})
+    newThreadCallback(currThread)
+
+
+    currThread.join()
+    .receive("ok", resp => {
+      console.log(response.thread_id + " Joined successfully", resp)
+      saveWithStatus(SAVE_THREAD, "ok", {type: RECEIVED, threadID: response.thread_id, postID: response.post_id})
+    }
+    )
+    .receive("error", resp => { console.log("Unable to join", resp) })
+
+    
   })
-  .receive("error", response => {
-    saveWithStatus(SAVE_USER_THREAD, "error", response.reason)
-  })
+
+  function newThread(callbackThreadCreated){
+    
+    channelLobby.push("new_thread")
+    .receive("ok", response => {
+      currThread = AobaThread({socket: socket, threadID: response.thread_id, token: token})
+      newThreadCallback(currThread)
+
+      currThread.join()
+      .receive("ok", resp => {
+        console.log(response.thread_id + " Joined successfully", resp)
+        saveWithStatus(SAVE_THREAD, "ok", {type: USER, threadID: response.thread_id, postID: response.post_id})
+        callbackThreadCreated(response.thread_id)
+      }
+      )
+      .receive("error", resp => { console.log("Unable to join", resp) })
+
+
+      
+    })
+    .receive("error", response => {
+      saveWithStatus(SAVE_USER_THREAD, "error", response.reason)
+    })
+  }
+
+
+  function join(){
+    channelLobby.join()
+    .receive("ok", tok => {
+      token = tok
+      console.log('TOKEN ES ' + token)
+      console.log("lobby Joined successfully", token)
+      //listNewThreads()
+      catalog()
+    })
+    .receive("error", resp => { console.log("Unable to join", resp) })
+
+
+  }
+  
+  
+
+
+  function listNewThreads(){
+    channelLobby.push("list_thread_ids", {last_seen_thread_id: 0})
+    .receive("ok", response => {
+      console.log('Nuevos hilos: ' + response.thread_ids)
+
+    })
+    .receive("error", response => {
+      saveWithStatus(SAVE_USER_THREAD, "error", response.reason)
+    })
+  }
+
+  function catalog(){
+    channelLobby.push("catalog", {last_seen_thread_id: 0})
+    .receive("ok", response => {
+      console.log('CATALOG: ' + response.catalog)
+
+    })
+    .receive("error", response => {
+      saveWithStatus(SAVE_USER_THREAD, "error", response.reason)
+    })
+  }
+
+
+  return Object.freeze({
+    newThread : newThread,
+    join : join
+   });
+
+
+
+
+
+
 }
+
+
 
 
 function AobaThread(spec) {
 
-  let {threadID, token} = spec
+  let {socket, threadID, token} = spec
 
-  let channelThread = initializeThreadChannel(threadID, token)
+  let channelThread = initializeThreadChannel(socket, threadID, token)
 
-  function initializeThreadChannel(threadID, token){
+  function initializeThreadChannel(socket, threadID, token){
     console.log('TOKEN ES ' + token)
     channelThread = socket.channel("threadserver:" + threadID, {token: token})
     initializeThreadCallbacks(channelThread)
@@ -326,47 +405,9 @@ function AobaThread(spec) {
 
 
 
-channelLobby.on("new_thread", response => {
-  
-    currThread = AobaThread({threadID: response.thread_id, token: token})
-
-
-    currThread.join()
-    .receive("ok", resp => {
-      console.log(response.thread_id + " Joined successfully", resp)
-      saveWithStatus(SAVE_THREAD, "ok", {type: RECEIVED, threadID: response.thread_id, postID: response.post_id})
-    }
-    )
-    .receive("error", resp => { console.log("Unable to join", resp) })
-
-    
-})
-
-function newThread(callbackThreadCreated){
-  
-  channelLobby.push("new_thread")
-  .receive("ok", response => {
-    currThread = AobaThread({threadID: response.thread_id, token: token})
-
-
-    currThread.join()
-    .receive("ok", resp => {
-      console.log(response.thread_id + " Joined successfully", resp)
-      saveWithStatus(SAVE_THREAD, "ok", {type: USER, threadID: response.thread_id, postID: response.post_id})
-      callbackThreadCreated(response.thread_id)
-    }
-    )
-    .receive("error", resp => { console.log("Unable to join", resp) })
-
-
-    
-  })
-  .receive("error", response => {
-    saveWithStatus(SAVE_USER_THREAD, "error", response.reason)
-  })
-}
 
 
 
-export {newThread, currThread}
+
+export {lobby, currThread}
 

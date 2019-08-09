@@ -11,7 +11,7 @@
 <script>
 
 import Thread from './Thread'
-import {newThread} from '../js/socket'
+import {lobby} from '../js/socket'
 
 export default {
     name: 'Board',
@@ -26,7 +26,7 @@ export default {
         },
 
         createThread(){
-            newThread(this.callbackThreadCreated);
+            lobby.newThread(this.callbackThreadCreated);
 
         }
     }

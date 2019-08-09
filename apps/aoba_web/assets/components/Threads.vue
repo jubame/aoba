@@ -14,7 +14,6 @@
 <script>
 
 import Thread from './Thread'
-import {newThread} from '../js/socket'
 
 export default {
     name: 'Threads',
