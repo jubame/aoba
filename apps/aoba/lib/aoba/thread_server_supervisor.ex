@@ -34,21 +34,26 @@ defmodule Aoba.ThreadServerSupervisor do
       [],
       fn child_info, acc ->
         {:undefined, child_pid, :worker, _module} = child_info
-        {:ok, ids} = Aoba.ThreadServer.get_ids(child_pid)
-        if ids.thread_id > last_seen_thread_id do
-          [
-            ids.thread_id
-            | acc
-          ]
-        else
-          acc
-        end
-
-
+        accumulate_child_pids(acc, child_pid, last_seen_thread_id)
       end
     )
   end
 
+  defp accumulate_child_pids(acc, child_pid, _last_seen_thread_id) when child_pid == :restarting do
+    acc
+  end
+
+  defp accumulate_child_pids(acc, child_pid, last_seen_thread_id) do
+    {:ok, ids} = Aoba.ThreadServer.get_ids(child_pid)
+    if ids.thread_id > last_seen_thread_id do
+      [
+        ids.thread_id
+        | acc
+      ]
+    else
+      acc
+    end
+  end
 
 
 
