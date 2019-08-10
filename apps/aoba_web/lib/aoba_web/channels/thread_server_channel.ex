@@ -129,7 +129,8 @@ defmodule AobaWeb.ThreadServerChannel do
 
   def handle_in("add_media_to_post", params, socket) do
     params = %{params | "thread_id" => Kernel.trunc(params["thread_id"])}
-    %{"thread_id" => thread_id, "post_id" => post_id, "media" => media} = params
+    %{"thread_id" => thread_id, "post_id" => post_id, "media" => buffer} = params
+    media = %Aoba.Media{mime: nil, buffer: buffer}
     case ThreadServer.add_media_to_post(thread_id, post_id, media) do
       :ok ->
         broadcast_from! socket, "add_media_to_post", params

@@ -127,6 +127,7 @@ const store = new Vuex.Store({
               for (const[postID, post] of Object.entries(thread.posts)){
                 thread.posts[postID] = post
                 thread.posts[postID].type = "RECEIVED"
+                thread.posts[postID].media.mime = (fileType(thread.posts[postID].media.buffer)).mime
               }
               Vue.set(
                 state.threads,
