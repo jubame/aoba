@@ -27,9 +27,17 @@ function save(mutation, response){
 
 function saveWithStatus(mutation, status, info){
 
-    // https://stackoverflow.com/a/171256
-    // ECMAScript 2018 object spread ...
-    store.commit(mutation, {status: status, ...info})
+    if (Array.isArray(info))
+    {
+        store.commit(mutation, {status: status, info})
+    }
+    else{
+        // https://stackoverflow.com/a/171256
+        // ECMAScript 2018 object spread ...
+        store.commit(mutation, {status: status, ...info})
+    }
+    
+    
     
     
     
@@ -112,9 +120,22 @@ const store = new Vuex.Store({
 
 
         [SAVE_CATALOG] (state, catalog) {
-            for (thread of catalog){
-                state.threads[thread.thread_id] = thread
+            
+            for (let thread of catalog.info){
+              console.log(thread.thread_id)
+              
+              for (const[postID, post] of Object.entries(thread.posts)){
+                thread.posts[postID] = post
+                thread.posts[postID].type = "RECEIVED"
+              }
+              Vue.set(
+                state.threads,
+                thread.thread_id,
+                thread
+                )
             }
+            
+        
         },
 
 

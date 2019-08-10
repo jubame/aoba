@@ -43,6 +43,8 @@ defmodule AobaWeb.LobbyChannel do
       end
     )
 
+    Apex.ap catalog
+
     {
       :reply,
       {

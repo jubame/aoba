@@ -16,6 +16,7 @@ import {
   OPERATION_TO_RECEIVED_BODY_ENTRY,
   RECEIVED_CLOSE_BODY_ENTRY,
   SAVE_MEDIA,
+  SAVE_CATALOG
   
 } from '../mutation-types'
 import {encodeMessage, decodeMessage} from './message_pack'
@@ -196,11 +197,16 @@ function AobaLobby(spec) {
     .receive("ok", response => {
       console.log('CATALOG: ' + response.catalog)
 
+      saveWithStatus(SAVE_CATALOG, "ok", response.catalog)
+
+
     })
     .receive("error", response => {
       saveWithStatus(SAVE_USER_THREAD, "error", response.reason)
     })
   }
+
+
 
 
   return Object.freeze({

@@ -15,5 +15,7 @@ export const SAVE_MEDIA = 'SAVE_MEDIA'
 
 export const SAVE_REPLY_TO = 'SAVE_REPLY_TO'
 
+export const SAVE_CATALOG = 'SAVE_CATALOG'
+
 
 
