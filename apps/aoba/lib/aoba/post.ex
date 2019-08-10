@@ -1,5 +1,5 @@
 defmodule Aoba.Post do
-  alias Aoba.{Post}
+  alias Aoba.{Post, Entry}
 
   @enforce_keys [:id, :username, :date, :media, :closed]
   @derive [{Msgpax.Packer, fields: [:id, :username, :date, :media, :closed, :closed_entries, :entries]}]
@@ -78,7 +78,7 @@ defmodule Aoba.Post do
         &Map.put_new(
           &1,
           entry_id,
-          %{
+          %Entry{
             content: iolist,
             reply_to: reply_to
           }
@@ -91,7 +91,17 @@ defmodule Aoba.Post do
     if Map.has_key?(post.entries, entry_id) do
       updated_content = IO.iodata_to_binary([post.entries[entry_id].content, iolist])
 
-      {:ok, update_in(post.entries[entry_id], &Map.put(&1, :content, updated_content))}
+
+      {:ok,
+        update_in(post.entries[entry_id],
+        fn entry ->
+        %Entry {
+          entry
+          | content: updated_content
+        }
+        end
+
+      )}
 
 
 
@@ -106,11 +116,35 @@ defmodule Aoba.Post do
   end
 
   defp aoba_operation_entry(:replace, post, entry_id, iolist, false = _close_entry, _reply_to)  do
-    {:ok, update_in(post.entries[entry_id], &Map.put(&1, :content, iolist))}
+    {:ok,
+      update_in(post.entries[entry_id],
+      fn entry ->
+        %Entry {
+          entry
+          | content: iolist
+        }
+      end
+      )
+    }
+
+
+
+
+
   end
 
   defp aoba_operation_entry(:replace, post, entry_id, iolist, true = _close_entry, _reply_to)  do
-    new_post = update_in(post.entries[entry_id], &Map.put(&1, :content, iolist))
+    new_post = update_in(
+      post.entries[entry_id],
+      fn entry ->
+        %Entry {
+          entry
+          | content: iolist
+        }
+      end
+
+
+      )
     close_entry(new_post, entry_id)
   end
 
