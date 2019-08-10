@@ -17,7 +17,6 @@
 <script>
 import Vue from 'vue'
 import Post from './Post'
-import {NOT_SET, CLOSED} from '../state'
 import {EventBus} from '../main.js'
 
 const state = {

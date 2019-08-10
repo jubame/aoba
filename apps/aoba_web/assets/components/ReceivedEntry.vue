@@ -12,7 +12,6 @@
 
 <script>
 
-import {OPEN, CLOSED} from '../state'
 
 
 export default {
@@ -35,9 +34,9 @@ export default {
             return this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].content
         },
         status() {
-            if (this.$store.state.threads[this.threadID].posts[this.postID].status === CLOSED){
+            if (this.$store.state.threads[this.threadID].posts[this.postID].closed){
                 return 'closed'
-            } else if (this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].status === CLOSED) {
+            } else if (this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].closed) {
                 return 'closed'
             } else {
                 return 'open'

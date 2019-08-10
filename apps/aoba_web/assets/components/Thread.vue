@@ -26,7 +26,6 @@
 
 import NewThreadAccordionPost from './NewThreadAccordionPost'
 import Post from './Post'
-import {NOT_SET, CLOSED} from '../state'
 import {EventBus} from '../main.js'
 import {SAVE_REPLY_TO} from '../mutation-types'
 import {currThread} from '../js/socket'

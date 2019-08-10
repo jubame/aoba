@@ -59,7 +59,7 @@ import ResizableTextarea from './ResizableTextarea'
 import ReceivedEntry from './ReceivedEntry'
 import Media from './Media'
 import {currThread} from '../js/socket.js'
-import {NOT_SET, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from '../state'
+import {DRAGENTER, DRAGLEAVE, DROP} from '../state'
 import {SAVE_THREAD, SAVE_LAST_PUSH, CLOSE_POST, SAVE_POST, DRAG_N_DROP, POST_DRAG_N_DROP} from '../mutation-types'
 import {EventBus} from '../main.js'
 import {USER, RECEIVED} from '../types'
@@ -177,7 +177,7 @@ export default {
             return className
         },
         closed() {
-            return this.$store.state.threads[this.threadID].posts[this.postID].status === CLOSED
+            return this.$store.state.threads[this.threadID].posts[this.postID].closed
         },
         headerText() {
             return this.isTypeUser && !this.closed ? 

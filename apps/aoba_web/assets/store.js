@@ -15,7 +15,7 @@ import {
     SAVE_REPLY_TO,
     SAVE_CATALOG
 } from './mutation-types'
-import {NOT_SET, OPEN, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from './state'
+import {NOT_SET, DRAGENTER, DRAGLEAVE, DROP} from './state'
 import {USER, RECEIVED} from './types'
 import * as fileType from 'file-type'
 Vue.use(Vuex)
@@ -45,7 +45,7 @@ function newPost(state, type, response) {
             state.threads[response.threadID].posts,
             response.postID,
             {
-                status: response.closePost ? CLOSED : OPEN,
+                closed: response.closePost,
                 type: type,
                 media: null,
                 entries: {}
@@ -61,10 +61,10 @@ function saveNewThread(state, type, threadID, postID) {
         state.threads,
         threadID/*.toString()*/,
         {
-            status: OPEN,
+            closed: false,
             posts: {
                 [postID]: {
-                    status: OPEN,
+                    closed: false,
                     type: type,
                     media: null,
                     entries: {
@@ -97,8 +97,8 @@ function saveMedia(state, threadID, postID, buffer) {
 
 const store = new Vuex.Store({
     state: {
-        currentThread: {status: NOT_SET, response: null, id: null},
-        currentPost: {status: NOT_SET, response: null, id: null},
+        //currentThread: {status: NOT_SET, response: null, id: null},
+        //currentPost: {status: NOT_SET, response: null, id: null},
         app_dragging: NOT_SET,
         post_dragging: NOT_SET,
         threads: {},
@@ -124,8 +124,8 @@ const store = new Vuex.Store({
 
             Vue.set(
                 state.threads[response.threadID].posts[response.postID].entries[response.entryID],
-                'status',
-                CLOSED
+                'closed',
+                true
                 
 
 
@@ -181,7 +181,7 @@ const store = new Vuex.Store({
                 response.entryID,
                 {
                     replyTo: replyTo,
-                    status: response.closeEntry ? CLOSED : OPEN,
+                    closed: response.closeEntry,
                     content: content,
 
                 }
@@ -219,7 +219,7 @@ const store = new Vuex.Store({
                 state.threads[info.threadID].posts,
                 info.postID,
                 {
-                    status: OPEN,
+                    closed: false,
                     type: USER,
                     media: null,
                     entries: {
@@ -275,10 +275,10 @@ const store = new Vuex.Store({
           
             Vue.set(
                 state.threads[threadID].posts[postID],
-                'status',
-                CLOSED
+                'closed',
+                true
             )
-            state.currentPost = {status: CLOSED, response: 'OK', id: state.currentPost.id}
+            //state.currentPost = {closed: true, response: 'OK', id: state.currentPost.id}
         },
         [SAVE_LAST_PUSH] (state, {response, info}) {
             state.lastPush = {status: 'OK', response: response, info: info}

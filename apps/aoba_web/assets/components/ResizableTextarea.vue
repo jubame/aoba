@@ -33,7 +33,6 @@ import { appendToBodyEntry } from '../js/socket';
 
 //import {newPendingThread, operationToBodyEntry, closeBodyEntry, newPost} from '../js/socket.js'
 import {currThread} from '../js/socket.js'
-import {NOT_SET, CLOSED} from '../state'
 import RepliedToHeaderVue from './RepliedToHeader';
 const ENTRY_OPERATION_APPEND = "append"
 const ENTRY_OPERATION_REPLACE = "replace"
@@ -186,7 +185,7 @@ export default {
 
                 // Hay nuevo contenido
                 if (currentCharCount > this.charCount && !this.isComposing) {
-                    if (this.currentPost.status === CLOSED){
+                    if (this.currentPost.closed){
                         currThread.newPost()
                     }
                     else if (this.postID !== null){
