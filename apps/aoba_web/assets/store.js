@@ -12,7 +12,8 @@ import {
     OPERATION_TO_RECEIVED_BODY_ENTRY,
     RECEIVED_CLOSE_BODY_ENTRY,
     SAVE_MEDIA,
-    SAVE_REPLY_TO
+    SAVE_REPLY_TO,
+    SAVE_CATALOG
 } from './mutation-types'
 import {NOT_SET, OPEN, CLOSED, DRAGENTER, DRAGLEAVE, DROP} from './state'
 import {USER, RECEIVED} from './types'
@@ -108,6 +109,13 @@ const store = new Vuex.Store({
 
 
     mutations: {
+
+
+        [SAVE_CATALOG] (state, catalog) {
+            for (thread of catalog){
+                state.threads[thread.thread_id] = thread
+            }
+        },
 
 
 

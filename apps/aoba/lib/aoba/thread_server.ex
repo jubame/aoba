@@ -1,6 +1,6 @@
 defmodule Aoba.ThreadServer do
   use GenServer, restart: :transient
-  alias Aoba.{Thread, Post, Body, Reply}
+  alias Aoba.{Thread, Post, Reply}
 
   def start_link([id: id]) do
 
@@ -118,12 +118,12 @@ defmodule Aoba.ThreadServer do
   end
 
   defp operation_to_body_entry_check_post(thread, action, %Post{closed: false} = post, entry_id, iolist, close_entry, close_post, reply_to) do
-    case Body.operation_entry(action, post.body, entry_id, iolist, close_entry, reply_to) do
-      {:ok, new_body} ->
+    case Post.operation_entry(action, post, entry_id, iolist, close_entry, reply_to) do
+      {:ok, new_post} ->
         new_thread = if close_post do
-          update_in(thread.posts[post.id], fn post -> Post.close(post, new_body) end)
+          update_in(thread.posts[post.id], fn post -> Post.close(new_post) end)
         else
-          update_in(thread.posts[post.id].body, fn _body -> new_body end)
+          update_in(thread.posts[post.id], fn _post -> new_post end)
         end
         {:ok, new_thread}
       {:error, :already_closed_entry} ->
@@ -178,10 +178,10 @@ defmodule Aoba.ThreadServer do
 
   def close_body_entry_check_post(thread, %Post{closed: false} = post, entry_id, false) do
 
-    {:ok, new_body} = Body.close_entry(thread.posts[post.id].body, entry_id)
+    {:ok, new_post} = Post.close_entry(thread.posts[post.id], entry_id)
     {
       :ok,
-      update_in(thread.posts[post.id].body, fn _body -> new_body end)
+      update_in(thread.posts[post.id], fn _post -> new_post end)
     }
 
 
