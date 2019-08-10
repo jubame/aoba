@@ -2,8 +2,8 @@ defmodule Aoba.Post do
   alias Aoba.{Post, Entry}
 
   @enforce_keys [:id, :username, :date, :media, :closed]
-  @derive [{Msgpax.Packer, fields: [:id, :username, :date, :media, :closed, :closed_entries, :entries]}]
-  defstruct [:id, :username, :date, :media, :closed, closed_entries: [], entries: %{}]
+  @derive [{Msgpax.Packer, fields: [:id, :username, :date, :media, :closed, ]}]
+  defstruct [:id, :username, :date, :media, :closed, entries: %{}]
 
   def new(id, username) do
     #IO.puts("DENTRO DE POST.new")
@@ -43,21 +43,31 @@ defmodule Aoba.Post do
 
 
 
-  def close_entry(%Post{closed_entries: closed_entries} = post, entry_id) do
-    if entry_id in closed_entries do
+  def close_entry(post, entry_id) do
+    if Map.has_key?(post.entries, entry_id) and post.entries[entry_id].closed do
       {:error, :already_closed_entry}
     else
-      new_post = %Post{ post |
-      closed_entries: [entry_id | closed_entries]
+
+      {
+        :ok,
+        update_in(post.entries[entry_id],
+          fn entry ->
+            %Entry {
+              entry
+              | closed: true
+            }
+          end
+        )
+
       }
-      {:ok, new_post}
     end
 
   end
 
 
-  def operation_entry(action, %Post{closed_entries: closed_entries} = post, entry_id, text_or_reply, close_entry, reply_to) do
-    if entry_id in closed_entries do
+
+  def operation_entry(action, post, entry_id, text_or_reply, close_entry, reply_to) do
+    if Map.has_key?(post.entries, entry_id) and post.entries[entry_id].closed do
       {:error, :already_closed_entry}
     else
       aoba_operation_entry(action, post, entry_id, text_or_reply, close_entry, reply_to)
@@ -68,7 +78,7 @@ defmodule Aoba.Post do
 
 
 
-  defp aoba_operation_entry(:new, post, entry_id, iolist, false = _close_entry, reply_to) do
+  defp aoba_operation_entry(:new, post, entry_id, iolist, close_entry, reply_to) do
     #IO.puts("new2")
 
     {
@@ -80,14 +90,15 @@ defmodule Aoba.Post do
           entry_id,
           %Entry{
             content: iolist,
-            reply_to: reply_to
+            reply_to: reply_to,
+            closed: close_entry
           }
         )
       )
     }
   end
 
-  defp aoba_operation_entry(:append, post, entry_id, iolist, false = close_entry, reply_to)  do
+  defp aoba_operation_entry(:append, post, entry_id, iolist, close_entry, reply_to)  do
     if Map.has_key?(post.entries, entry_id) do
       updated_content = IO.iodata_to_binary([post.entries[entry_id].content, iolist])
 
@@ -97,7 +108,7 @@ defmodule Aoba.Post do
         fn entry ->
         %Entry {
           entry
-          | content: updated_content
+          | content: updated_content, closed: close_entry
         }
         end
 
@@ -109,19 +120,20 @@ defmodule Aoba.Post do
       aoba_operation_entry(:new, post, entry_id, iolist, close_entry, reply_to)
     end
   end
-
+  '''
   defp aoba_operation_entry(:append, post, entry_id, iolist, true = _close_entry, reply_to)  do
     {:ok, new_post} = aoba_operation_entry(:append, post, entry_id, iolist, false, reply_to)
-    close_entry(new_post, entry_id)
+    #close_entry(new_post, entry_id)
   end
+  '''
 
-  defp aoba_operation_entry(:replace, post, entry_id, iolist, false = _close_entry, _reply_to)  do
+  defp aoba_operation_entry(:replace, post, entry_id, iolist, close_entry, _reply_to)  do
     {:ok,
       update_in(post.entries[entry_id],
       fn entry ->
         %Entry {
           entry
-          | content: iolist
+          | content: iolist, closed: close_entry
         }
       end
       )
@@ -133,20 +145,24 @@ defmodule Aoba.Post do
 
   end
 
+  '''
+
   defp aoba_operation_entry(:replace, post, entry_id, iolist, true = _close_entry, _reply_to)  do
     new_post = update_in(
       post.entries[entry_id],
       fn entry ->
         %Entry {
           entry
-          | content: iolist
+          | content: iolist | closed: true
         }
       end
 
 
       )
-    close_entry(new_post, entry_id)
+    #close_entry(new_post, entry_id)
   end
+
+  '''
 
 
 
