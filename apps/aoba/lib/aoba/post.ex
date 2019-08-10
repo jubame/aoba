@@ -120,12 +120,7 @@ defmodule Aoba.Post do
       aoba_operation_entry(:new, post, entry_id, iolist, close_entry, reply_to)
     end
   end
-  '''
-  defp aoba_operation_entry(:append, post, entry_id, iolist, true = _close_entry, reply_to)  do
-    {:ok, new_post} = aoba_operation_entry(:append, post, entry_id, iolist, false, reply_to)
-    #close_entry(new_post, entry_id)
-  end
-  '''
+
 
   defp aoba_operation_entry(:replace, post, entry_id, iolist, close_entry, _reply_to)  do
     {:ok,
@@ -139,40 +134,7 @@ defmodule Aoba.Post do
       )
     }
 
-
-
-
-
   end
-
-  '''
-
-  defp aoba_operation_entry(:replace, post, entry_id, iolist, true = _close_entry, _reply_to)  do
-    new_post = update_in(
-      post.entries[entry_id],
-      fn entry ->
-        %Entry {
-          entry
-          | content: iolist | closed: true
-        }
-      end
-
-
-      )
-    #close_entry(new_post, entry_id)
-  end
-
-  '''
-
-
-
-
-  def new(content, entry_id) do
-    #IO.puts("new1")
-    #aoba_operation_entry(:new, %Body{}, entry_id, content, false)
-  end
-
-
 
 
 
