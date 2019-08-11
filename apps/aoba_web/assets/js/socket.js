@@ -23,59 +23,7 @@ import {encodeMessage, decodeMessage} from './message_pack'
 import {EventBus} from '../main.js'
 import {USER, RECEIVED} from '../types'
 
-let sock = new Socket(
-  "/socket",
-  {params:
-    {/*token: window.userToken*/},
-    encode: encodeMessage,
-    decode: decodeMessage
-  }
-)
 
-// When you connect, you'll often need to authenticate the client.
-// For example, imagine you have an authentication plug, `MyAuth`,
-// which authenticates the session and assigns a `:current_user`.
-// If the current user exists you can assign the user's token in
-// the connection for use in the layout.
-//
-// In your "lib/web/router.ex":
-//
-//     pipeline :browser do
-//       ...
-//       plug MyAuth
-//       plug :put_user_token
-//     end
-//
-//     defp put_user_token(conn, _) do
-//       if current_user = conn.assigns[:current_user] do
-//         token = Phoenix.Token.sign(conn, "user socket", current_user.id)
-//         assign(conn, :user_token, token)
-//       else
-//         conn
-//       end
-//     end
-//
-// Now you need to pass this token to JavaScript. You can do so
-// inside a script tag in "lib/web/templates/layout/app.html.eex":
-//
-//     <script>window.userToken = "<%= assigns[:user_token] %>";</script>
-//
-// You will need to verify the user token in the "connect/3" function
-// in "lib/web/channels/user_socket.ex":
-//
-//     def connect(%{"token" => token}, socket, _connect_info) do
-//       # max_age: 1209600 is equivalent to two weeks in seconds
-//       case Phoenix.Token.verify(socket, "user socket", token, max_age: 1209600) do
-//         {:ok, user_id} ->
-//           {:ok, assign(socket, :user, user_id)}
-//         {:error, reason} ->
-//           :error
-//       end
-//     end
-//
-// Finally, connect to the socket:
-sock.connect()
-sock.conn.binaryType = 'arraybuffer'
 
 
 /*
@@ -104,15 +52,84 @@ sock.conn.binaryType = 'arraybuffer'
 */
 // Now that you are connected, you can join channels with a topic:
 
+/*
+https://medium.com/dailyjs/es6-modules-node-js-and-the-michael-jackson-solution-828dc244b8b
+So… it has executed the code in different order! This is because ES6 modules are first parsed (without being executed), then the runtime looks for imports, loads them and finally it executes the code. This is called async loading.
+On the other hand, Node.js loads the dependencies (requires) on demand while executing the code. Which is very different. In many case this may not make any difference, but in other cases it is a completely different behavior.
+*/
 
-let currThread
+let lobby, currThread
 function newThreadCallback(currentThread){
   console.log('currThread is now available')
   currThread = currentThread
 }
 
-let lobby = AobaLobby({socket: sock, topic: "lobby", newThreadCallback: newThreadCallback})
-lobby.join()
+function initializeLobby(){
+
+
+  let sock = new Socket(
+    "/socket",
+    {params:
+      {/*token: window.userToken*/},
+      encode: encodeMessage,
+      decode: decodeMessage
+    }
+  )
+  
+  // When you connect, you'll often need to authenticate the client.
+  // For example, imagine you have an authentication plug, `MyAuth`,
+  // which authenticates the session and assigns a `:current_user`.
+  // If the current user exists you can assign the user's token in
+  // the connection for use in the layout.
+  //
+  // In your "lib/web/router.ex":
+  //
+  //     pipeline :browser do
+  //       ...
+  //       plug MyAuth
+  //       plug :put_user_token
+  //     end
+  //
+  //     defp put_user_token(conn, _) do
+  //       if current_user = conn.assigns[:current_user] do
+  //         token = Phoenix.Token.sign(conn, "user socket", current_user.id)
+  //         assign(conn, :user_token, token)
+  //       else
+  //         conn
+  //       end
+  //     end
+  //
+  // Now you need to pass this token to JavaScript. You can do so
+  // inside a script tag in "lib/web/templates/layout/app.html.eex":
+  //
+  //     <script>window.userToken = "<%= assigns[:user_token] %>";</script>
+  //
+  // You will need to verify the user token in the "connect/3" function
+  // in "lib/web/channels/user_socket.ex":
+  //
+  //     def connect(%{"token" => token}, socket, _connect_info) do
+  //       # max_age: 1209600 is equivalent to two weeks in seconds
+  //       case Phoenix.Token.verify(socket, "user socket", token, max_age: 1209600) do
+  //         {:ok, user_id} ->
+  //           {:ok, assign(socket, :user, user_id)}
+  //         {:error, reason} ->
+  //           :error
+  //       end
+  //     end
+  //
+  // Finally, connect to the socket:
+  sock.connect()
+  sock.conn.binaryType = 'arraybuffer'
+
+
+  lobby = AobaLobby({socket: sock, topic: "lobby", newThreadCallback: newThreadCallback})
+  return lobby
+  
+}
+
+
+
+
 
 function AobaLobby(spec) {
 
@@ -122,19 +139,19 @@ function AobaLobby(spec) {
   let currThread
 
 
-  channelLobby.on("new_thread", response => {
+  channelLobby.on("new_thread", ids => {
   
-    currThread = AobaThread({socket: socket, threadID: response.thread_id, token: token})
+    currThread = AobaThread({socket: socket, threadID: ids.thread_id, token: token})
     newThreadCallback(currThread)
 
 
     currThread.join()
-    .receive("ok", resp => {
-      console.log(response.thread_id + " Joined successfully", resp)
-      saveWithStatus(SAVE_THREAD, "ok", {type: RECEIVED, threadID: response.thread_id, postID: response.post_id})
+    .receive("ok", () => {
+      console.log(ids.thread_id + "RECIBIDO Joined successfully")
+      saveWithStatus(SAVE_THREAD, "ok", {type: RECEIVED, threadID: ids.thread_id, postID: ids.post_id})
     }
     )
-    .receive("error", resp => { console.log("Unable to join", resp) })
+    .receive("error", response_join_error => { console.log("Unable to join", response_join_error) })
 
     
   })
@@ -142,30 +159,51 @@ function AobaLobby(spec) {
   function newThread(callbackThreadCreated){
     
     channelLobby.push("new_thread")
-    .receive("ok", response => {
-      currThread = AobaThread({socket: socket, threadID: response.thread_id, token: token})
-      newThreadCallback(currThread)
+    .receive("ok", ids => {
+      changeThread(ids, false, callbackThreadCreated)
+    })
+    .receive("error", resp_error => {
+      saveWithStatus(SAVE_USER_THREAD, "error", resp_error)
+    })
+  }
 
-      currThread.join()
-      .receive("ok", resp => {
-        console.log(response.thread_id + " Joined successfully", resp)
-        saveWithStatus(SAVE_THREAD, "ok", {type: USER, threadID: response.thread_id, postID: response.post_id})
-        callbackThreadCreated(response.thread_id)
+  function changeThread(ids, isCatalog, callbackThreadCreated){
+
+    if (currThread){
+      currThread.leave().receive("ok", () => {
+        newThreadJoin(ids, isCatalog, callbackThreadCreated)
+      }).receive("error", () => console.log("Unable to leave current thread channel before creating new one"))
+    }
+    else {
+      newThreadJoin(ids, isCatalog, callbackThreadCreated)
+    }
+    
+  }
+
+  function newThreadJoin(ids, isCatalog, callbackThreadCreated){
+    currThread = AobaThread({socket: socket, threadID: ids.thread_id, token: token})
+    newThreadCallback(currThread)
+
+    currThread.join()
+    .receive("ok", () => {
+      console.log(ids.thread_id + " Joined successfully")
+
+      if (!isCatalog){
+        saveWithStatus(SAVE_THREAD, "ok", {type: USER, threadID: ids.thread_id, postID: ids.post_id})
       }
-      )
-      .receive("error", resp => { console.log("Unable to join", resp) })
+      if (callbackThreadCreated){
+        callbackThreadCreated(ids.thread_id)
+      }
+    }
+    )
+    .receive("error", resp_error => { console.log("Unable to join", resp_error) })
 
-
-      
-    })
-    .receive("error", response => {
-      saveWithStatus(SAVE_USER_THREAD, "error", response.reason)
-    })
   }
 
 
   function join(){
-    channelLobby.join()
+    return channelLobby.join()
+    /*
     .receive("ok", tok => {
       token = tok
       console.log('TOKEN ES ' + token)
@@ -174,8 +212,17 @@ function AobaLobby(spec) {
       catalog()
     })
     .receive("error", resp => { console.log("Unable to join", resp) })
+    */
 
+  }
 
+  function joined(tok) {
+    token = tok
+
+    console.log('TOKEN ES ' + token)
+    console.log("lobby Joined successfully", token)
+    //listNewThreads()
+    catalog()
   }
   
   
@@ -211,7 +258,8 @@ function AobaLobby(spec) {
 
   return Object.freeze({
     newThread : newThread,
-    join : join
+    join : join,
+    joined: joined
    });
 
 
@@ -396,13 +444,18 @@ function AobaThread(spec) {
     return channelThread.join()
   }
 
+  function leave() {
+    return channelThread.leave()
+  }
+
   return Object.freeze({
     newPost : newPost,
     operationToBodyEntry : operationToBodyEntry,
     closeBodyEntry: closeBodyEntry,
     closeUserPost: closeUserPost,
     addMediaToPost: addMediaToPost,
-    join: join
+    join: join,
+    leave: leave
    });
 
 
@@ -415,5 +468,5 @@ function AobaThread(spec) {
 
 
 
-export {lobby, currThread}
+export {initializeLobby, lobby, currThread}
 

@@ -55,7 +55,10 @@ function newPost(state, type, response) {
             {
                 closed: response.closePost,
                 type: type,
-                media: null,
+                media: {
+                    buffer: null,
+                    mime: null
+                },
                 entries: {}
             }
 
@@ -74,7 +77,10 @@ function saveNewThread(state, type, threadID, postID) {
                 [postID]: {
                     closed: false,
                     type: type,
-                    media: null,
+                    media: {
+                        buffer: null,
+                        media: null
+                    },
                     entries: {
                         /*
                         [ids.entry_id || 1]:
@@ -127,7 +133,11 @@ const store = new Vuex.Store({
               for (const[postID, post] of Object.entries(thread.posts)){
                 thread.posts[postID] = post
                 thread.posts[postID].type = "RECEIVED"
-                thread.posts[postID].media.mime = (fileType(thread.posts[postID].media.buffer)).mime
+                if (thread.posts[postID].media){
+                    thread.posts[postID].media.mime = (fileType(thread.posts[postID].media.buffer)).mime
+
+                }
+                
               }
               Vue.set(
                 state.threads,
@@ -243,7 +253,10 @@ const store = new Vuex.Store({
                 {
                     closed: false,
                     type: USER,
-                    media: null,
+                    media: {
+                        mime: null,
+                        buffer: null
+                    },
                     entries: {
                         1: {}
                     }

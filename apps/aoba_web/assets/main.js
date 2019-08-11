@@ -11,6 +11,8 @@ export const EventBus = new Vue();
 
 
 
+
+
 // https://forum.vuejs.org/t/how-to-use-helper-functions-for-imported-modules-in-vuejs-vue-template/6266/7
 Vue.use(dragPlugin)
 
@@ -25,6 +27,10 @@ let vm = new Vue({
     },
   template: '<App/>'
 });
+  
+
+
+
 
 
 

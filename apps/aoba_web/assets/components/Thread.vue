@@ -28,7 +28,7 @@ import NewThreadAccordionPost from './NewThreadAccordionPost'
 import Post from './Post'
 import {EventBus} from '../main.js'
 import {SAVE_REPLY_TO} from '../mutation-types'
-import {currThread} from '../js/socket'
+import {lobby, currThread} from '../js/socket'
 
 export default {
     name: 'Thread',
@@ -51,6 +51,16 @@ export default {
             
         }
     },
+    created(){
+        console.log('THREAD CREATED')
+        //lobby.changeThread(this.isCatalog, this.requestThreadCallback)
+
+    },
+    mounted(){
+        console.log('THREAD MOUNTED')
+        //lobby.changeThread(this.isCatalog, this.requestThreadCallback)
+
+    },
     
 
     components: {
@@ -67,10 +77,12 @@ export default {
     
         currentThreadPosts(){
             let posts = this.threadID && this.$store.state.threads[this.threadID] && this.$store.state.threads[this.threadID].posts
-            if (this.isCatalog)
+            if (this.isCatalog){
                 return {'1': posts['1']}
-            else
+            }
+            else {
                 return posts
+            }
         },
 
         threadID(){
@@ -106,6 +118,11 @@ export default {
     },
 
     methods: {
+
+        requestThreadCallback(){
+            console.log('TODO: request thread')
+
+        },
 
         replyTo(originPostID, originEntryID){
             console.log('replyTo ' + originPostID + ' ' + originEntryID)

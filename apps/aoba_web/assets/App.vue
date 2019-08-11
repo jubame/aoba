@@ -32,6 +32,7 @@ import Board from './components/Board'
 import store from './store'
 import {DRAG_N_DROP} from './mutation-types'
 import {NOT_SET, DRAGENTER, DRAGLEAVE, DROP} from './state'
+import {initializeLobby} from './js/socket'
 
 
 
@@ -45,7 +46,20 @@ export default {
     'board': Board
   },
 
+  mounted(){
+    let lobby = initializeLobby()
+    console.log('APP MOUNT')
+    lobby.join()
+    .receive("ok", tok => {
+      console.log('JOINING')
+      lobby.joined(tok)
+    })
+    .receive("error", resp => { console.log("Unable to join", resp) })
+
+  },
+
   methods: {
+    
 
     dragEnter(event){
       

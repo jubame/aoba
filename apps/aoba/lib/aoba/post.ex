@@ -1,14 +1,14 @@
 defmodule Aoba.Post do
   alias Aoba.{Post, Entry}
 
-  @enforce_keys [:id, :username, :date, :media, :closed]
+  @enforce_keys [:id, :username, :date, :closed]
   @derive [{Msgpax.Packer, fields: [:id, :username, :date, :media, :closed, :entries]}]
   defstruct [:id, :username, :date, :media, :closed, entries: %{}]
 
   def new(id, username) do
     #IO.puts("DENTRO DE POST.new")
 
-    {:ok, new_post} = {:ok, %Post{id: id, username: username, date: DateTime.utc_now(), media: "", closed: false}}
+    {:ok, new_post} = {:ok, %Post{id: id, username: username, date: DateTime.utc_now(), media: nil, closed: false}}
     #Apex.ap new_post
     {:ok, new_post}
   end
@@ -16,7 +16,7 @@ defmodule Aoba.Post do
   def new(id, username, %{type: "text", content: content}, entry_id) do
     #IO.puts("DENTRO DE POST.new")
 
-    {:ok, new_post} = {:ok, %Post{id: id, username: username, date: DateTime.utc_now(), media: "", closed: false}}
+    {:ok, new_post} = {:ok, %Post{id: id, username: username, date: DateTime.utc_now(), media: nil, closed: false}}
     #Apex.ap new_post
     {:ok, new_post}
   end
