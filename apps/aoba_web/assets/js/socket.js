@@ -137,6 +137,7 @@ function AobaLobby(spec) {
   let channelLobby = socket.channel(topic, {})
   let token
   let currThread
+  let last_catalog_thread_id = 0
 
 
   channelLobby.on("new_thread", ids => {
@@ -240,11 +241,13 @@ function AobaLobby(spec) {
   }
 
   function catalog(){
-    channelLobby.push("catalog", {last_seen_thread_id: 0})
+    channelLobby.push("catalog", {last_catalog_thread_id: 0})
     .receive("ok", response => {
       console.log('CATALOG: ' + response.catalog)
-
-      saveWithStatus(SAVE_CATALOG, "ok", response.catalog)
+      if (response.catalog.length) {
+        last_catalog_thread_id = response.catalog.slice(-1).thread_id
+        saveWithStatus(SAVE_CATALOG, "ok", response.catalog)
+      }
 
 
     })

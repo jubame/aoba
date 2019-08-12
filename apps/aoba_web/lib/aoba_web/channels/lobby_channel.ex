@@ -30,8 +30,8 @@ defmodule AobaWeb.LobbyChannel do
     }
   end
 
-  def handle_in("catalog", %{"last_seen_thread_id" => last_seen_thread_id}, socket) do
-    thread_ids_pids = ThreadServerSupervisor.get_children_gt(last_seen_thread_id)
+  def handle_in("catalog", %{"last_catalog_thread_id" => last_catalog_thread_id}, socket) do
+    thread_ids_pids = ThreadServerSupervisor.get_children_gt(last_catalog_thread_id)
     catalog = Enum.reduce(
       thread_ids_pids,
       [],
