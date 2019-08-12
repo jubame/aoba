@@ -61,6 +61,15 @@ export default {
         //lobby.changeThread(this.isCatalog, this.requestThreadCallback)
 
     },
+    /*
+    beforeRouteLeave(to, from, next) {
+        console.log('FROM ' + from);//not even this
+        console.log('TO ' + to);//not even this
+        this.$store.state.lobby.changeThread({thread_id: to.params.id}, false)
+            
+            
+        next();
+    },*/
     
 
     components: {

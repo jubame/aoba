@@ -189,7 +189,7 @@ function AobaLobby(spec) {
       console.log(ids.thread_id + " Joined successfully")
 
       if (!isCatalog){
-        saveWithStatus(SAVE_THREAD, "ok", {type: USER, threadID: ids.thread_id, postID: ids.post_id})
+        saveWithStatus(SAVE_THREAD, "ok", {type: USER, threadID: ids.thread_id, postID: 1/*ids.post_id*/})
       }
       if (callbackThreadCreated){
         callbackThreadCreated(ids.thread_id)
@@ -259,7 +259,8 @@ function AobaLobby(spec) {
   return Object.freeze({
     newThread : newThread,
     join : join,
-    joined: joined
+    joined: joined,
+    changeThread: changeThread
    });
 
 

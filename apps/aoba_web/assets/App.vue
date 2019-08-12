@@ -30,7 +30,7 @@ import Nav from './components/Nav'
 import HelloWorld from './components/HelloWorld'
 import Board from './components/Board'
 import store from './store'
-import {DRAG_N_DROP} from './mutation-types'
+import {DRAG_N_DROP, SAVE_LOBBY} from './mutation-types'
 import {NOT_SET, DRAGENTER, DRAGLEAVE, DROP} from './state'
 import {initializeLobby} from './js/socket'
 
@@ -53,6 +53,7 @@ export default {
     .receive("ok", tok => {
       console.log('JOINING')
       lobby.joined(tok)
+      this.$store.commit(SAVE_LOBBY, lobby)
     })
     .receive("error", resp => { console.log("Unable to join", resp) })
 

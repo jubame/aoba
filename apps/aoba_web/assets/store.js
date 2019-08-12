@@ -13,7 +13,8 @@ import {
     RECEIVED_CLOSE_BODY_ENTRY,
     SAVE_MEDIA,
     SAVE_REPLY_TO,
-    SAVE_CATALOG
+    SAVE_CATALOG,
+    SAVE_LOBBY,
 } from './mutation-types'
 import {NOT_SET, DRAGENTER, DRAGLEAVE, DROP} from './state'
 import {USER, RECEIVED} from './types'
@@ -118,7 +119,8 @@ const store = new Vuex.Store({
         threads: {},
         threadIDs: [],
         threadIDsUser: [],
-        replyPostID: null
+        replyPostID: null,
+        lobby: null
     },
 
 
@@ -323,6 +325,10 @@ const store = new Vuex.Store({
         },
         [POST_DRAG_N_DROP] (state, eventName) {
             state.post_dragging = eventName
+        },
+
+        [SAVE_LOBBY] (state, lobby) {
+            state.lobby = lobby
         },
 
 
