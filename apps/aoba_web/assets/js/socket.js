@@ -160,7 +160,8 @@ function AobaLobby(spec) {
     
     channelLobby.push("new_thread")
     .receive("ok", ids => {
-      changeThread(ids, false, callbackThreadCreated)
+      callbackThreadCreated(ids.thread_id)
+      //changeThread(ids, false, callbackThreadCreated)
     })
     .receive("error", resp_error => {
       saveWithStatus(SAVE_USER_THREAD, "error", resp_error)
