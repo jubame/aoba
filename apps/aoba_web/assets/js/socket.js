@@ -172,6 +172,8 @@ function AobaLobby(spec) {
 
   function changeThread(ids){
 
+    newThreadJoin(ids)
+    /*
     if (currThread){
       currThread.leave().receive("ok", () => {
         newThreadJoin(ids)
@@ -179,7 +181,7 @@ function AobaLobby(spec) {
     }
     else {
       newThreadJoin(ids)
-    }
+    }*/
     
   }
 
@@ -459,7 +461,8 @@ function AobaThread(spec) {
     closeUserPost: closeUserPost,
     addMediaToPost: addMediaToPost,
     join: join,
-    leave: leave
+    leave: leave,
+    threadID: threadID
    });
 
 

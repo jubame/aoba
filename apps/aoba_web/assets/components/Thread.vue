@@ -70,6 +70,17 @@ export default {
             
         next();
     },
+
+    beforeRouteLeave(to, from, next) {
+        console.log('FROM ' + from);//not even this
+        console.log('TO ' + to);//not even this
+        currThread.leave().receive("ok", () => {
+            console.log('Left ' + from.params.id)
+        }).receive("error", () => console.log("Unable to leave current thread channel before creating new one"))
+            
+            
+        next();
+    },
     
 
     components: {
