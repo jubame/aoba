@@ -140,7 +140,7 @@ function AobaLobby(spec) {
 
 
   channelLobby.on("new_thread", ids => {
-  
+    /*
     currThread = AobaThread({socket: socket, threadID: ids.thread_id, token: token})
     newThreadCallback(currThread)
 
@@ -152,7 +152,7 @@ function AobaLobby(spec) {
     }
     )
     .receive("error", response_join_error => { console.log("Unable to join", response_join_error) })
-
+    */
     
   })
 
@@ -161,6 +161,7 @@ function AobaLobby(spec) {
     channelLobby.push("new_thread")
     .receive("ok", ids => {
       callbackThreadCreated(ids.thread_id)
+      saveWithStatus(SAVE_THREAD, "ok", {type: USER, threadID: ids.thread_id, postID: ids.post_id})
       //changeThread(ids, false, callbackThreadCreated)
     })
     .receive("error", resp_error => {
@@ -168,33 +169,31 @@ function AobaLobby(spec) {
     })
   }
 
-  function changeThread(ids, isCatalog, callbackThreadCreated){
+  function changeThread(ids){
 
     if (currThread){
       currThread.leave().receive("ok", () => {
-        newThreadJoin(ids, isCatalog, callbackThreadCreated)
+        newThreadJoin(ids)
       }).receive("error", () => console.log("Unable to leave current thread channel before creating new one"))
     }
     else {
-      newThreadJoin(ids, isCatalog, callbackThreadCreated)
+      newThreadJoin(ids)
     }
     
   }
 
-  function newThreadJoin(ids, isCatalog, callbackThreadCreated){
+  function newThreadJoin(ids){
     currThread = AobaThread({socket: socket, threadID: ids.thread_id, token: token})
     newThreadCallback(currThread)
 
     currThread.join()
     .receive("ok", () => {
       console.log(ids.thread_id + " Joined successfully")
-
+      
+      /*
       if (!isCatalog){
-        saveWithStatus(SAVE_THREAD, "ok", {type: USER, threadID: ids.thread_id, postID: 1/*ids.post_id*/})
-      }
-      if (callbackThreadCreated){
-        callbackThreadCreated(ids.thread_id)
-      }
+        saveWithStatus(SAVE_THREAD, "ok", {type: USER, threadID: ids.thread_id, postID: 1})
+      }*/
     }
     )
     .receive("error", resp_error => { console.log("Unable to join", resp_error) })
