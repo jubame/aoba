@@ -9,7 +9,7 @@
 import {Socket} from "phoenix"
 import {save, saveClosePost, saveWithStatus} from '../store'
 import {
-  SAVE_THREAD,
+  NEW_THREAD,
   SAVE_LAST_PUSH,
   CLOSE_POST,
   SAVE_USER_POST,
@@ -161,7 +161,7 @@ function AobaLobby(spec) {
     channelLobby.push("new_thread")
     .receive("ok", ids => {
       callbackThreadCreated(ids.thread_id)
-      saveWithStatus(SAVE_THREAD, "ok", {type: USER, threadID: ids.thread_id, postID: ids.post_id})
+      saveWithStatus(NEW_THREAD, "ok", {type: USER, threadID: ids.thread_id, postID: ids.post_id})
       //changeThread(ids, false, callbackThreadCreated)
     })
     .receive("error", resp_error => {

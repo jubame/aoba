@@ -1,7 +1,7 @@
 export const SAVE_USER_POST = 'SAVE_USER_POST'
 export const CLOSE_POST = 'CLOSE_POST'
 
-export const SAVE_THREAD = 'SAVE_THREAD'
+export const NEW_THREAD = 'NEW_THREAD'
 export const SAVE_LAST_PUSH = 'SAVE_LAST_PUSH'
 
 export const DRAG_N_DROP = 'DRAG_N_DROP'

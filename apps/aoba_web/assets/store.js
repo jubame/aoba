@@ -3,7 +3,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import {
-    SAVE_THREAD,
+    NEW_THREAD,
     SAVE_LAST_PUSH,
     CLOSE_POST,
     SAVE_USER_POST,
@@ -242,7 +242,7 @@ const store = new Vuex.Store({
 
 
 
-        [SAVE_THREAD] (state, response) {
+        [NEW_THREAD] (state, response) {
             saveNewThread(state, response.type, response.threadID, response.postID)
         },
         [SAVE_USER_POST](state, info) {
