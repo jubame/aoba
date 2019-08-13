@@ -65,7 +65,10 @@ export default {
     beforeRouteUpdate(to, from, next) {
         console.log('FROM ' + from);
         console.log('TO ' + to);
-        // Si la URL es del hilo cuando arranca la aplicación lobby será undefined
+        /* lobby será undefined si la URL es del hilo cuando arranca la
+         * aplicación (por ejemplo, si el usuario escribe la URL o la
+         * pega) 
+         */
         this.$store.state.lobby &&
         this.$store.state.lobby.changeThread({thread_id: to.params.id})
             
@@ -76,7 +79,11 @@ export default {
     beforeRouteLeave(to, from, next) {
         console.log('FROM ' + from);
         console.log('TO ' + to);
-        currThread.leave().receive("ok", () => {
+        /* currThread será undefined si la URL es del hilo cuando
+         * arranca la aplicación (por ejemplo, si el usuario escribe la URL o
+         * la pega) 
+         */
+        currThread && currThread.leave().receive("ok", () => {
             console.log('Left ' + from.params.id)
         }).receive("error", () => console.log("Unable to leave current thread channel before creating new one"))
             
