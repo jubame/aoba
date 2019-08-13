@@ -46,9 +46,9 @@ export default {
     'board': Board
   },
 
-  mounted(){
+  created(){
     let lobby = initializeLobby()
-    console.log('APP MOUNT')
+    console.log('APP CREATED')
     lobby.join()
     .receive("ok", tok => {
       console.log('JOINING')
@@ -57,6 +57,10 @@ export default {
     })
     .receive("error", resp => { console.log("Unable to join", resp) })
 
+  },
+
+  mounted(){
+    console.log('APP MOUNTED')
   },
 
   methods: {
