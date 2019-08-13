@@ -55,8 +55,16 @@ export default {
         console.log('THREAD CREATED')
 
         EventBus.$on('lobby_joined', () => {
-            console.log('lobby_joined received. Joining thread ' + this.threadID)
-            this.$store.state.lobby.changeThread({thread_id: this.threadID})
+            let threadIDFromURL = parseInt(this.$route.params.id)
+            /* Comprobar que estemos en el caso de /board/thread/<thread_id>
+             * (this.$route.params.id accesible), no en otro caso como
+             * /board/threads o /board/threads?view=catalog
+             */
+            if (threadIDFromURL){
+                console.log('lobby_joined received. Joining thread ' + threadIDFromURL)
+                this.$store.state.lobby.changeThread({thread_id: threadIDFromURL})
+            }
+            
         })
 
         //lobby.changeThread(this.isCatalog, this.requestThreadCallback)
