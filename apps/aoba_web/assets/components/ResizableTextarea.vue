@@ -58,7 +58,14 @@ export default {
 
     data() {
         return {
-            content: '',
+            /* Content se pierde si cambiamos de /board/thread/<thread_id> a /board/threads, 
+             * a pesar de que le hemos puesto un key, creo que porque es otro bucle for distinto.
+             * Por lo tanto, recargo del store.
+             */
+            content: (this.$store.state.threads[this.threadID] &&
+                     this.$store.state.threads[this.threadID].posts[this.postID] &&
+                     this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID] &&
+                     this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].content) || '',
             maxWidth: 0,
             interval: null,
             charCount: 0,
