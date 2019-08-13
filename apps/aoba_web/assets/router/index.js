@@ -31,11 +31,18 @@ export default new Router({
             console.log('FROM ' + from);//not even this
             console.log('TO ' + to);//not even this
             console.log(store.state)
-            /* lobby será undefined si la URL es del hilo cuando arranca la
+            /* lobby será undefined si la URL es la del hilo cuando arranca la
              * aplicación (por ejemplo, si el usuario escribe la URL o la
-             * pega) 
+             * pega en una pestaña/ventana nueva, que no tenga la aplicación
+             * previamente cargada).
+             * En App.vue hago un EventBus.$emit('lobby_joined') que capturo
+             * en Thread.vue para hacer join al hilo.
              */
-            store.state.lobby && store.state.lobby.changeThread({thread_id: parseInt(to.params.id)})
+            if (store.state.lobby){
+              store.state.lobby.changeThread({thread_id: parseInt(to.params.id)})
+            } else {
+              console.log('lobby not yet available')
+            }
             
             
             next();

@@ -53,6 +53,12 @@ export default {
     },
     created(){
         console.log('THREAD CREATED')
+
+        EventBus.$on('lobby_joined', () => {
+            console.log('lobby_joined received. Joining thread ' + this.threadID)
+            this.$store.state.lobby.changeThread({thread_id: this.threadID})
+        })
+
         //lobby.changeThread(this.isCatalog, this.requestThreadCallback)
 
     },
@@ -65,9 +71,12 @@ export default {
     beforeRouteUpdate(to, from, next) {
         console.log('FROM ' + from);
         console.log('TO ' + to);
-        /* lobby será undefined si la URL es del hilo cuando arranca la
+        /* lobby será undefined si la URL es la del hilo cuando arranca la
          * aplicación (por ejemplo, si el usuario escribe la URL o la
-         * pega) 
+         * pega en una pestaña/ventana nueva, que no tenga la aplicación
+         * previamente cargada).
+         * En App.vue hago un EventBus.$emit('lobby_joined') que capturo
+         * en Thread.vue para hacer join al hilo.
          */
         this.$store.state.lobby &&
         this.$store.state.lobby.changeThread({thread_id: to.params.id})

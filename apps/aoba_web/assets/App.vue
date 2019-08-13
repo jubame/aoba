@@ -40,6 +40,7 @@ import store from './store'
 import {DRAG_N_DROP, SAVE_LOBBY} from './mutation-types'
 import {NOT_SET, DRAGENTER, DRAGLEAVE, DROP} from './state'
 import {initializeLobby} from './js/socket'
+import {EventBus} from './main.js'
 
 
 
@@ -73,6 +74,7 @@ export default {
       lobby.joined(tok)
       this.$store.commit(SAVE_LOBBY, lobby)
       this.blocked = false
+      EventBus.$emit('lobby_joined')
     })
     .receive("error", resp => { console.log("Unable to join", resp) })
 
