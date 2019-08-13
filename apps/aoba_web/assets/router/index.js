@@ -30,7 +30,8 @@ export default new Router({
             console.log('FROM ' + from);//not even this
             console.log('TO ' + to);//not even this
             console.log(store.state)
-            store.state.lobby.changeThread({thread_id: parseInt(to.params.id)})
+            // Si la URL es del hilo cuando arranca la aplicación lobby será undefined
+            store.state.lobby && store.state.lobby.changeThread({thread_id: parseInt(to.params.id)})
             
             
             next();
