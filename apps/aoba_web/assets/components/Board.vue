@@ -37,10 +37,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+@import "styles/app-no-styles.scss";
 
 #content {
 
-    background-color: #eef2ff;
+    background-color: $main-background-color;
 }
 
 
