@@ -110,6 +110,14 @@ function saveMedia(state, threadID, postID, buffer) {
     )
 }
 
+function makeEmptyEntry() {
+    return {
+        closed: false,
+        replyTo: null,
+        content: null,
+    }
+}
+
 
 
 const store = new Vuex.Store({
@@ -246,11 +254,7 @@ const store = new Vuex.Store({
             Vue.set(
                 state.threads[threadID].posts[postID].entries,
                 [entryID],
-                {
-                    closed: false,
-                    replyTo: null,
-                    content: null,
-                }
+                makeEmptyEntry()
             )
 
         },
@@ -294,7 +298,7 @@ const store = new Vuex.Store({
                         buffer: null
                     },
                     entries: {
-                        /*1: {} // NEW_ENTRY */
+                        1: makeEmptyEntry
                     }
                 }
 
