@@ -422,7 +422,7 @@ function AobaThread(spec) {
   function closeUserPost(postID, entries) {
     channelThread.push("close_post", {thread_id: threadID, post_id: postID})
     .receive("ok", response => {
-      saveClosePost(CLOSE_POST, threadID, postID, entries);
+      saveClosePost(CLOSE_POST, threadID, postID/*, entries*/);
     })
   }
 

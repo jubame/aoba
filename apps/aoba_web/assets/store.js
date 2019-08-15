@@ -15,6 +15,8 @@ import {
     SAVE_REPLY_TO,
     SAVE_CATALOG,
     SAVE_LOBBY,
+    NEW_ENTRY,
+    UPDATE_ENTRY,
 } from './mutation-types'
 import {NOT_SET, DRAGENTER, DRAGLEAVE, DROP} from './state'
 import {USER, RECEIVED} from './types'
@@ -240,6 +242,38 @@ const store = new Vuex.Store({
 
         },
 
+        [NEW_ENTRY](state, {threadID, postID, entryID}){
+            Vue.set(
+                state.threads[threadID].posts[postID].entries,
+                [entryID],
+                {
+                    closed: false,
+                    replyTo: null,
+                    content: null,
+                }
+            )
+
+        },
+
+        [UPDATE_ENTRY](state, {action, threadID, postID, entryID, content}){
+            let newContent
+            if (action === "replace"){
+
+                newContent = content
+            }
+            else if (action === "append"){
+                newContent = state.threads[threadID].posts[postID].entries[entryID].content || '' +
+                             content
+            }
+
+            Vue.set(
+                state.threads[threadID].posts[postID].entries[entryID],
+                'content',
+                newContent
+            )            
+
+        },
+
 
 
         [NEW_THREAD] (state, response) {
@@ -260,7 +294,7 @@ const store = new Vuex.Store({
                         buffer: null
                     },
                     entries: {
-                        1: {}
+                        /*1: {} // NEW_ENTRY */
                     }
                 }
 
@@ -286,30 +320,8 @@ const store = new Vuex.Store({
         },
 
 
-        [CLOSE_POST] (state, {threadID, postID, entries}) {
+        [CLOSE_POST] (state, {threadID, postID/*, entries*/}) {
 
-            if(entries && state.threads[threadID].posts[postID].type === 'USER') {
-                for (var entryID in entries){
-                    if (entries.hasOwnProperty(entryID)){
-                        let replyTo = state.threads[threadID].posts[postID].entries[entryID] &&
-                                      state.threads[threadID].posts[postID].entries[entryID].replyTo || null
-                        Vue.set(
-                            state.threads[threadID].posts[postID].entries,
-                            entryID,
-                            {
-                                replyTo: replyTo,
-                                content: entries[entryID]
-                            }
-                            
-    
-                        )
-                    }
-                }
-            }
-            
-            
-
-          
             Vue.set(
                 state.threads[threadID].posts[postID],
                 'closed',

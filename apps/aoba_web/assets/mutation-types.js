@@ -18,5 +18,7 @@ export const SAVE_REPLY_TO = 'SAVE_REPLY_TO'
 export const SAVE_CATALOG = 'SAVE_CATALOG'
 export const SAVE_LOBBY = 'SAVE_LOBBY'
 
+export const NEW_ENTRY = 'NEW_ENTRY'
+export const UPDATE_ENTRY = 'UPDATE_ENTRY'
 
 
