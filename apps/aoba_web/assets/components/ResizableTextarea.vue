@@ -161,22 +161,23 @@ export default {
 
         push(closeEntry, closePost){
 
-            if (!this.pushes) {
-                this.$store.commit(
-                    "NEW_ENTRY",
-                    {
-                        threadID: this.threadID,
-                        postID: this.postID,
-                        entryID: this.entryID,
-                    }
-                )
-            }
-
             /* Se ha modificado el texto anterior: sólo haremos push cuando el
              * usuario cierre el entry, y en ese caso reemplazaremos todo el 
              * entry (no nos preocupamos de lo que hubiese antes).
              */
             if (this.previousTextModified) {
+
+                
+                if (!this.pushes) {
+                    this.$store.commit(
+                        "NEW_ENTRY",
+                        {
+                            threadID: this.threadID,
+                            postID: this.postID,
+                            entryID: this.entryID,
+                        }
+                    )
+                }
                 
                 if (!(closeEntry || closePost)) {
                     clearInterval(this.interval)

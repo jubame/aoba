@@ -50,48 +50,35 @@ function saveClosePost(mutation, threadID, postID, entries){
     store.commit(mutation, {threadID, postID, entries})
 }
 
+
+function newEntry(state, {threadID, postID, entryID}){
+    Vue.set(
+        state.threads[threadID].posts[postID].entries,
+        [entryID],
+        makeEmptyEntry()
+    )
+}
+
 function newPost(state, type, response) {
-    if (!(response.postID in state.threads[response.threadID].posts)) {
+    //if (!(response.postID in state.threads[response.threadID].posts)) {
         Vue.set(
             state.threads[response.threadID].posts,
             response.postID,
-            {
-                closed: response.closePost,
-                type: type,
-                media: {
-                    buffer: null,
-                    mime: null
-                },
-                entries: {}
-            }
+            makeEmptyPost(type)
 
 
         )
-    }
+    //}
 }
 
-function saveNewThread(state, type, threadID, postID) {
+function newThread(state, type, threadID, postID) {
     Vue.set(
         state.threads,
         threadID/*.toString()*/,
         {
             closed: false,
             posts: {
-                [postID]: {
-                    closed: false,
-                    type: type,
-                    media: {
-                        buffer: null,
-                        media: null
-                    },
-                    entries: {
-                        /*
-                        [ids.entry_id || 1]:
-                        status: OPEN,
-                        content: content
-                        */
-                    }
-                },
+                [postID]: makeEmptyPost(type),
             }
         }
 
@@ -114,9 +101,30 @@ function makeEmptyEntry() {
     return {
         closed: false,
         replyTo: null,
-        content: null,
+        content: '',
     }
 }
+
+function makeEmptyPost(type){
+    return {
+        closed: false,
+        type: type,
+        media: {
+            buffer: null,
+            media: null
+        },
+        entries: {
+            /*
+            [ids.entry_id || 1]:
+            status: OPEN,
+            content: content
+            */
+        }
+
+    }
+}
+
+
 
 
 
@@ -182,25 +190,22 @@ const store = new Vuex.Store({
 
         },
 
-        [SAVE_REPLY_TO] (state, response) {
+        [SAVE_REPLY_TO] (state, {threadID, postID, entryID, replyTo}) {
+
+            newEntry(state, {threadID, postID, entryID})
 
             Vue.set(
-                state.threads[response.threadID].posts[response.postID].entries[response.entryID],
+                state.threads[threadID].posts[postID].entries[entryID],
                 'replyTo',
-                response.replyTo
-                
-
-
-
+                replyTo
             )
-
-
         },
 
 
         [OPERATION_TO_RECEIVED_BODY_ENTRY] (state, response) {
-
-            newPost(state, RECEIVED, response)
+            if (!(response.postID in state.threads[response.threadID].posts)) {
+                newPost(state, RECEIVED, response)
+            }
 
             let content = (state.threads[response.threadID].posts[response.postID].entries[response.entryID] &&
                           state.threads[response.threadID].posts[response.postID].entries[response.entryID].content)
@@ -251,22 +256,26 @@ const store = new Vuex.Store({
         },
 
         [NEW_ENTRY](state, {threadID, postID, entryID}){
-            Vue.set(
-                state.threads[threadID].posts[postID].entries,
-                [entryID],
-                makeEmptyEntry()
-            )
+            newEntry(state, {threadID, postID, entryID})
 
         },
 
         [UPDATE_ENTRY](state, {action, threadID, postID, entryID, content}){
+
+
+            if (!(entryID in state.threads[threadID].posts[postID].entries)) {
+                newEntry(state, {threadID, postID, entryID})
+            }
+
+
             let newContent
             if (action === "replace"){
 
                 newContent = content
             }
             else if (action === "append"){
-                newContent = state.threads[threadID].posts[postID].entries[entryID].content || '' +
+                newContent = state.threads[threadID].posts[postID].entries[entryID] &&
+                state.threads[threadID].posts[postID].entries[entryID].content || '' +
                              content
             }
 
@@ -281,12 +290,12 @@ const store = new Vuex.Store({
 
 
         [NEW_THREAD] (state, response) {
-            saveNewThread(state, response.type, response.threadID, response.postID)
+            newThread(state, response.type, response.threadID, response.postID)
         },
         [SAVE_USER_POST](state, info) {
 
             newPost(state, USER, info)
-            
+            /*
             Vue.set(
                 state.threads[info.threadID].posts,
                 info.postID,
@@ -298,11 +307,11 @@ const store = new Vuex.Store({
                         buffer: null
                     },
                     entries: {
-                        1: makeEmptyEntry
+                        1: makeEmptyEntry()
                     }
                 }
 
-            )
+            )*/
 
 
 
