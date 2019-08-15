@@ -380,14 +380,14 @@ function AobaThread(spec) {
   }
 
   // Diferente entre cliente que envía (textarea) y recibe (párrafo <p>)
-  function operationToBodyEntry(action, post_id, entry_id, content, closeEntry, closePost, replyTo){
+  function operationToBodyEntry({action, postID, entryID, content, closeEntry, closePost, replyTo}){
     let pushParams
     if (replyTo){
-      pushParams = {action: action, thread_id: threadID, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost,
+      pushParams = {action: action, thread_id: threadID, post_id: postID, entry_id: entryID, iolist: content, close_entry: closeEntry, close_post: closePost,
         reply_to: {post_id: replyTo.postID, entry_id: replyTo.entryID}}
     }
     else {
-      pushParams = {action: action, thread_id: threadID, post_id: post_id, entry_id: entry_id, iolist: content, close_entry: closeEntry, close_post: closePost}
+      pushParams = {action: action, thread_id: threadID, post_id: postID, entry_id: entryID, iolist: content, close_entry: closeEntry, close_post: closePost}
     }
     channelThread.push("operation_to_body_entry", pushParams)
     .receive("ok", response => {
@@ -396,7 +396,7 @@ function AobaThread(spec) {
     .receive("error", response => {
       let info = {
         reason: response.reason,
-        entry_id: entry_id
+        entry_id: entryID
       }
       saveWithStatus(SAVE_LAST_PUSH, "error", info)
     })

@@ -186,12 +186,14 @@ export default {
                 }
                 else {
                     currThread.operationToBodyEntry(
-                        ENTRY_OPERATION_REPLACE,
-                        this.postID,
-                        this.entryID,
-                        this.content,
-                        closeEntry,
-                        closePost
+                        {
+                        action: ENTRY_OPERATION_REPLACE,
+                        postID: this.postID,
+                        entryID: this.entryID,
+                        content: this.content,
+                        closeEntry: closeEntry,
+                        closePost: closePost
+                        }
                     )
                     this.pushes++
                     this.$store.commit(
@@ -224,24 +226,28 @@ export default {
 
                         if (!this.pushes && this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID]) {
                             currThread.operationToBodyEntry(
-                                ENTRY_OPERATION_APPEND,
-                                this.postID,
-                                this.entryID,
-                                this.content.substring(this.charCount, currentCharCount),
-                                closeEntry,
-                                closePost,
-                                this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].replyTo
+                                {
+                                action: ENTRY_OPERATION_APPEND,
+                                postID: this.postID,
+                                entryID: this.entryID,
+                                content: this.content.substring(this.charCount, currentCharCount),
+                                closeEntry: closeEntry,
+                                closePost: closePost,
+                                replyTo: this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].replyTo
+                                }
                             )
 
                         }
                         else {
                             currThread.operationToBodyEntry(
-                                ENTRY_OPERATION_APPEND,
-                                this.postID,
-                                this.entryID,
-                                this.content.substring(this.charCount, currentCharCount),
-                                closeEntry,
-                                closePost
+                                {
+                                action: ENTRY_OPERATION_APPEND,
+                                postID: this.postID,
+                                entryID: this.entryID,
+                                content: this.content.substring(this.charCount, currentCharCount),
+                                closeEntry: closeEntry,
+                                closePost: closePost
+                                }
                             )
                         }
 
