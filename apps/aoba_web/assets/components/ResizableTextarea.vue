@@ -191,23 +191,22 @@ export default {
                         entryID: this.entryID,
                         content: this.content,
                     }
-                    let serverParams = {
-                        ...serverClientCommonParams,
-                        closeEntry: closeEntry,
-                        closePost: closePost
-
-                    }
+                    
                     currThread.operationToBodyEntry(
-                        serverParams
+                        {
+                            ...serverClientCommonParams,
+                            closeEntry: closeEntry,
+                            closePost: closePost
+                        }
                     )
                     this.pushes++
-                    let clientParams = {
-                        ...serverClientCommonParams,
-                        threadID: this.threadID,
-                    }
+                    
                     this.$store.commit(
                         "UPDATE_ENTRY",
-                        clientParams
+                        {
+                            ...serverClientCommonParams,
+                            threadID: this.threadID,
+                        }
                     )
 
                 }
@@ -226,15 +225,24 @@ export default {
                         // Añadir/concatenar a contenido anterior
                         console.log(this.$parent.id)
 
+                        let serverClientCommonParams = {
+                            action: ENTRY_OPERATION_APPEND,
+                            postID: this.postID,
+                            entryID: this.entryID,
+                            content: this.content.substring(this.charCount, currentCharCount),
+                        }
+
+                        let serverCommonParams = {
+                            ...serverClientCommonParams,
+                            closeEntry: closeEntry,
+                            closePost: closePost,
+
+                        }
+
                         if (!this.pushes && this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID]) {
                             currThread.operationToBodyEntry(
                                 {
-                                action: ENTRY_OPERATION_APPEND,
-                                postID: this.postID,
-                                entryID: this.entryID,
-                                content: this.content.substring(this.charCount, currentCharCount),
-                                closeEntry: closeEntry,
-                                closePost: closePost,
+                                ...serverCommonParams,
                                 replyTo: this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].replyTo
                                 }
                             )
@@ -242,14 +250,7 @@ export default {
                         }
                         else {
                             currThread.operationToBodyEntry(
-                                {
-                                action: ENTRY_OPERATION_APPEND,
-                                postID: this.postID,
-                                entryID: this.entryID,
-                                content: this.content.substring(this.charCount, currentCharCount),
-                                closeEntry: closeEntry,
-                                closePost: closePost
-                                }
+                                serverCommonParams
                             )
                         }
 
@@ -257,11 +258,8 @@ export default {
                         this.$store.commit(
                             "UPDATE_ENTRY",
                             {
-                                action: ENTRY_OPERATION_APPEND,
+                                ...serverClientCommonParams,
                                 threadID: this.threadID,
-                                postID: this.postID,
-                                entryID: this.entryID,
-                                content: this.content
 
                             }
                         )
