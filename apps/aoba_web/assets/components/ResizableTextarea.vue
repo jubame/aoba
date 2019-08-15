@@ -185,27 +185,29 @@ export default {
                     return
                 }
                 else {
-                    currThread.operationToBodyEntry(
-                        {
+                    let serverClientCommonParams = {
                         action: ENTRY_OPERATION_REPLACE,
                         postID: this.postID,
                         entryID: this.entryID,
                         content: this.content,
+                    }
+                    let serverParams = {
+                        ...serverClientCommonParams,
                         closeEntry: closeEntry,
                         closePost: closePost
-                        }
+
+                    }
+                    currThread.operationToBodyEntry(
+                        serverParams
                     )
                     this.pushes++
+                    let clientParams = {
+                        ...serverClientCommonParams,
+                        threadID: this.threadID,
+                    }
                     this.$store.commit(
                         "UPDATE_ENTRY",
-                        {
-                            action: ENTRY_OPERATION_REPLACE,
-                            threadID: this.threadID,
-                            postID: this.postID,
-                            entryID: this.entryID,
-                            content: this.content
-
-                        }
+                        clientParams
                     )
 
                 }
