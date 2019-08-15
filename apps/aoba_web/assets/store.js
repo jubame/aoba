@@ -274,8 +274,7 @@ const store = new Vuex.Store({
                 newContent = content
             }
             else if (action === "append"){
-                newContent = state.threads[threadID].posts[postID].entries[entryID] &&
-                state.threads[threadID].posts[postID].entries[entryID].content || '' +
+                newContent = state.threads[threadID].posts[postID].entries[entryID].content || '' +
                              content
             }
 
@@ -295,26 +294,6 @@ const store = new Vuex.Store({
         [SAVE_USER_POST](state, info) {
 
             newPost(state, USER, info)
-            /*
-            Vue.set(
-                state.threads[info.threadID].posts,
-                info.postID,
-                {
-                    closed: false,
-                    type: USER,
-                    media: {
-                        mime: null,
-                        buffer: null
-                    },
-                    entries: {
-                        1: makeEmptyEntry()
-                    }
-                }
-
-            )*/
-
-
-
             state.currentPost = {status: 'OK', response: 'OK', id: info.post_id}
             
         },
