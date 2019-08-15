@@ -300,10 +300,7 @@ const store = new Vuex.Store({
 
         [SAVE_MEDIA] (state, response) {
 
-            /* De momento sólo se permite un media por Post, así que si llega
-             * un nuevo media, eso quiere decir que también es un Post nuevo.
-             */
-            if (response.type === RECEIVED) {
+            if (!(response.postID in state.threads[response.threadID].posts)) {
                 newPost(state, RECEIVED, response)
             }
             
