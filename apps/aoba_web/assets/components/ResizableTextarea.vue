@@ -73,7 +73,10 @@ export default {
             isComposing: false,
             lastPushText: '',
             pushes: 0,
-            closed: false,
+            closed: (this.$store.state.threads[this.threadID] &&
+                     this.$store.state.threads[this.threadID].posts[this.postID] &&
+                     this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID] &&
+                     this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].content) || false,
             hasFocus: false,
             
         }
