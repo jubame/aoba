@@ -62,6 +62,16 @@ export default {
              * a pesar de que le hemos puesto un key, creo que porque es otro bucle for distinto.
              * Por lo tanto, recargo del store.
              */
+            /*
+             * Mejor getter del store que computed property con parámetro: 
+             *   https://stackoverflow.com/a/40539522
+             * The only useful situation is when you have to use a getter and
+             * need to have it parametrized. This situation happens in for
+             * instance in Vuex. in Vuex it's the only way to synchronously get
+             * parametrized result from the store (actions are async). Thus
+             * this approach is listed by official Vuex documentation for its
+             * getters https://vuex.vuejs.org/guide/getters.html#method-style-access
+             */
             content: this.$store.getters.getEntryByID(this.threadID, this.postID, this.entryID, 'content') || '',
             maxWidth: 0,
             interval: null,
