@@ -80,7 +80,8 @@ export default {
             isComposing: false,
             lastPushText: '',
             pushes: 0,
-            closed: this.$store.getters.getEntryByID(this.threadID, this.postID, this.entryID, 'closed') || false,
+            closed: (this.$store.getters.getPostByID(this.threadID, this.postID, 'closed') || false) ||
+                    (this.$store.getters.getEntryByID(this.threadID, this.postID, this.entryID, 'closed') || false),
             hasFocus: false,
             
         }
@@ -295,6 +296,15 @@ export default {
                             this.entryID,
                             closePost
                         )
+                    this.$store.commit(
+                        "CLOSE_ENTRY",
+                        {
+                            threadID: this.threadID,
+                            postID: this.postID,
+                            entryID: this.entryID
+                        }
+
+                    )
                     this.pushes++
                 }
             }

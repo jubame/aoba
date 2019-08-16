@@ -20,5 +20,6 @@ export const SAVE_LOBBY = 'SAVE_LOBBY'
 
 export const NEW_ENTRY = 'NEW_ENTRY'
 export const UPDATE_ENTRY = 'UPDATE_ENTRY'
+export const CLOSE_ENTRY = 'CLOSE_ENTRY'
 
 

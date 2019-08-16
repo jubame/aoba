@@ -17,6 +17,7 @@ import {
     SAVE_LOBBY,
     NEW_ENTRY,
     UPDATE_ENTRY,
+    CLOSE_ENTRY
 } from './mutation-types'
 import {NOT_SET, DRAGENTER, DRAGLEAVE, DROP} from './state'
 import {USER, RECEIVED} from './types'
@@ -148,6 +149,11 @@ const store = new Vuex.Store({
             store.state.threads[threadID].posts[postID] &&
             store.state.threads[threadID].posts[postID].entries[entryID] &&
             store.state.threads[threadID].posts[postID].entries[entryID][property]
+        },
+        getPostByID: (state) => (threadID, postID, property) => {
+            return store.state.threads[threadID] &&
+            store.state.threads[threadID].posts[postID] &&
+            store.state.threads[threadID].posts[postID][property]
         }
     },
 
@@ -328,6 +334,17 @@ const store = new Vuex.Store({
             )
             //state.currentPost = {closed: true, response: 'OK', id: state.currentPost.id}
         },
+
+        [CLOSE_ENTRY](state, {threadID, postID, entryID}){
+            Vue.set(
+                state.threads[threadID].posts[postID].entries[entryID],
+                'closed',
+                true
+            )
+            
+
+        },
+
         [SAVE_LAST_PUSH] (state, {response, info}) {
             state.lastPush = {status: 'OK', response: response, info: info}
         },
