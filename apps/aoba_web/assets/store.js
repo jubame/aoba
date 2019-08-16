@@ -141,6 +141,16 @@ const store = new Vuex.Store({
         lobby: null
     },
 
+    getters: {
+        // ...
+        getEntryByID: (state) => (threadID, postID, entryID, property) => {
+          return store.state.threads[threadID] &&
+            store.state.threads[threadID].posts[postID] &&
+            store.state.threads[threadID].posts[postID].entries[entryID] &&
+            store.state.threads[threadID].posts[postID].entries[entryID][property]
+        }
+    },
+
 
     mutations: {
 

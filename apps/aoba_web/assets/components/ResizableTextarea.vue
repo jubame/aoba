@@ -62,7 +62,7 @@ export default {
              * a pesar de que le hemos puesto un key, creo que porque es otro bucle for distinto.
              * Por lo tanto, recargo del store.
              */
-            content: this.getFromEntry('content', ''),
+            content: this.$store.getters.getEntryByID(this.threadID, this.postID, this.entryID, 'content') || '',
             maxWidth: 0,
             interval: null,
             charCount: 0,
@@ -70,11 +70,12 @@ export default {
             isComposing: false,
             lastPushText: '',
             pushes: 0,
-            closed: this.getFromEntry('closed', false),
+            closed: this.$store.getters.getEntryByID(this.threadID, this.postID, this.entryID, 'closed') || false,
             hasFocus: false,
             
         }
     },
+
 
     computed: {
 
@@ -102,14 +103,6 @@ export default {
 
 
     methods: {
-
-        getFromEntry(property, defaultValue){
-            (this.$store.state.threads[this.threadID] &&
-            this.$store.state.threads[this.threadID].posts[this.postID] &&
-            this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID] &&
-            this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID][property]) || defaultValue
-
-        },
 
         showPreview() {
             console.log('SHOW-PREVIEW')
