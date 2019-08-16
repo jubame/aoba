@@ -62,10 +62,7 @@ export default {
              * a pesar de que le hemos puesto un key, creo que porque es otro bucle for distinto.
              * Por lo tanto, recargo del store.
              */
-            content: (this.$store.state.threads[this.threadID] &&
-                     this.$store.state.threads[this.threadID].posts[this.postID] &&
-                     this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID] &&
-                     this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].content) || '',
+            content: this.getFromEntry('content', ''),
             maxWidth: 0,
             interval: null,
             charCount: 0,
@@ -73,16 +70,15 @@ export default {
             isComposing: false,
             lastPushText: '',
             pushes: 0,
-            closed: (this.$store.state.threads[this.threadID] &&
-                     this.$store.state.threads[this.threadID].posts[this.postID] &&
-                     this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID] &&
-                     this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].content) || false,
+            closed: this.getFromEntry('closed', false),
             hasFocus: false,
             
         }
     },
 
     computed: {
+
+        
 
         textareaStyle() {
             return this.$refs.textarea ? 'width:' + (this.$refs.textarea.scrollWidth) + 'px' : ''
@@ -106,6 +102,14 @@ export default {
 
 
     methods: {
+
+        getFromEntry(property, defaultValue){
+            (this.$store.state.threads[this.threadID] &&
+            this.$store.state.threads[this.threadID].posts[this.postID] &&
+            this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID] &&
+            this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID][property]) || defaultValue
+
+        },
 
         showPreview() {
             console.log('SHOW-PREVIEW')
