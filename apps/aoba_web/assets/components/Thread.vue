@@ -226,7 +226,7 @@ export default {
 }
 
 [data-type="thread"] {
-    :not(.catalog){
+    &:not(.catalog){
         clear: both;
     }
     &.catalog {
