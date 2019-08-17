@@ -207,6 +207,7 @@ export default {
 
 }
 #content {
-  display: table-cell;
+  margin-left: $nav-width;
+  height: 100%;
 }
 </style>

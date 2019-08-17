@@ -57,14 +57,14 @@
 </script>
 
 <style lang="scss">
-
+    @import "styles/app-no-styles.scss";
 
 
     nav {
-        display: table-cell;
-        vertical-align: top;
+        position: fixed;
+        height: 100%;
         color: white;
-        width: 160px;
+        width: $nav-width;
         background-color: #1A1A1A;
         
 
