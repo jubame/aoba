@@ -54,6 +54,15 @@ export default new Router({
         // ...other sub routes
       ]
     },
+
+    {
+      name: "notfound",
+      path: "*",
+      beforeEnter(to, from, next) {
+        console.log('Route not found on SPA. Redirecting to server...')
+        next(false); window.location.replace(to.fullPath);
+      }
+    }
     
   ]
 })
