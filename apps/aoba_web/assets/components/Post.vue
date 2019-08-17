@@ -166,7 +166,7 @@ export default {
                 className = ''
             }
             else if (this.isTypeReceived || (this.isTypeUser && this.closed)) {
-                className = 'initial-post'
+                className = 'regular-post'
             }
             else if (this.isTypeUser && !this.closed){
                 className = 'reply-post'
@@ -371,9 +371,17 @@ export default {
 
     $height: 20px;
 
+    /*
+     * Tipo de post:
+     *   .regular-post: post "normal" que sigue el flujo del documento (salvo
+     *                  por la imagen del primer post, que es float)
+     *   .reply-post:   post en modo de edición antes de cerrarlo. Se puede
+     *                  arrastrar por la pantalla. Al cerrarlo se convierte en
+     *                  .regular-post.
+     */
 
     [data-type="post"]:not(:first-child) {
-        &.initial-post {
+        &.regular-post {
 
             &:after {
                 content: ".";
@@ -426,7 +434,7 @@ export default {
         background-color: $lavendar;
 
         
-        &.initial-post {
+        &.regular-post {
             display: block;
             &.image-loaded {
                 background-color: transparent;
