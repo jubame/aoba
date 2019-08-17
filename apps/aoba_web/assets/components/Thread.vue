@@ -226,6 +226,9 @@ export default {
 }
 
 [data-type="thread"] {
+    :not(.catalog){
+        clear: both;
+    }
     &.catalog {
         vertical-align: top;
         
