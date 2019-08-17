@@ -15,7 +15,7 @@ defmodule AobaWeb.Router do
 
   scope "/", AobaWeb do
     pipe_through :browser
-
+    get "/oshirase", ShiraseController, :index
     get "/", PageController, :index
   end
 

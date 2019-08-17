@@ -17,4 +17,4 @@ import "phoenix_html"
 // import socket from "./socket"
 
 import socket from "./socket"
-import "../main.js"
+// import "../main.js"

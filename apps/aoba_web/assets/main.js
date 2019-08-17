@@ -18,6 +18,7 @@ Vue.use(dragPlugin)
 
 
 /* eslint-disable no-new */
+
 let vm = new Vue({
   el: '#app',
   store,
