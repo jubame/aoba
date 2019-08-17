@@ -180,9 +180,18 @@ export default {
             return this.$store.state.threads[this.threadID].posts[this.postID].closed
         },
         headerText() {
-            return this.isTypeUser && !this.closed ? 
-                'Reply to thread ' + this.threadID + ' - ' + 'Post #' + this.postID :
-                'Post #' + this.postID
+            if (this.isTypeUser && !this.closed){
+                return `Reply to thread #${this.threadID} - Post §${this.postID}`
+            }
+            else if (this.postID === 1){
+                return `#${this.threadID}`
+            }
+            else {
+                return `§${this.postID}`
+            }
+            
+                 
+                
         },
         closedClass() {
 
@@ -380,41 +389,48 @@ export default {
      *                  .regular-post.
      */
 
-    [data-type="post"]:not(:first-child) {
-        &.regular-post {
-
-            &:after {
-                content: ".";
-                display: block;
-                height: 0;
-                clear: both;
-                visibility: hidden;
-            }
-
-            /* https://stackoverflow.com/a/5587563
-             * Magia de overflow hidden: Block Formatting Context para hacer
-             * espacio al float (la imagen).
-             *
-             * No puedo poner "overflow: hidden" aquí en el post porque luego al 
-             * mostrar preview del reply en RepliedToHeader se recorta si es
-             * muy alto. Tampoco puedo dejar sólo "overflow-x: hidden" porque
-             * entonces overflow-y se pone automáticamente con scroll, y no
-             * quiero eso.
-             */
-            header {
-                overflow: hidden;
-                
-            }
-            
-        }
-    }
-
-
-
     [data-type="post"] {
         pointer-events: initial;
         display: inline-block;
 
+        &:first-child {
+            header {
+                background-color: darkcyan;
+                color: white;
+                text-align: left;
+            }
+        }
+
+
+        &:not(:first-child) {
+            &.regular-post {
+
+                &:after {
+                    content: ".";
+                    display: block;
+                    height: 0;
+                    clear: both;
+                    visibility: hidden;
+                }
+
+                /* https://stackoverflow.com/a/5587563
+                * Magia de overflow hidden: Block Formatting Context para hacer
+                * espacio al float (la imagen).
+                *
+                * No puedo poner "overflow: hidden" aquí en el post porque luego al 
+                * mostrar preview del reply en RepliedToHeader se recorta si es
+                * muy alto. Tampoco puedo dejar sólo "overflow-x: hidden" porque
+                * entonces overflow-y se pone automáticamente con scroll, y no
+                * quiero eso.
+                */
+                header {
+                    overflow: hidden;
+                    text-align: right;
+                    
+                }
+                
+            }
+        }
 
         
 
