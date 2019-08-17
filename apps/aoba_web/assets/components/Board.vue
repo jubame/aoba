@@ -1,5 +1,5 @@
 <template>
-  <div id="content">
+  <div id="content" :class="navCollapsedClass">
     <img src="../static/images/aoba_salute.jpg">
     <button @mousedown="createThread">New Thread</button>
     <a href="/#/board/threads?view=catalog">Catalog</a>
@@ -15,6 +15,12 @@ import {lobby} from '../js/socket'
 
 export default {
     name: 'Board',
+
+    computed: {
+        navCollapsedClass() {
+            return this.$store.state.navCollapsed ? 'nav-collapsed' : ''
+        },
+    },
 
     methods: {
 
@@ -36,14 +42,19 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss">
 @import "styles/app-no-styles.scss";
 
 #content {
-
     background-color: $main-background-color;
-}
+    height: 100%;
+    margin-left: $nav-width-expanded;
+    
+    &.nav-collapsed {
+        margin-left: $nav-width-collapsed;
+    }
 
+}
 
 
 </style>

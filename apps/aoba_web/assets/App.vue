@@ -1,5 +1,5 @@
 <template>
-  <div id="app"
+  <div id="app" 
         
 
         
@@ -127,6 +127,8 @@ export default {
       return this.blocked ? 'blocked' : ''
     },
 
+   
+
     dragging() {
       return this.$store.state.app_dragging === DRAGENTER ||
              this.$store.state.post_dragging === DRAGENTER ? 'dragging' : ''
@@ -206,8 +208,5 @@ export default {
   
 
 }
-#content {
-  margin-left: $nav-width;
-  height: 100%;
-}
+
 </style>

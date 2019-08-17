@@ -7,6 +7,7 @@ import {
     SAVE_LAST_PUSH,
     CLOSE_POST,
     SAVE_USER_POST,
+    TOGGLE_NAV_COLLAPSE,
     DRAG_N_DROP,
     POST_DRAG_N_DROP,
     OPERATION_TO_RECEIVED_BODY_ENTRY,
@@ -133,6 +134,7 @@ const store = new Vuex.Store({
     state: {
         //currentThread: {status: NOT_SET, response: null, id: null},
         //currentPost: {status: NOT_SET, response: null, id: null},
+        navCollapsed: false,
         app_dragging: NOT_SET,
         post_dragging: NOT_SET,
         threads: {},
@@ -159,6 +161,11 @@ const store = new Vuex.Store({
 
 
     mutations: {
+
+        [TOGGLE_NAV_COLLAPSE](state){
+            state.navCollapsed = !state.navCollapsed
+
+        },
 
 
         [SAVE_CATALOG] (state, catalog) {

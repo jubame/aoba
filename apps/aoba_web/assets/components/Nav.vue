@@ -1,5 +1,5 @@
 <template>
-    <nav>
+    <nav :class="collapsedClass">
 
     <ul>
         <li v-for="destination in destinations" :key="destination.name"
@@ -7,6 +7,7 @@
             
             {{destination.name | capitalize}}
         </li>
+        <button @click="toggleCollapse">{{collapsedText}}</button>
     </ul>
 
     <p>Has elegido {{selected.name}}</p>
@@ -20,6 +21,11 @@
     import router from '../router'
 
     import {Destinations, OrderedDestinations} from '../config.js'
+    import {
+        TOGGLE_NAV_COLLAPSE,
+    } from '../mutation-types'
+
+
 
     export default {
 
@@ -27,15 +33,27 @@
         
             return {
                 destinations: OrderedDestinations,
-                selected: Destinations.HOME
+                selected: Destinations.HOME,
             }
 
+        },
+
+        computed: {
+          collapsedClass() {
+              return this.$store.state.navCollapsed ? 'collapsed' : ''
+          },
+          collapsedText(){
+              return !this.$store.state.navCollapsed ? 'Hide' : 'Expand'
+          }
         },
 
         methods: {
             change(destination) {
                 this.selected = destination
                 router.push({path: destination.path})
+            },
+            toggleCollapse(){
+                this.$store.commit(TOGGLE_NAV_COLLAPSE)
             }
         },
 
@@ -64,8 +82,12 @@
         position: fixed;
         height: 100%;
         color: white;
-        width: $nav-width;
         background-color: #1A1A1A;
+        width: $nav-width-expanded;
+
+        &.collapsed {
+            width: $nav-width-collapsed;
+        }
         
 
 
