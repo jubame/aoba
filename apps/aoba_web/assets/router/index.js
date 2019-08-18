@@ -21,16 +21,26 @@ export default new Router({
       children: [
         // UserHome will be rendered inside User's <router-view>
         // when /user/:id is matched
-        { path: '/board/threads', component: Threads },
+        {
+          path: '/board/threads',
+          component: Threads,
+          beforeEnter: (to, from, next) => {
+            if (store.state.lobby){
+              store.state.lobby.catalog()
+            } else {
+              console.log(`beforeEnter ${to.fullPath}: lobby not yet available`)
+            }
+            
+            
+            next();
+          },
+        },
         {
           path: '/board/thread/:id',
           component: Thread,
           name: 'specificThread',
           
           beforeEnter: (to, from, next) => {
-            console.log('FROM ' + from);//not even this
-            console.log('TO ' + to);//not even this
-            console.log(store.state)
             /* lobby será undefined si la URL es la del hilo cuando arranca la
              * aplicación (por ejemplo, si el usuario escribe la URL o la
              * pega en una pestaña/ventana nueva, que no tenga la aplicación
@@ -41,7 +51,7 @@ export default new Router({
             if (store.state.lobby){
               store.state.lobby.changeThread({thread_id: parseInt(to.params.id)})
             } else {
-              console.log('lobby not yet available')
+              console.log(`beforeEnter ${to.fullPath}: lobby not yet available`)
             }
             
             

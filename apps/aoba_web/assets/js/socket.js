@@ -243,7 +243,7 @@ function AobaLobby(spec) {
   }
 
   function catalog(){
-    channelLobby.push("catalog", {last_catalog_thread_id: 0})
+    channelLobby.push("catalog", {last_catalog_thread_id: last_catalog_thread_id})
     .receive("ok", response => {
       console.log('CATALOG: ' + response.catalog)
       if (response.catalog.length) {
@@ -265,6 +265,7 @@ function AobaLobby(spec) {
     newThread : newThread,
     join : join,
     joined: joined,
+    catalog: catalog,
     changeThread: changeThread
    });
 
