@@ -27,6 +27,12 @@ defmodule Aoba.ThreadServer do
     thread
   end
 
+  def list(thread_id) do
+
+    {:ok, thread } = GenServer.call(via_tuple(thread_id), :list)
+    thread
+  end
+
   def operation_to_body_entry(action, thread_id, post_id, entry_id, iolist, close_entry, close_post, reply_to) do
     GenServer.call(via_tuple(thread_id), {:operation_to_body_entry, action, post_id, entry_id, iolist, close_entry, close_post, reply_to})
   end
@@ -74,6 +80,18 @@ defmodule Aoba.ThreadServer do
       {
         :ok,
         Thread.trim_to_first_post(thread)
+      },
+      thread
+    }
+  end
+
+
+  def handle_call(:list, _from, thread) do
+
+    {:reply,
+      {
+        :ok,
+        thread
       },
       thread
     }

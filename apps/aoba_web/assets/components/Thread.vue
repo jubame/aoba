@@ -170,25 +170,12 @@ export default {
 
         },
 
-        replyTo(originPostID, originEntryID){
-            console.log('replyTo ' + originPostID + ' ' + originEntryID)
-            console.log('replyPostID ' + this.replyPostID)
-            if (!this.replyPostID){
-                this.replyTo(originPostID, originEntryID)
-            }
-
-            
-
-
-
-        },
-
-
         reply() {
             currThread.newPost(this.callbackPostCreated)
         },
 
         replyTo(originPostID, originEntryID){
+            console.log('ESTAMOS EN replyTo')
             currThread.newPost(this.callbackPostCreated, originPostID, originEntryID)
             
         },

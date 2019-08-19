@@ -190,8 +190,8 @@ function AobaLobby(spec) {
     newThreadCallback(currThread)
 
     currThread.join()
-    .receive("ok", () => {
-      console.log(ids.thread_id + " Joined successfully")
+    .receive("ok", (response) => {
+      console.log(`${ids.thread_id}  Joined successfully, received ${response.thread}`)
       
       /*
       if (!isCatalog){
@@ -259,6 +259,17 @@ function AobaLobby(spec) {
   }
 
 
+  function list(threadID){
+    channelLobby.push("list", {thread_id: threadID})
+    .receive("ok", response => {
+      console.log('Thread listing: ' + response[threadID])
+    })
+    .receive("error", response => {
+      saveWithStatus(SAVE_USER_THREAD, "error", response.reason)
+    })
+  }
+
+
 
 
   return Object.freeze({
@@ -266,6 +277,7 @@ function AobaLobby(spec) {
     join : join,
     joined: joined,
     catalog: catalog,
+    list: list,
     changeThread: changeThread
    });
 

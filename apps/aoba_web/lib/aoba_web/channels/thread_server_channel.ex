@@ -18,10 +18,35 @@ defmodule AobaWeb.ThreadServerChannel do
 
     case Phoenix.Token.verify(socket, "aoba_namespace", token, max_age: @max_age) do
       {:ok, tracking_id} ->
-        {:ok, assign(socket, :tracking_id, tracking_id)}
+        thread = ThreadServer.list(String.to_integer(thread_id))
+        Apex.ap thread
+        IO.puts("MECAGOENLAPUTA**********************************************************************")
+
+        {:ok, %{thread: thread}, assign(socket, :tracking_id, tracking_id)}
+        #{:ok, assign(socket, :tracking_id, tracking_id)}
       {:error, _reason} ->
         {:error, %{reason: "unauthorized"}}
     end
+
+  end
+
+
+  def handle_in("list", params, socket) do
+
+    params = %{params | "thread_id" => Kernel.trunc(params["thread_id"])}
+    %{
+      "thread_id" => thread_id
+    } = params
+
+    with thread <- ThreadServer.list(thread_id)
+    do
+      #IO.puts("HEY KIDS! WANNA DIE!??")
+      #Apex.ap post_id
+      {:reply, {:ok, %{thread_id: thread}}, socket}
+    end
+
+
+
 
   end
 
