@@ -7,7 +7,7 @@
 // Pass the token on params as below. Or remove it
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
-import {save, saveClosePost, saveWithStatus} from '../store'
+import {store, save, saveClosePost, saveWithStatus} from '../store'
 import {
   NEW_THREAD,
   SAVE_LAST_PUSH,
@@ -16,7 +16,8 @@ import {
   OPERATION_TO_RECEIVED_BODY_ENTRY,
   RECEIVED_CLOSE_BODY_ENTRY,
   SAVE_MEDIA,
-  SAVE_CATALOG
+  SAVE_CATALOG,
+  SAVE_THREAD
   
 } from '../mutation-types'
 import {encodeMessage, decodeMessage} from './message_pack'
@@ -192,6 +193,8 @@ function AobaLobby(spec) {
     currThread.join()
     .receive("ok", (response) => {
       console.log(`${ids.thread_id}  Joined successfully, received ${response.thread}`)
+      store.commit(SAVE_THREAD, response.thread)
+
       
       /*
       if (!isCatalog){

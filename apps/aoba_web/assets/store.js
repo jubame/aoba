@@ -15,6 +15,7 @@ import {
     SAVE_MEDIA,
     SAVE_REPLY_TO,
     SAVE_CATALOG,
+    SAVE_THREAD,
     SAVE_LOBBY,
     NEW_ENTRY,
     UPDATE_ENTRY,
@@ -99,6 +100,26 @@ function saveMedia(state, threadID, postID, buffer) {
     )
 }
 
+function saveThread(state, thread){
+    console.log(thread.thread_id)
+              
+    for (const[postID, post] of Object.entries(thread.posts)){
+      thread.posts[postID] = post
+      thread.posts[postID].type = "RECEIVED"
+      if (thread.posts[postID].media){
+          thread.posts[postID].media.mime = (fileType(thread.posts[postID].media.buffer)).mime
+
+      }
+      
+    }
+    Vue.set(
+      state.threads,
+      thread.thread_id,
+      thread
+      )
+}
+
+
 function makeEmptyEntry() {
     return {
         closed: false,
@@ -167,26 +188,15 @@ const store = new Vuex.Store({
 
         },
 
+        [SAVE_THREAD] (state, thread) {
+            thread && saveThread(state, thread)
+        },
+
 
         [SAVE_CATALOG] (state, catalog) {
             
             for (let thread of catalog.info){
-              console.log(thread.thread_id)
-              
-              for (const[postID, post] of Object.entries(thread.posts)){
-                thread.posts[postID] = post
-                thread.posts[postID].type = "RECEIVED"
-                if (thread.posts[postID].media){
-                    thread.posts[postID].media.mime = (fileType(thread.posts[postID].media.buffer)).mime
-
-                }
-                
-              }
-              Vue.set(
-                state.threads,
-                thread.thread_id,
-                thread
-                )
+              saveThread(state, thread)
             }
             
         

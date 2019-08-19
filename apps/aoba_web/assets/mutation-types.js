@@ -16,6 +16,7 @@ export const SAVE_MEDIA = 'SAVE_MEDIA'
 export const SAVE_REPLY_TO = 'SAVE_REPLY_TO'
 
 export const SAVE_CATALOG = 'SAVE_CATALOG'
+export const SAVE_THREAD = 'SAVE_THREAD'
 export const SAVE_LOBBY = 'SAVE_LOBBY'
 
 export const NEW_ENTRY = 'NEW_ENTRY'
