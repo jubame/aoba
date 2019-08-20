@@ -11,7 +11,7 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
-    { path: '/',      component: HelloWorld,
+    { name: 'home', path: '/',      component: HelloWorld,
   },
 
 
@@ -22,6 +22,7 @@ export default new Router({
         // UserHome will be rendered inside User's <router-view>
         // when /user/:id is matched
         {
+          name: 'multipleThreads',
           path: '/board/threads',
           component: Threads,
           beforeEnter: (to, from, next) => {
@@ -36,9 +37,10 @@ export default new Router({
           },
         },
         {
+          name: 'specificThread',
           path: '/board/thread/:id',
           component: Thread,
-          name: 'specificThread',
+          
           
           beforeEnter: (to, from, next) => {
             /* lobby será undefined si la URL es la del hilo cuando arranca la
@@ -66,7 +68,7 @@ export default new Router({
     },
 
     {
-      name: "notfound",
+      name: "notFound",
       path: "*",
       beforeEnter(to, from, next) {
         console.log('Route not found on SPA. Redirecting to server...')
