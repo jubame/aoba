@@ -60,7 +60,7 @@ On the other hand, Node.js loads the dependencies (requires) on demand while exe
 */
 
 let lobby, currThread
-function newThreadCallback(currentThread){
+function changeThreadCallback(currentThread){
   console.log('currThread is now available')
   currThread = currentThread
 }
@@ -123,7 +123,7 @@ function initializeLobby(){
   sock.conn.binaryType = 'arraybuffer'
 
 
-  lobby = AobaLobby({socket: sock, topic: "lobby", newThreadCallback: newThreadCallback})
+  lobby = AobaLobby({socket: sock, topic: "lobby", changeThreadCallback: changeThreadCallback})
   return lobby
   
 }
@@ -134,7 +134,7 @@ function initializeLobby(){
 
 function AobaLobby(spec) {
 
-  let {socket, topic, newThreadCallback} = spec
+  let {socket, topic, changeThreadCallback} = spec
   let channelLobby = socket.channel(topic, {})
   let token
   let currThread
@@ -163,7 +163,7 @@ function AobaLobby(spec) {
     channelLobby.push("new_thread")
     .receive("ok", ids => {
       callbackThreadCreated(ids.thread_id)
-      saveWithStatus(NEW_THREAD, "ok", {type: USER, threadID: ids.thread_id, postID: ids.post_id})
+      //saveWithStatus(NEW_THREAD, "ok", {type: USER, threadID: ids.thread_id, postID: ids.post_id})
       //changeThread(ids, false, callbackThreadCreated)
     })
     .receive("error", resp_error => {
@@ -188,12 +188,18 @@ function AobaLobby(spec) {
 
   function newThreadJoin(ids){
     currThread = AobaThread({socket: socket, threadID: ids.thread_id, token: token})
-    newThreadCallback(currThread)
+    changeThreadCallback(currThread)
 
     currThread.join()
     .receive("ok", (response) => {
       console.log(`${ids.thread_id}  Joined successfully, received ${response.thread}`)
-      store.commit(SAVE_THREAD, response.thread)
+
+      if(!store.state.threads.hasOwnProperty(ids.thread_id)) {
+        saveWithStatus(NEW_THREAD, "ok", {type: USER, threadID: ids.thread_id, postID: 1})
+      } else {
+        store.commit(SAVE_THREAD, response.thread)
+      }
+      
 
       
       /*
@@ -204,6 +210,11 @@ function AobaLobby(spec) {
     )
     .receive("error", resp_error => { console.log("Unable to join", resp_error) })
 
+  }
+
+
+  function joinThread(){
+    
   }
 
 
