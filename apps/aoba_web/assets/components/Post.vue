@@ -497,20 +497,9 @@ export default {
         }
 
         
-
-        &.closed {
-            textarea:disabled {
-                background-color: transparent;
-                color: black;
-                $border: 1px;
-                border: $border solid transparent;
-                &:hover{
-                    cursor: pointer;
-                    border: $border solid red;
-                }
-            }
-        }
-
+        /*
+        
+        */
 
 
         

@@ -10,6 +10,7 @@ import { appendToBodyEntry } from '../js/socket';
         ></replied-to-header>
         <div @click="reply">
         <textarea ref="textarea" rows="1" class="resize-none outline-0 h-full"
+        :class="repliableClass"
         placeholder="Write something..."
         :disabled="closed"
         @keydown.ctrl.enter="newBody"
@@ -90,6 +91,14 @@ export default {
 
     computed: {
 
+        repliable(){
+            return this.$route.name === 'specificThread'
+        },
+
+        repliableClass(){
+            return this.repliable ? 'repliable' : ''
+        },
+
         
 
         textareaStyle() {
@@ -120,7 +129,7 @@ export default {
         },
 
         reply(){
-            if (this.closed){
+            if (this.closed && this.repliable){
                 this.$emit('reply', this.entryID)
             }
         },
@@ -361,7 +370,7 @@ export default {
 </script>
 
 
-<style scoped lang="scss">
+<style lang="scss">
 
     @import "styles/app-no-styles.scss";
     textarea {
@@ -392,4 +401,22 @@ export default {
 
 
     }
+
+    [data-type="post"] {
+        &.closed {
+            textarea:disabled {
+                background-color: transparent;
+                color: black;
+                $border: 1px;
+                border: $border solid transparent;
+                &.repliable:hover{
+                    cursor: pointer;
+                    border: $border solid red;
+                }
+            }
+        }
+    }
+
+
+
 </style>

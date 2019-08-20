@@ -6,7 +6,7 @@
         :entryID="this.entryID"
         @show-preview="showPreview()"
     ></replied-to-header>
-    <p :class="status" :id="`${this.threadID}_${this.postID}_${this.entryID}`" @click="reply">{{entryContent}}</p>
+    <p :class="[status, repliableClass]" :id="`${this.threadID}_${this.postID}_${this.entryID}`" @click="reply">{{entryContent}}</p>
     </section>
 </template>
 
@@ -30,6 +30,16 @@ export default {
     },
 
     computed: {
+
+        repliable(){
+            return this.$route.name === 'specificThread'
+        },
+
+        repliableClass(){
+            return this.repliable ? 'repliable' : ''
+        },
+
+
         entryContent() {
             return this.$store.state.threads[this.threadID].posts[this.postID].entries[this.entryID].content
         },
@@ -48,8 +58,9 @@ export default {
 
     methods: {
         reply(){
-            
-            this.$emit('reply', this.entryID)
+            if (this.repliable){
+                this.$emit('reply', this.entryID)
+            }
             
         },
 
@@ -84,7 +95,7 @@ export default {
 
         $border: 1px;
         border: $border solid transparent;
-        &:hover {
+        &.repliable:hover {
             cursor: pointer;
             border: $border solid red;
         }
