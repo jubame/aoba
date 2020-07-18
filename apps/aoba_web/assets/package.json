@@ -8,7 +8,7 @@
   "dependencies": {
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
     "file-type": "^12.0.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "msgpack-js-browser": "^0.1.4",
     "msgpack-lite": "^0.1.26",
     "node-sass": "^4.12.0",
