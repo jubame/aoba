@@ -1,9 +1,7 @@
 <template>
     <div>
 
-    <template v-if="isCatalog">
-    <p>This Thread catalog view does not update automatically. Reload the page to load new threads.</p>
-    </template>
+    <p>This Thread list view does not update automatically. Reload the page to load new threads, then click the green header #thread_id link to enter the live thread.</p>
 
     <article data-type="thread" :id="threadID" 
         v-for="(thread, threadID) in threads" v-bind:key="`${threadID}`"
