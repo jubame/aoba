@@ -10,7 +10,7 @@ defmodule Aoba.Application do
     children = [
       {Registry, keys: :unique, name: Registry.ThreadServer},
       Aoba.ThreadServerSupervisor,
-      Aoba.Repo
+      # Aoba.Repo
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: Aoba.Supervisor)
