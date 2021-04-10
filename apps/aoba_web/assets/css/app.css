@@ -1,17 +1,17 @@
 /* This file is for your main application css. */
 
-//@import "./phoenix.css";
+/*@import "./phoenix.css";*/
 
 /* roboto-regular - latin */
-@font-face {
+/* @font-face {
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 400;
-    src: url('../static/fonts/roboto-v19-latin-regular.eot'); /* IE9 Compat Modes */
+    src: url('../static/fonts/roboto-v19-latin-regular.eot');
     src: local('Roboto'), local('Roboto-Regular'),
-         url('../static/fonts/roboto-v19-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
-         url('../static/fonts/roboto-v19-latin-regular.woff') format('woff'), /* Modern Browsers */
-  }
+         url('../static/fonts/roboto-v19-latin-regular.woff2') format('woff2'),
+         url('../static/fonts/roboto-v19-latin-regular.woff') format('woff'),
+  } */
 
 html {
     font-family: "Roboto", "Noto Sans", "Noto Sans CJK JP", sans-serif;

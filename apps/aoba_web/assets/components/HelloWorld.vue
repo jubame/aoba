@@ -1,6 +1,6 @@
 <template>
   <div id="content">
-    <img src="../static/images/aoba_suzukaze.png">
+    <!-- <img src="../static/images/aoba_suzukaze.png"> -->
     {{msg}}
   </div>
 </template>

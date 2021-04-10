@@ -1,6 +1,6 @@
 <template>
   <div id="content" :class="navCollapsedClass">
-    <img src="../static/images/aoba_salute.jpg">
+    <!-- <img src="../static/images/aoba_salute.jpg"> -->
     <button @mousedown="createThread">New Thread</button>
     <a href="/#/board/threads?view=catalog">Catalog</a>
 
