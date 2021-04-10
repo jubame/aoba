@@ -1,38 +1,28 @@
 # Aoba.Umbrella
-# Iniciamos con un nombre de nodo <numero>@<nombre_maquina>. El número de
-# nodo tiene que estar entre 1 y 9.
+Realtime imageboard. Toy project for me to learn Elixir.
+
+Start the project interactively with:
+```
+cd aoba
+mix deps.get
+cd apps/aoba_web/assets
+npm install
+cd ../../..
+
+```
+Then, to run interactively:
+```
 iex --name "1@localhost" -S mix phx.server
+```
 
-# Iniciamos desde el navegador web un nuevo hilo
-newThread("ejejej")
+or non interactively:
+```
+elixir --name "1@localhost" -S mix phx.server
+```
 
-# Aparecerá en el HTML el id del hilo:
-<article data-v-5e1bd625="" data-v-b4fa90ca="" data-type="thread" id="15608779361">
+A web interface should be accessible in `http://localhost:4000/`. Click
+Board on the left panel and then New Thread.
 
-# Añadir contenido:
-appendToBodyEntry(15608779361, 1, 1, "kokoko")
-appendToBodyEntry(15608779361, 1, 1, "kokoko")
-appendToBodyEntry(15608779361, 1, 1, "今日も一日頑張るぞい！")
-
-# Veamos el resultado en iex:
-iex(1@localhost)4> alias Aoba.ThreadServer
-Aoba.ThreadServer
-iex(1@localhost)28> :sys.get_state(ThreadServer.via_tuple(15608779361))
-%Aoba.Thread{
-  post_id: 2,
-  posts: %{
-    1 => %Aoba.Post{
-      body: %Aoba.Body{ 
-        auto_id: 2,
-        entries: %{
-          1 => "ejejej kokoko kokoko 今日も一日頑張るぞい！"
-        }
-      },
-      date: #DateTime<2019-06-18 17:32:41.351843Z>,
-      id: 1,
-      media: "",
-      username: "anon"
-    }
-  },
-  thread_id: 15608779361
-}
+Copy the thread ID URL (`http://localhost:4000/#/board/thread/<thread_id>`)
+to another browser window. Write a new reply. The other browser window
+should update.
