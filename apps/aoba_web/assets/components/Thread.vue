@@ -12,8 +12,6 @@
             >
         </regular-post>
 
-        <span>SHIT{{threadID}}</span>
-
         <button v-if="canReply" v-on:click="reply">Reply</button>
 
        

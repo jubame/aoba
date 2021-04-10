@@ -5,7 +5,6 @@
         v-for="(thread, threadID) in threads" v-bind:key="`${threadID}`"
         :class="catalogClass"
         >
-        <span>EHEHEEHE {{parseInt(threadID)}}</span>
         <thread :threadIDProp="parseInt(threadID)" :isCatalog="isCatalog"></thread>
     </article>
     </div>

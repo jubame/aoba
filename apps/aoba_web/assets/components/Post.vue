@@ -212,8 +212,6 @@ export default {
     methods: {
 
         reply(entryID) {
-            console.log("SHIT")
-
             console.log ('REPLY ' + this.replyPostID )
             this.$emit('reply-to', this.postID, entryID)
 
