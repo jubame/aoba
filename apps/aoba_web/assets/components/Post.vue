@@ -11,12 +11,10 @@
     >
     
 
-    <header>{{this.headerText}}</header>
+    <header><a :href="threadLink">{{this.headerText}}</a></header>
 
     <template v-if="isCatalog">
-        <a :href="threadLink">
-            <media v-if="isThereMedia" :threadID="threadID" :postID="postID"></media>
-        </a>
+        <media v-if="isThereMedia" :threadID="threadID" :postID="postID"></media>
     </template>
     <template v-else>
         <media v-if="isThereMedia" :threadID="threadID" :postID="postID"></media>
@@ -396,8 +394,11 @@ export default {
         &:first-child {
             header {
                 background-color: darkcyan;
-                color: white;
+                
                 text-align: left;
+                a {
+                    color: white;
+                }
             }
         }
 
