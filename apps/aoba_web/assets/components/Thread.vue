@@ -146,8 +146,12 @@ export default {
         },
 
         canReply() {
-    
-            return this.threadID
+            /* 
+            threadIDProp sólo existe si Thread.vue viene de Threads.vue
+            Quito el botón de reply porque Threads.vue es una vista de sólo lectura.
+            */
+
+            return !this.threadIDProp
         },
 
         
