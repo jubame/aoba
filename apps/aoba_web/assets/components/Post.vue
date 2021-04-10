@@ -12,6 +12,11 @@
     
 
     <header><a :href="threadLink">{{this.headerText}}</a></header>
+    
+    <template v-if="isTypeUser && !closed">
+    <p>Press Ctrl + dot to send subpost</p>
+    <p>Press Ctrl + Alt + dot to close post</p>
+    </template>
 
     <template v-if="isCatalog">
         <media v-if="isThereMedia" :threadID="threadID" :postID="postID"></media>
