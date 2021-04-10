@@ -20,7 +20,7 @@ defmodule AobaWeb.ThreadServerChannel do
       {:ok, tracking_id} ->
         thread = ThreadServer.list(String.to_integer(thread_id))
         Apex.ap thread
-        IO.puts("MECAGOENLAPUTA**********************************************************************")
+        IO.puts("**********************************************************************")
 
         {:ok, %{thread: thread}, assign(socket, :tracking_id, tracking_id)}
         #{:ok, assign(socket, :tracking_id, tracking_id)}
