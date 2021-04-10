@@ -1,15 +1,19 @@
 # Aoba.Umbrella
-Realtime imageboard. Toy project for me to learn Elixir.
+Realtime/live imageboard. Toy project for me to learn Elixir.
 
-Start the project interactively with:
+[![Two browsers side by side showing a live realtime thread](https://riru-re.b-cdn.net/wp-content/uploads/aoba_image_32-768x480.jpg)](https://riru-re.b-cdn.net/wp-content/uploads/aoba_image_32.jpg)
+
+
+
+Set up the project with:
 ```
 cd aoba
 mix deps.get
 cd apps/aoba_web/assets
 npm install
 cd ../../..
-
 ```
+
 Then, to run interactively:
 ```
 iex --name "1@localhost" -S mix phx.server
